@@ -1,0 +1,876 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Klantenadministratie Maaskantje</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@600;700&family=Source+Sans+3:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --page:#FAFAF7; --side:#F1F0EA; --card:#FFFFFF; --row-alt:#F4F3EE;
+  --ink:#1F2419; --ink-2:#5C6153; --ink-3:#8E9282;
+  --line:#E5E4DC; --line-2:#D6D4C9;
+  --green:#2E6B4A; --green-dk:#26583C; --green-soft:#E4EFE4;
+  --purple:#7A3E8E; --purple-soft:#F5EDF8; --purple-line:#DCC3E6;
+  --amber:#9A6714; --amber-soft:#FAF0DC; --amber-line:#E8D3A8;
+  --red:#8E3B3B; --red-soft:#FBE9E9; --red-line:#E2BCBC;
+  --grey-soft:#EDEBE3;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);
+  font-family:"Source Sans 3",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:"Zilla Slab",Georgia,serif;margin:0;line-height:1.2;text-wrap:balance}
+button,input,select{font-family:inherit;font-size:inherit;color:inherit}
+.mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-variant-numeric:tabular-nums}
+:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+
+/* ===== shell ===== */
+.app{display:grid;grid-template-columns:266px 1fr;min-height:100vh}
+
+aside{background:var(--side);border-right:1px solid var(--line);
+  padding:22px 14px 18px;display:flex;flex-direction:column;gap:22px}
+.brand{display:flex;gap:11px;align-items:center;padding:0 8px}
+.brand .mark{width:38px;height:38px;border-radius:10px;background:var(--green);flex:none;
+  display:grid;place-items:center}
+.brand .mark svg{width:20px;height:20px;fill:none;stroke:#fff;stroke-width:2}
+.brand b{display:block;font-family:"Zilla Slab",serif;font-weight:700;font-size:16.5px;letter-spacing:-.01em}
+.brand span{display:block;font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink-3);margin-top:1px}
+
+nav{display:flex;flex-direction:column;gap:3px}
+nav button{display:flex;align-items:center;gap:13px;width:100%;text-align:left;background:none;
+  border:0;border-radius:9px;padding:0 14px;height:48px;cursor:pointer;color:var(--ink-2);font-size:15.5px}
+nav button:hover{background:rgba(46,107,74,.07);color:var(--ink)}
+nav button.on{background:var(--green-soft);color:var(--green);font-weight:600}
+nav svg{width:19px;height:19px;flex:none;fill:none;stroke:currentColor;stroke-width:1.7;
+  stroke-linecap:round;stroke-linejoin:round}
+
+.me{margin-top:auto;padding-top:16px;border-top:1px solid var(--line);
+  display:flex;gap:11px;align-items:center}
+.me .av{width:34px;height:34px;border-radius:50%;background:var(--grey-soft);flex:none;
+  display:grid;place-items:center;font-weight:600;font-size:14px;color:var(--ink-2)}
+.me b{display:block;font-size:14.5px;font-weight:600}
+.me span{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--ink-3)}
+.me span::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--green)}
+
+main{min-width:0;display:flex;flex-direction:column}
+.topbar{padding:26px 34px 18px;display:flex;align-items:flex-start;gap:20px;
+  border-bottom:1px solid var(--line);flex-wrap:wrap}
+.topbar h1{font-size:31px;font-weight:700;letter-spacing:-.015em}
+.topbar p{margin:5px 0 0;color:var(--ink-2);font-size:15.5px}
+.topbar .sp{flex:1}
+.viewchip{display:inline-flex;align-items:center;gap:8px;background:var(--row-alt);
+  border:1px solid var(--line-2);border-radius:7px;padding:9px 13px;cursor:pointer;
+  font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.11em;
+  text-transform:uppercase;color:var(--ink-2);font-weight:500}
+.viewchip:hover{border-color:var(--ink-3)}
+.viewchip svg{width:11px;height:11px;stroke:currentColor;stroke-width:2.2;fill:none}
+.ustoggle{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--ink-3);cursor:pointer;
+  align-self:center}
+
+.content{padding:26px 34px 70px;flex:1}
+
+/* ===== controls ===== */
+.controls{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap}
+.search{position:relative;flex:1;min-width:240px}
+.search input{width:100%;height:50px;padding:0 14px 0 44px;border:1px solid var(--line-2);
+  border-radius:9px;background:var(--card);font-size:15px}
+.search svg{position:absolute;left:15px;top:16px;width:17px;height:17px;stroke:var(--ink-3);
+  stroke-width:2;fill:none}
+.sel{position:relative}
+.sel select{height:50px;padding:0 38px 0 15px;border:1px solid var(--line-2);border-radius:9px;
+  background:var(--card);font-size:15px;appearance:none;cursor:pointer;min-width:172px}
+.sel svg{position:absolute;right:14px;top:20px;width:12px;height:12px;stroke:var(--ink-2);
+  stroke-width:2.2;fill:none;pointer-events:none}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:50px;padding:0 20px;
+  border-radius:9px;border:1px solid transparent;cursor:pointer;font-weight:600;font-size:15px;white-space:nowrap}
+.btn.primary{background:var(--green);color:#fff}
+.btn.primary:hover{background:var(--green-dk)}
+.btn.sec{background:var(--card);border-color:var(--line-2)}
+.btn.sec:hover{background:var(--row-alt)}
+.btn.ghost{background:transparent;color:var(--ink-2)}
+.btn.ghost:hover{background:var(--row-alt);color:var(--ink)}
+.btn.danger{background:var(--red);color:#fff}
+.btn.sm{height:38px;padding:0 14px;font-size:14px;border-radius:7px}
+.btn svg{width:16px;height:16px;stroke:currentColor;stroke-width:2.2;fill:none}
+
+/* ===== table ===== */
+.panel{background:var(--card);border:1px solid var(--line);border-radius:11px;overflow:hidden}
+.thead,.trow{display:grid;grid-template-columns:22px 2.05fr 1.5fr 1.1fr 1.95fr 1.25fr .9fr;
+  gap:16px;align-items:center;padding:0 24px}
+.thead{height:54px;background:var(--row-alt);border-bottom:1px solid var(--line)}
+.thead span{font-size:14.5px;color:var(--ink-2);font-weight:600}
+.trow{height:64px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--card)}
+.grp:last-child .trow{border-bottom:0}
+.trow:hover{background:var(--row-alt)}
+.grp.open .trow{background:var(--row-alt)}
+.trow .nm{font-weight:700;font-size:15.5px}
+.trow .code{font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--ink-3);margin-left:7px;font-weight:400}
+.trow .sub{display:none}
+.chev{width:14px;height:14px;stroke:var(--ink-2);stroke-width:2.4;fill:none;
+  transition:transform .18s ease}
+.grp.open .chev{transform:rotate(180deg)}
+
+.pill{display:inline-flex;align-items:center;font-size:12.5px;padding:5px 11px;
+  border-radius:7px;font-weight:600;border:1px solid transparent;white-space:nowrap;line-height:1.25}
+.pill.diet{background:var(--purple-soft);color:var(--purple);border-color:var(--purple-line)}
+.pill.ok{background:var(--green-soft);color:var(--green)}
+.pill.off{background:var(--grey-soft);color:var(--ink-3)}
+.pill.wait{background:var(--amber-soft);color:var(--amber);border-color:var(--amber-line)}
+.pill.no{background:var(--red-soft);color:var(--red);border-color:var(--red-line)}
+.pills{display:flex;gap:6px;flex-wrap:wrap}
+
+/* expanded */
+.detail{display:none;padding:4px 22px 24px;background:var(--card);border-bottom:1px solid var(--line)}
+.grp.open .detail{display:block}
+.detail h3{font-size:18px;font-weight:600;margin:14px 0 13px}
+.inner{border:1px solid var(--line);border-radius:9px;overflow:hidden}
+.ihead,.irow{display:grid;grid-template-columns:2fr 1.3fr .9fr 1.8fr;gap:16px;align-items:center;padding:0 18px}
+.ihead{height:46px;background:var(--row-alt);border-bottom:1px solid var(--line)}
+.ihead span{font-size:13.5px;color:var(--ink-2);font-weight:600}
+.irow{min-height:52px;border-bottom:1px solid var(--line)}
+.irow:last-child{border-bottom:0}
+.irow .p{font-weight:600}
+.irow .diet-txt{color:var(--purple);font-weight:600;font-size:14px}
+.irow .none{color:var(--ink-3)}
+.detailacts{display:flex;gap:9px;margin-top:15px;flex-wrap:wrap}
+
+.empty{padding:64px 24px;text-align:center}
+.empty h3{font-size:19px;margin-bottom:6px}
+.empty p{color:var(--ink-2);margin:0 0 18px}
+
+.us{display:none;font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.05em;
+  background:var(--green-soft);color:var(--green);padding:2px 6px;border-radius:4px;
+  margin-left:7px;vertical-align:middle;white-space:nowrap;font-weight:500}
+body.show-us .us{display:inline-block}
+
+/* ===== slide-over ===== */
+.scrim{position:fixed;inset:0;background:rgba(31,36,25,.45);opacity:0;pointer-events:none;
+  transition:opacity .2s;z-index:40}
+.scrim.on{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(580px,100%);background:var(--card);
+  border-left:1px solid var(--line);transform:translateX(100%);transition:transform .24s ease;
+  z-index:50;display:flex;flex-direction:column}
+.drawer.on{transform:none}
+.drawer>header{padding:22px 26px;border-bottom:1px solid var(--line);display:flex;gap:14px;align-items:flex-start}
+.drawer>header h2{font-size:22px;font-weight:700}
+.drawer>header .m{font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--ink-3);margin-top:3px}
+.x{margin-left:auto;background:none;border:0;cursor:pointer;color:var(--ink-3);padding:4px 8px;
+  border-radius:7px;font-size:24px;line-height:1}
+.x:hover{background:var(--row-alt);color:var(--ink)}
+.dbody{overflow-y:auto;padding:24px 26px;flex:1}
+.drawer>footer{padding:16px 26px;border-top:1px solid var(--line);display:flex;gap:10px;align-items:center}
+
+fieldset{border:0;padding:0;margin:0 0 30px}
+legend{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ink-3);padding:0;margin-bottom:14px}
+.f{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.f label{font-size:13.5px;font-weight:600;color:var(--ink-2)}
+.f input{height:46px;padding:0 13px;border:1px solid var(--line-2);border-radius:8px;
+  background:var(--page);font-size:15px;width:100%}
+.f input:focus{border-color:var(--green)}
+.f .e{font-size:12.5px;color:var(--red);display:none}
+.f.bad input{border-color:var(--red);background:var(--red-soft)}
+.f.bad .e{display:block}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.req::after{content:" *";color:var(--red)}
+
+.lidcard{border:1px solid var(--line);border-radius:9px;padding:14px;margin-bottom:10px;background:var(--page)}
+.lidtop{display:grid;grid-template-columns:1fr 132px 112px 34px;gap:9px;align-items:center}
+.lidtop input,.lidtop select{height:42px;padding:0 10px;border:1px solid var(--line-2);border-radius:7px;
+  background:var(--card);font-size:14.5px;width:100%}
+.lidtop .rm{background:none;border:0;color:var(--ink-3);cursor:pointer;font-size:19px;border-radius:7px;height:40px}
+.lidtop .rm:hover{background:var(--red-soft);color:var(--red)}
+.lidmeta{display:flex;gap:8px;align-items:center;margin-top:9px;flex-wrap:wrap}
+.lidmeta .age{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink-3)}
+.dietpick{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
+.dietpick button{border:1px solid var(--line-2);background:var(--card);border-radius:99px;padding:5px 11px;
+  font-size:12.5px;cursor:pointer;color:var(--ink-2)}
+.dietpick button:hover{border-color:var(--purple)}
+.dietpick button.on{background:var(--purple-soft);border-color:var(--purple-line);color:var(--purple);font-weight:600}
+.tally{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}
+.tally div{background:var(--row-alt);border:1px solid var(--line);border-radius:8px;padding:8px 13px;
+  font-size:13.5px;color:var(--ink-2)}
+.tally b{font-family:"IBM Plex Mono",monospace;color:var(--ink);font-size:16px;margin-right:6px}
+
+.statusrow{border:1px solid var(--line);border-radius:9px;padding:16px;background:var(--page);
+  display:flex;gap:13px;align-items:center;flex-wrap:wrap}
+.statusrow .t{flex:1;min-width:190px;font-size:14.5px;color:var(--ink-2)}
+.notice{border-left:3px solid var(--line-2);background:var(--row-alt);padding:13px 15px;
+  border-radius:0 8px 8px 0;font-size:14px;color:var(--ink-2);margin-bottom:22px}
+
+/* modal */
+.modal{position:fixed;inset:0;display:none;place-items:center;z-index:60;padding:22px;
+  background:rgba(31,36,25,.45)}
+.modal.on{display:grid}
+.modal .box{background:var(--card);border:1px solid var(--line);border-radius:12px;
+  width:min(700px,100%);max-height:86vh;display:flex;flex-direction:column}
+.modal>.box>header{padding:20px 24px;border-bottom:1px solid var(--line);display:flex;align-items:flex-start;gap:12px}
+.modal h2{font-size:21px;font-weight:700}
+.mbody{padding:20px 24px;overflow-y:auto}
+.modal>.box>footer{padding:15px 24px;border-top:1px solid var(--line);display:flex;justify-content:flex-end}
+.pk{border:1px solid var(--line);border-radius:9px;margin-bottom:11px;overflow:hidden}
+.pk .h{display:flex;gap:13px;align-items:center;padding:13px 16px;background:var(--row-alt);flex-wrap:wrap}
+.pk .h .nr{font-family:"IBM Plex Mono",monospace;font-weight:500}
+.pk .h .d{font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--ink-2)}
+.pk .h .btn{margin-left:auto}
+.pk .c{display:none;padding:14px 16px}
+.pk.open .c{display:block}
+.pk .c .l{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dotted var(--line);font-size:14.5px}
+.pk .c .l:last-of-type{border-bottom:0}
+.pk .c .l span:last-child{font-family:"IBM Plex Mono",monospace}
+
+.toast{position:fixed;right:22px;bottom:22px;background:var(--card);border:1px solid var(--line);
+  border-left:4px solid var(--green);border-radius:9px;padding:14px 17px;max-width:350px;z-index:70;
+  transform:translateY(160%);transition:transform .24s ease;font-size:14.5px}
+.toast.on{transform:none}
+
+@media (max-width:1140px){
+  .thead,.trow{grid-template-columns:22px 2fr 1.05fr 1.8fr 1fr;gap:14px}
+  .thead span:nth-child(3),.trow .c-adres{display:none}
+  .thead span:nth-child(6),.trow .c-laatste{display:none}
+}
+@media (max-width:860px){
+  .app{grid-template-columns:1fr}
+  aside{flex-direction:row;align-items:center;gap:14px;padding:12px 16px;
+    border-right:0;border-bottom:1px solid var(--line);overflow-x:auto}
+  nav{flex-direction:row}
+  nav button{height:42px;padding:0 12px;white-space:nowrap}
+  nav button span{display:none}
+  .me{margin:0 0 0 auto;border:0;padding:0}
+  .me b,.me span{display:none}
+  .topbar,.content{padding-left:18px;padding-right:18px}
+  .thead{display:none}
+  .trow{grid-template-columns:20px 1fr;row-gap:7px;padding:16px 18px;height:auto;align-items:start}
+  .trow>*:nth-child(n+3){grid-column:2}
+  .trow .c-adres,.trow .c-laatste{display:block}
+  .trow .sub{display:block;font-size:13.5px;color:var(--ink-3);margin-top:2px}
+  .trow .c-adres,.trow .c-groot,.trow .c-laatste{font-size:13.5px;color:var(--ink-3)}
+  .detail{padding-left:18px;padding-right:18px}
+  .ihead{display:none}
+  .irow{grid-template-columns:1fr;row-gap:3px;padding:13px 16px}
+  .two,.lidtop{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="app">
+  <aside>
+    <div class="brand">
+      <div class="mark"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.5-7-9a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 4.5-7 9-7 9z"/></svg></div>
+      <div><b>VB Maaskantje</b><span>Back-office</span></div>
+    </div>
+    <nav id="nav">
+      <button data-dir><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span>Dashboard</span></button>
+      <button><svg viewBox="0 0 24 24"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg><span>Voedselpakketten</span></button>
+      <button data-dir><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="14" rx="2"/><path d="M8 6V4h8v2"/><path d="M9 12h6"/></svg><span>Producten</span></button>
+      <button data-dir><svg viewBox="0 0 24 24"><rect x="1" y="6" width="13" height="10" rx="1.5"/><path d="M14 9h4l3 3v4h-7z"/><circle cx="5.5" cy="18.5" r="1.8"/><circle cx="17.5" cy="18.5" r="1.8"/></svg><span>Leveranciers</span></button>
+      <button class="on"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 19a6.5 6.5 0 0 1 13 0"/><path d="M17 11.5a2.8 2.8 0 1 0 0-5.6"/><path d="M18.5 19a5.6 5.6 0 0 0-3-4.9"/></svg><span>Klanten</span></button>
+      <button data-dir><svg viewBox="0 0 24 24"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-7"/><path d="M22 20H2"/></svg><span>Rapportages</span></button>
+      <button data-dir><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/></svg><span>Gebruikers</span></button>
+    </nav>
+    <div class="me">
+      <div class="av" id="meAv">P</div>
+      <div><b id="meName">Peter Abraham</b><span id="meRole">Directie</span></div>
+    </div>
+  </aside>
+
+  <main>
+    <div class="topbar">
+      <div>
+        <h1>Klanten- &amp; Gezinnenadministratie<span class="us">US-KLT-03</span></h1>
+        <p>Inzicht in huishoudens en individuele dieetbehoeften</p>
+      </div>
+      <div class="sp"></div>
+      <button class="viewchip" id="viewChip" title="Wissel van rol">
+        <span id="viewLabel">Directie view</span>
+      </button>
+    </div>
+
+    <div class="content">
+      <div class="controls">
+        <div class="search">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+          <input type="text" id="q" placeholder="Zoek op naam of adres…" aria-label="Zoeken">
+        </div>
+        <div class="sel">
+          <select id="fStatus" aria-label="Filter op status">
+            <option value="Ja">Status: Actief</option>
+            <option value="Onbeslist">Status: Nieuwe aanmelding</option>
+            <option value="Nee">Status: Inactief</option>
+            <option value="">Status: Alle</option>
+          </select>
+          <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <button class="btn primary" id="btnNew">
+          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+          Nieuwe klant
+        </button>
+      </div>
+
+      <div class="panel">
+        <div class="thead">
+          <span></span><span>Naam</span><span>Adres</span><span>Gezinsgrootte</span>
+          <span>Dieetbeperkingen</span><span>Laatste uitgifte</span><span>Status</span>
+        </div>
+        <div id="list"></div>
+        <div class="empty" id="empty" hidden>
+          <h3>Geen gezinnen gevonden</h3>
+          <p id="emptyMsg">Pas je zoekopdracht of filters aan.</p>
+          <button class="btn sec" id="btnClear">Filters wissen</button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+
+<section class="drawer" id="drawer" aria-hidden="true" aria-labelledby="dTitle">
+  <header>
+    <div><h2 id="dTitle">Nieuwe klant</h2><div class="m" id="dMeta"></div></div>
+    <button class="x" id="dClose" aria-label="Sluiten">&times;</button>
+  </header>
+  <div class="dbody">
+    <div class="notice" id="privNote" hidden>
+      Als vrijwilliger zie je geen contactgegevens. Je werkt met de gezinssamenstelling en de
+      dieetwensen die je nodig hebt om een pakket samen te stellen.
+    </div>
+
+    <fieldset id="fsContact">
+      <legend>Contactgegevens<span class="us">US-KLT-04</span></legend>
+      <div class="f" id="f-naam"><label class="req" for="i-naam">Gezinsnaam</label>
+        <input id="i-naam" type="text" placeholder="Gezin Abbink"><span class="e">Gezinsnaam is verplicht.</span></div>
+      <div class="f" id="f-adres"><label class="req" for="i-adres">Adres</label>
+        <input id="i-adres" type="text" placeholder="Dorpsstraat 12"><span class="e">Adres is verplicht.</span></div>
+      <div class="two">
+        <div class="f" id="f-pc"><label class="req" for="i-pc">Postcode</label>
+          <input id="i-pc" type="text" placeholder="5492 AB" maxlength="8"><span class="e">Bijvoorbeeld 5492 AB.</span></div>
+        <div class="f" id="f-tel"><label class="req" for="i-tel">Telefoonnummer</label>
+          <input id="i-tel" type="tel" placeholder="06-12345678"><span class="e">Telefoonnummer is verplicht.</span></div>
+      </div>
+      <div class="f" id="f-mail"><label class="req" for="i-mail">E-mailadres</label>
+        <input id="i-mail" type="email" placeholder="naam@voorbeeld.nl"><span class="e">Vul een geldig e-mailadres in.</span></div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Gezinsleden &amp; dieetspecificaties<span class="us">US-KLT-05 · 06 · 07 · 08 · 09 · 10</span></legend>
+      <div id="leden"></div>
+      <button class="btn sec sm" id="btnAddLid" type="button">+ Gezinslid toevoegen</button>
+      <div class="tally" id="tally"></div>
+    </fieldset>
+
+    <fieldset id="fsStatus">
+      <legend>Registratiestatus<span class="us">US-KLT-12</span></legend>
+      <div class="statusrow">
+        <div class="t" id="statusTxt"></div>
+        <button class="btn sec sm" id="btnNo">Afwijzen</button>
+        <button class="btn primary sm" id="btnYes">Accepteren</button>
+      </div>
+    </fieldset>
+  </div>
+  <footer>
+    <button class="btn ghost sm" id="btnHist">Pakketgeschiedenis<span class="us">US-KLT-13</span></button>
+    <span style="flex:1"></span>
+    <button class="btn sec" id="btnCancel">Annuleren</button>
+    <button class="btn primary" id="btnSave">Opslaan</button>
+  </footer>
+</section>
+
+<div class="modal" id="hist" role="dialog" aria-modal="true" aria-labelledby="hT">
+  <div class="box">
+    <header><div><h2 id="hT">Pakketgeschiedenis</h2><div class="m" id="hSub" style="font-size:13.5px;color:var(--ink-3)"></div></div>
+      <button class="x" id="hX" aria-label="Sluiten">&times;</button></header>
+    <div class="mbody" id="hBody"></div>
+    <footer><button class="btn sec" id="hX2">Sluiten</button></footer>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+"use strict";
+var $=function(s){return document.querySelector(s);};
+var TODAY="2026-09-23";
+
+/* ===== Wens (idWens, Naam, Omschrijving) ===== */
+var WENSEN=[
+ {id:1,naam:"Halal"},{id:2,naam:"Geen varkensvlees"},{id:3,naam:"Glutenvrij"},
+ {id:4,naam:"Notenallergie"},{id:5,naam:"Pinda-allergie"},{id:6,naam:"Schaaldierallergie"},
+ {id:7,naam:"Lactose-intolerant"},{id:8,naam:"Vegetarisch"},{id:9,naam:"Veganistisch"}
+];
+var nextWens=30;
+function wNaam(id){var w=WENSEN.filter(function(x){return x.id===id;})[0];return w?w.naam:"";}
+
+/* ===== Klant + Gezinslid (dieet per lid, zoals in de Figma) ===== */
+var KLANTEN=[
+ {id:102,naam:"Familie Bakker",adres:"Dorpsstraat 12",pc:"5492 AB",tel:"06-12345678",
+  mail:"a.bakker@voorbeeld.nl",aanmeld:"2023-04-11",status:"Ja",laatste:"2024-10-18",
+  leden:[{naam:"Ank Bakker",gb:"1982-05-19",rel:"Ouder (Moeder)",w:[]},
+         {naam:"Bart Bakker",gb:"1980-08-30",rel:"Ouder (Vader)",w:[4]},
+         {naam:"Cees Bakker",gb:"2012-01-22",rel:"Kind",w:[3]},
+         {naam:"Daan Bakker",gb:"2015-09-05",rel:"Kind",w:[]},
+         {naam:"Elsa Bakker",gb:"2020-03-14",rel:"Kind",w:[3]}]},
+ {id:108,naam:"Gezin El Hassani",adres:"Kerkplein 4",pc:"5492 CD",tel:"06-23456789",
+  mail:"s.elhassani@voorbeeld.nl",aanmeld:"2023-09-02",status:"Ja",laatste:"2024-10-19",
+  leden:[{naam:"Samir El Hassani",gb:"1985-11-02",rel:"Ouder (Vader)",w:[1]},
+         {naam:"Nadia El Hassani",gb:"1988-02-17",rel:"Ouder (Moeder)",w:[1]},
+         {naam:"Yasmin El Hassani",gb:"2014-04-17",rel:"Kind",w:[1]},
+         {naam:"Adam El Hassani",gb:"2018-06-09",rel:"Kind",w:[1]}]},
+ {id:94,naam:"Mevr. Jansen",adres:"Spoorlaan 88",pc:"5491 XT",tel:"0413-478900",
+  mail:"g.jansen@voorbeeld.nl",aanmeld:"2022-06-14",status:"Ja",laatste:"2024-10-11",
+  leden:[{naam:"Greet Jansen",gb:"1956-05-14",rel:"Hoofdaanvrager",w:[7]}]},
+ {id:88,naam:"M. van Dongen",adres:"Molenweg 22",pc:"5493 PL",tel:"06-34567890",
+  mail:"m.vandongen@voorbeeld.nl",aanmeld:"2022-02-06",status:"Nee",laatste:"2024-09-27",
+  leden:[{naam:"Marijke van Dongen",gb:"1979-09-12",rel:"Ouder (Moeder)",w:[7]},
+         {naam:"Bram van Dongen",gb:"1977-12-03",rel:"Ouder (Vader)",w:[]},
+         {naam:"Lieke van Dongen",gb:"2009-06-28",rel:"Kind",w:[7]},
+         {naam:"Tess van Dongen",gb:"2012-03-19",rel:"Kind",w:[]},
+         {naam:"Sem van Dongen",gb:"2016-10-08",rel:"Kind",w:[]}]},
+ {id:121,naam:"S. El Jafari",adres:"Beukenlaan 7",pc:"5492 CD",tel:"06-45678901",
+  mail:"s.eljafari@voorbeeld.nl",aanmeld:"2023-03-08",status:"Ja",laatste:"2024-10-25",
+  leden:[{naam:"Samira El Jafari",gb:"1991-01-19",rel:"Hoofdaanvrager",w:[8]},
+         {naam:"Rayan El Jafari",gb:"2017-05-16",rel:"Kind",w:[8]}]},
+ {id:134,naam:"Familie Veldhuis",adres:"Kastanjehof 18",pc:"5492 AB",tel:"06-56789012",
+  mail:"m.veldhuis@voorbeeld.nl",aanmeld:TODAY,status:"Onbeslist",laatste:"",
+  leden:[{naam:"Marloes Veldhuis",gb:"1992-06-23",rel:"Hoofdaanvrager",w:[7]},
+         {naam:"Tijn Veldhuis",gb:"2020-01-11",rel:"Kind",w:[]},
+         {naam:"Noor Veldhuis",gb:"2024-08-19",rel:"Kind",w:[]}]},
+ {id:135,naam:"Dhr. Kowalski",adres:"Industrieweg 2b",pc:"5493 PL",tel:"06-67890123",
+  mail:"p.kowalski@voorbeeld.nl",aanmeld:TODAY,status:"Onbeslist",laatste:"",
+  leden:[{naam:"Piotr Kowalski",gb:"1995-11-27",rel:"Hoofdaanvrager",w:[]}]}
+];
+var nextId=140;
+
+var PAKKETTEN=[
+ {id:2847,k:102,s:"2026-09-17",u:"2026-09-18",op:"Ja",r:[{p:"Glutenvrij Meergranenbrood",a:2},{p:"Campina Halfvolle Melk",a:2},{p:"Hak Doperwtjes blik",a:2},{p:"Jonagold Appels (zak)",a:1},{p:"Heinz Sperziebonen blik",a:2}]},
+ {id:2801,k:102,s:"2026-09-10",u:"2026-09-11",op:"Ja",r:[{p:"Glutenvrij Meergranenbrood",a:2},{p:"Hak Erwten & Wortelen",a:2},{p:"Campina Halfvolle Melk",a:3}]},
+ {id:2755,k:102,s:"2026-09-03",u:"2026-09-04",op:"Ja",r:[{p:"Jonagold Appels (zak)",a:2},{p:"Heinz Sperziebonen blik",a:3}]},
+ {id:2848,k:108,s:"2026-09-17",u:"2026-09-18",op:"Ja",r:[{p:"Halfbruin gesneden brood",a:2},{p:"Hak Doperwtjes blik",a:2},{p:"Jonagold Appels (zak)",a:1}]},
+ {id:2849,k:94,s:"2026-09-10",u:"2026-09-11",op:"Ja",r:[{p:"Halfbruin gesneden brood",a:1},{p:"Zaanse Hoeve Jong Belegen",a:1},{p:"Hak Erwten & Wortelen",a:1}]},
+ {id:2850,k:121,s:"2026-09-17",u:"2026-09-18",op:"Ja",r:[{p:"Halfbruin gesneden brood",a:3},{p:"Heinz Sperziebonen blik",a:3},{p:"Jonagold Appels (zak)",a:2},{p:"Campina Halfvolle Melk",a:2}]},
+ {id:2790,k:88,s:"2026-07-23",u:"2026-07-24",op:"Ja",r:[{p:"Halfbruin gesneden brood",a:2},{p:"Hak Doperwtjes blik",a:3}]}
+];
+
+/* ===== helpers ===== */
+var rol="Directie", open=null, editing=null, draft=[];
+
+function leeftijd(gb){
+  if(!gb) return null;
+  var d=new Date(gb), t=new Date(TODAY);
+  if(isNaN(d.getTime())) return null;
+  var a=t.getFullYear()-d.getFullYear(), m=t.getMonth()-d.getMonth();
+  if(m<0||(m===0&&t.getDate()<d.getDate())) a--;
+  return a;
+}
+function categorie(gb){
+  var a=leeftijd(gb);
+  if(a===null) return "";
+  return a<=2?"Baby":a<18?"Kind":"Volwassene";
+}
+function telling(leden){
+  var t={Volwassene:0,Kind:0,Baby:0};
+  leden.forEach(function(l){var c=categorie(l.gb); if(t[c]!==undefined) t[c]++;});
+  return t;
+}
+function gezinsLabel(n){ return n===1?"Alleenstaande":n<=3?"Klein huishouden":"Groot gezin"; }
+function huisDieet(k){
+  var s=[];
+  k.leden.forEach(function(l){ l.w.forEach(function(id){ if(s.indexOf(id)===-1) s.push(id); }); });
+  return s;
+}
+function dNL(s){ if(!s) return "—"; var p=s.split("-"); return p.length===3?p[2]+"-"+p[1]+"-"+p[0]:s; }
+function toast(m){ var e=$("#toast"); e.textContent=m; e.classList.add("on");
+  clearTimeout(e._t); e._t=setTimeout(function(){e.classList.remove("on");},3200); }
+function svgChev(){
+  var s=document.createElementNS("http://www.w3.org/2000/svg","svg");
+  s.setAttribute("viewBox","0 0 24 24"); s.setAttribute("class","chev");
+  var p=document.createElementNS("http://www.w3.org/2000/svg","path");
+  p.setAttribute("d","M6 9l6 6 6-6"); s.appendChild(p); return s;
+}
+function cell(cls){ var d=document.createElement("div"); if(cls) d.className=cls; return d; }
+
+/* ===== rol ===== */
+function setRol(r){
+  rol=r;
+  $("#viewLabel").textContent = r==="Directie" ? "Directie view" : "Vrijwilliger view";
+  $("#meName").textContent = r==="Directie" ? "Peter Abraham" : "Ank de Groot";
+  $("#meRole").textContent = r==="Directie" ? "Directie" : "Vrijwilliger";
+  $("#meAv").textContent = r==="Directie" ? "P" : "A";
+  $("#btnNew").hidden = r!=="Directie";
+  Array.prototype.forEach.call(document.querySelectorAll("#nav button[data-dir]"),function(b){
+    b.style.display = r==="Directie" ? "" : "none";
+  });
+  closeDrawer(); open=null; render();
+}
+
+/* ===== lijst ===== */
+function filtered(){
+  var q=$("#q").value.trim().toLowerCase(), st=$("#fStatus").value;
+  return KLANTEN.filter(function(k){
+    if(st && k.status!==st) return false;
+    if(q){
+      var hay=(k.naam+" "+k.adres+" "+k.pc).toLowerCase();
+      if(hay.indexOf(q)===-1) return false;
+    }
+    return true;
+  });
+}
+
+function render(){
+  var list=filtered(), wrap=$("#list");
+  wrap.textContent="";
+
+  list.forEach(function(k){
+    var grp=document.createElement("div");
+    grp.className="grp"+(open===k.id?" open":"");
+
+    var row=document.createElement("div");
+    row.className="trow"; row.tabIndex=0; row.setAttribute("role","button");
+    row.setAttribute("aria-expanded", open===k.id);
+
+    row.appendChild(svgChev());
+
+    var c1=cell();
+    var nm=document.createElement("span"); nm.className="nm"; nm.textContent=k.naam;
+    c1.appendChild(nm);
+    var t=telling(k.leden);
+    var sub=document.createElement("span"); sub.className="sub";
+    sub.textContent = t.Volwassene+" volw., "+t.Kind+" kind, "+t.Baby+" baby";
+    c1.appendChild(sub);
+    row.appendChild(c1);
+
+    var c2=cell("c-adres");
+    c2.textContent = rol==="Directie" ? k.adres : "—";
+    if(rol!=="Directie") c2.style.color="var(--ink-3)";
+    row.appendChild(c2);
+
+    var c3=cell("c-groot mono");
+    c3.textContent=k.leden.length+(k.leden.length===1?" persoon":" personen");
+    c3.title=gezinsLabel(k.leden.length);
+    row.appendChild(c3);
+
+    var c4=cell();
+    var ps=document.createElement("div"); ps.className="pills";
+    var dz=huisDieet(k);
+    if(!dz.length){ var no=document.createElement("span"); no.style.color="var(--ink-3)"; no.textContent="Geen"; ps.appendChild(no); }
+    else dz.slice(0,3).forEach(function(id){
+      var b=document.createElement("span"); b.className="pill diet"; b.textContent=wNaam(id); ps.appendChild(b);
+    });
+    if(dz.length>3){ var mr=document.createElement("span"); mr.className="pill off"; mr.textContent="+"+(dz.length-3); ps.appendChild(mr); }
+    c4.appendChild(ps); row.appendChild(c4);
+
+    var c5=cell("c-laatste mono");
+    c5.textContent = k.laatste ? dNL(k.laatste) : "—";
+    row.appendChild(c5);
+
+    var c6=cell("c-status");
+    var sp=document.createElement("span");
+    sp.className="pill "+(k.status==="Ja"?"ok":k.status==="Nee"?"off":"wait");
+    sp.textContent=k.status==="Ja"?"Actief":k.status==="Nee"?"Inactief":"Nieuw";
+    c6.appendChild(sp); row.appendChild(c6);
+
+    row.onclick=function(){ open = open===k.id ? null : k.id; render(); };
+    row.onkeydown=function(e){ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); row.onclick(); } };
+    grp.appendChild(row);
+
+    /* ---- uitgeklapt ---- */
+    var det=document.createElement("div"); det.className="detail";
+    var h=document.createElement("h3");
+    h.textContent="Samenstelling Huishouden & Individuele Behoeften";
+    var usb=document.createElement("span"); usb.className="us"; usb.textContent="US-KLT-05 · 06 · 07";
+    h.appendChild(usb);
+    det.appendChild(h);
+
+    var inner=document.createElement("div"); inner.className="inner";
+    var ih=document.createElement("div"); ih.className="ihead";
+    ["Naam lid","Relatie","Leeftijd","Specifiek Dieet"].forEach(function(x){
+      var s=document.createElement("span"); s.textContent=x; ih.appendChild(s);
+    });
+    inner.appendChild(ih);
+
+    k.leden.forEach(function(l){
+      var ir=document.createElement("div"); ir.className="irow";
+      var a=cell("p"); a.textContent=l.naam; ir.appendChild(a);
+      var b=cell(); b.textContent=l.rel; b.style.color="var(--ink-2)"; ir.appendChild(b);
+      var c=cell("mono"); var lf=leeftijd(l.gb);
+      c.textContent=(lf===null?"—":lf+" jaar");
+      c.title=categorie(l.gb);
+      ir.appendChild(c);
+      var d=cell();
+      if(!l.w.length){ d.className="none"; d.textContent="Geen"; }
+      else { d.className="diet-txt"; d.textContent=l.w.map(wNaam).join(", "); }
+      ir.appendChild(d);
+      inner.appendChild(ir);
+    });
+    det.appendChild(inner);
+
+    var acts=document.createElement("div"); acts.className="detailacts";
+    var bE=document.createElement("button"); bE.className="btn sec sm";
+    bE.textContent = rol==="Directie" ? "Gegevens wijzigen" : "Dieetwensen bijwerken";
+    bE.onclick=function(e){ e.stopPropagation(); openDrawer(k); };
+    acts.appendChild(bE);
+    var bH=document.createElement("button"); bH.className="btn ghost sm";
+    bH.textContent="Pakketgeschiedenis";
+    bH.onclick=function(e){ e.stopPropagation(); openHist(k); };
+    acts.appendChild(bH);
+    if(rol==="Directie" && k.status==="Onbeslist"){
+      var bA=document.createElement("button"); bA.className="btn primary sm";
+      bA.textContent="Aanmelding accepteren";
+      bA.onclick=function(e){ e.stopPropagation(); k.status="Ja"; render();
+        toast(k.naam+" is geaccepteerd en mag wekelijks een pakket ophalen."); };
+      acts.appendChild(bA);
+    }
+    det.appendChild(acts);
+    grp.appendChild(det);
+
+    wrap.appendChild(grp);
+  });
+
+  $("#empty").hidden = list.length>0;
+  if(!list.length){
+    $("#emptyMsg").textContent = $("#q").value.trim()
+      ? 'Geen gezin gevonden voor "'+$("#q").value.trim()+'".'
+      : "Pas je filters aan.";
+  }
+}
+
+/* ===== drawer ===== */
+function openDrawer(k){
+  editing=k||null;
+  draft = k ? k.leden.map(function(l){ return {naam:l.naam,gb:l.gb,rel:l.rel,w:l.w.slice()}; })
+            : [{naam:"",gb:"",rel:"Hoofdaanvrager",w:[]}];
+  var vrij = rol==="Vrijwilliger";
+
+  $("#dTitle").textContent = k ? k.naam : "Nieuwe klant";
+  $("#dMeta").textContent = k ? ("K-"+k.id+" · aangemeld "+dNL(k.aanmeld)) : "Nieuwe registratie";
+  $("#fsContact").hidden = vrij;
+  $("#privNote").hidden = !vrij;
+  $("#fsStatus").hidden = vrij || !k;
+  $("#btnHist").hidden = !k;
+
+  $("#i-naam").value  = k?k.naam:"";
+  $("#i-adres").value = k?k.adres:"";
+  $("#i-pc").value    = k?k.pc:"";
+  $("#i-tel").value   = k?k.tel:"";
+  $("#i-mail").value  = k?k.mail:"";
+  ["naam","adres","pc","tel","mail"].forEach(function(f){ $("#f-"+f).classList.remove("bad"); });
+
+  renderLeden(); renderStatus(k);
+  $("#drawer").classList.add("on"); $("#drawer").setAttribute("aria-hidden","false");
+  $("#scrim").classList.add("on");
+  setTimeout(function(){ (vrij?$("#btnAddLid"):$("#i-naam")).focus(); },200);
+}
+function closeDrawer(){
+  $("#drawer").classList.remove("on"); $("#drawer").setAttribute("aria-hidden","true");
+  $("#scrim").classList.remove("on"); editing=null;
+}
+
+function renderLeden(){
+  var wrap=$("#leden"); wrap.textContent="";
+  draft.forEach(function(lid,i){
+    var card=document.createElement("div"); card.className="lidcard";
+
+    var top=document.createElement("div"); top.className="lidtop";
+    var n=document.createElement("input"); n.type="text"; n.value=lid.naam;
+    n.placeholder="Naam gezinslid"; n.setAttribute("aria-label","Naam gezinslid "+(i+1));
+    n.oninput=function(){ draft[i].naam=n.value; };
+    top.appendChild(n);
+
+    var d=document.createElement("input"); d.type="date"; d.value=lid.gb; d.max=TODAY;
+    d.setAttribute("aria-label","Geboortedatum gezinslid "+(i+1));
+    d.oninput=function(){ draft[i].gb=d.value; renderLeden(); };
+    top.appendChild(d);
+
+    var r=document.createElement("select");
+    r.setAttribute("aria-label","Rol gezinslid "+(i+1));
+    ["Hoofdaanvrager","Partner","Kind","Inwonend"].forEach(function(o){
+      var op=document.createElement("option"); op.value=o; op.textContent=o;
+      if(lid.rel===o) op.selected=true; r.appendChild(op);
+    });
+    r.onchange=function(){ draft[i].rel=r.value; };
+    top.appendChild(r);
+
+    var rm=document.createElement("button"); rm.type="button"; rm.className="rm";
+    rm.innerHTML="&times;"; rm.setAttribute("aria-label","Gezinslid "+(i+1)+" verwijderen");
+    rm.onclick=function(){ draft.splice(i,1);
+      if(!draft.length) draft.push({naam:"",gb:"",rel:"Hoofdaanvrager",w:[]}); renderLeden(); };
+    top.appendChild(rm);
+    card.appendChild(top);
+
+    var meta=document.createElement("div"); meta.className="lidmeta";
+    var lf=leeftijd(lid.gb);
+    var age=document.createElement("span"); age.className="age";
+    age.textContent = lf===null ? "Vul een geboortedatum in" : lf+" jaar";
+    meta.appendChild(age);
+    if(lf!==null){
+      var cp=document.createElement("span"); cp.className="pill off"; cp.textContent=categorie(lid.gb);
+      meta.appendChild(cp);
+    }
+    card.appendChild(meta);
+
+    var dp=document.createElement("div"); dp.className="dietpick";
+    WENSEN.forEach(function(w){
+      var b=document.createElement("button"); b.type="button"; b.textContent=w.naam;
+      if(lid.w.indexOf(w.id)!==-1) b.classList.add("on");
+      b.onclick=function(){
+        var ix=draft[i].w.indexOf(w.id);
+        if(ix===-1) draft[i].w.push(w.id); else draft[i].w.splice(ix,1);
+        renderLeden();
+      };
+      dp.appendChild(b);
+    });
+    var eigen=lid.w.filter(function(id){return id>=30;})[0];
+    var ab=document.createElement("button"); ab.type="button";
+    ab.textContent = eigen ? wNaam(eigen) : "+ Anders…";
+    if(eigen) ab.classList.add("on");
+    ab.onclick=function(){
+      if(eigen){ draft[i].w.splice(draft[i].w.indexOf(eigen),1); renderLeden(); return; }
+      var txt=prompt("Welke eigen wens of allergie? (US-KLT-10)");
+      if(txt && txt.trim()){
+        var nw={id:nextWens++,naam:txt.trim()};
+        WENSEN.push(nw); draft[i].w.push(nw.id); renderLeden();
+      }
+    };
+    dp.appendChild(ab);
+    card.appendChild(dp);
+
+    wrap.appendChild(card);
+  });
+
+  var t=telling(draft), tl=$("#tally"); tl.textContent="";
+  [["Volwassenen","Volwassene"],["Kinderen","Kind"],["Baby's","Baby"]].forEach(function(p){
+    var d=document.createElement("div"); var b=document.createElement("b");
+    b.textContent=t[p[1]]; d.appendChild(b); d.appendChild(document.createTextNode(p[0])); tl.appendChild(d);
+  });
+  var pc=document.createElement("div");
+  var pb=document.createElement("b"); pb.textContent=draft.length;
+  pc.appendChild(pb); pc.appendChild(document.createTextNode(gezinsLabel(draft.length)));
+  tl.appendChild(pc);
+}
+
+function renderStatus(k){
+  if(!k) return;
+  var t=$("#statusTxt");
+  if(k.status==="Ja"){
+    t.innerHTML="Dit gezin is <b>actief</b> en mag wekelijks een pakket ophalen.";
+    $("#btnYes").hidden=true; $("#btnNo").hidden=false; $("#btnNo").textContent="Op inactief zetten";
+  } else if(k.status==="Nee"){
+    t.innerHTML="Dit gezin staat op <b>inactief</b>. Er kan geen pakket worden samengesteld.";
+    $("#btnYes").hidden=false; $("#btnNo").hidden=true; $("#btnYes").textContent="Weer activeren";
+  } else {
+    t.innerHTML="Aangemeld op "+dNL(k.aanmeld)+". Nog geen beslissing genomen.";
+    $("#btnYes").hidden=false; $("#btnNo").hidden=false;
+    $("#btnYes").textContent="Accepteren"; $("#btnNo").textContent="Afwijzen";
+  }
+}
+
+function valideer(){
+  if(rol==="Vrijwilliger") return true;
+  var ok=true;
+  function c(f,cond){ var e=$("#f-"+f); e.classList.toggle("bad",!cond); if(!cond) ok=false; }
+  c("naam",  $("#i-naam").value.trim().length>1);
+  c("adres", $("#i-adres").value.trim().length>2);
+  c("pc",    /^[1-9][0-9]{3}\s?[A-Za-z]{2}$/.test($("#i-pc").value.trim()));
+  c("tel",   $("#i-tel").value.trim().length>=9);
+  c("mail",  /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test($("#i-mail").value.trim()));
+  return ok;
+}
+
+function opslaan(){
+  if(!valideer()){ toast("Controleer de rood gemarkeerde velden."); return; }
+  var leden=draft.filter(function(l){ return l.naam.trim() && l.gb; });
+  if(!leden.length){ toast("Voeg minimaal één gezinslid met een geboortedatum toe."); return; }
+  if(editing){
+    if(rol==="Directie"){
+      editing.naam=$("#i-naam").value.trim(); editing.adres=$("#i-adres").value.trim();
+      editing.pc=$("#i-pc").value.trim().toUpperCase(); editing.tel=$("#i-tel").value.trim();
+      editing.mail=$("#i-mail").value.trim();
+    }
+    editing.leden=leden;
+    toast("Wijzigingen opgeslagen voor "+editing.naam+".");
+  } else {
+    KLANTEN.unshift({id:nextId++,naam:$("#i-naam").value.trim(),adres:$("#i-adres").value.trim(),
+      pc:$("#i-pc").value.trim().toUpperCase(),tel:$("#i-tel").value.trim(),
+      mail:$("#i-mail").value.trim(),aanmeld:TODAY,status:"Onbeslist",laatste:"",leden:leden});
+    toast($("#i-naam").value.trim()+" is geregistreerd en wacht op een beslissing.");
+  }
+  closeDrawer(); render();
+}
+
+/* ===== geschiedenis ===== */
+function openHist(k){
+  $("#hSub").textContent=k.naam;
+  var b=$("#hBody"); b.textContent="";
+  var mine=PAKKETTEN.filter(function(p){return p.k===k.id;})
+                    .sort(function(a,c){return a.s<c.s?1:-1;});
+  if(!mine.length){
+    var e=document.createElement("div"); e.className="empty";
+    var h=document.createElement("h3"); h.textContent="Nog geen pakketten";
+    var p=document.createElement("p"); p.textContent="Dit gezin heeft nog geen voedselpakket afgenomen.";
+    e.appendChild(h); e.appendChild(p); b.appendChild(e);
+  }
+  mine.forEach(function(pk){
+    var box=document.createElement("div"); box.className="pk";
+    var hd=document.createElement("div"); hd.className="h";
+    var nr=document.createElement("span"); nr.className="nr"; nr.textContent="#"+pk.id;
+    var dd=document.createElement("span"); dd.className="d";
+    dd.textContent="samengesteld "+dNL(pk.s)+" · uitgifte "+dNL(pk.u);
+    var st=document.createElement("span"); st.className="pill "+(pk.op==="Ja"?"ok":"wait");
+    st.textContent=pk.op==="Ja"?"Opgehaald":"Niet opgehaald";
+    var bt=document.createElement("button"); bt.className="btn sec sm"; bt.textContent="Bekijken";
+    bt.onclick=function(){ var o=box.classList.toggle("open"); bt.textContent=o?"Verbergen":"Bekijken"; };
+    hd.appendChild(nr); hd.appendChild(dd); hd.appendChild(st); hd.appendChild(bt);
+    box.appendChild(hd);
+    var c=document.createElement("div"); c.className="c";
+    pk.r.forEach(function(r){
+      var l=document.createElement("div"); l.className="l";
+      var a=document.createElement("span"); a.textContent=r.p;
+      var q=document.createElement("span"); q.textContent=r.a+"x";
+      l.appendChild(a); l.appendChild(q); c.appendChild(l);
+    });
+    var tot=document.createElement("p");
+    tot.style.cssText="margin:12px 0 0;font-size:13px;color:var(--ink-3)";
+    tot.textContent=pk.r.length+" soorten · "+pk.r.reduce(function(s,r){return s+r.a;},0)+" producten";
+    c.appendChild(tot); box.appendChild(c); b.appendChild(box);
+  });
+  $("#hist").classList.add("on");
+}
+
+/* ===== events ===== */
+$("#viewChip").onclick=function(){ setRol(rol==="Directie"?"Vrijwilliger":"Directie"); };
+$("#q").oninput=render; $("#fStatus").onchange=render;
+$("#btnClear").onclick=function(){ $("#q").value=""; $("#fStatus").value=""; render(); };
+$("#btnNew").onclick=function(){ openDrawer(null); };
+$("#dClose").onclick=$("#btnCancel").onclick=$("#scrim").onclick=closeDrawer;
+$("#btnSave").onclick=opslaan;
+$("#btnAddLid").onclick=function(){
+  draft.push({naam:"",gb:"",rel:"Kind",w:[]}); renderLeden();
+  var ins=$("#leden").querySelectorAll('input[type="text"]');
+  if(ins.length) ins[ins.length-1].focus();
+};
+$("#btnYes").onclick=function(){ if(!editing) return; editing.status="Ja";
+  renderStatus(editing); render(); toast(editing.naam+" staat nu op actief."); };
+$("#btnNo").onclick=function(){ if(!editing) return; editing.status="Nee";
+  renderStatus(editing); render(); toast(editing.naam+" staat nu op inactief."); };
+$("#btnHist").onclick=function(){ if(editing) openHist(editing); };
+$("#hX").onclick=$("#hX2").onclick=function(){ $("#hist").classList.remove("on"); };
+$("#hist").onclick=function(e){ if(e.target===$("#hist")) $("#hist").classList.remove("on"); };
+document.addEventListener("keydown",function(e){
+  if(e.key!=="Escape") return;
+  if($("#hist").classList.contains("on")) $("#hist").classList.remove("on");
+  else if($("#drawer").classList.contains("on")) closeDrawer();
+});
+Array.prototype.forEach.call(document.querySelectorAll("#nav button"),function(b){
+  b.onclick=function(){
+    if(b.classList.contains("on")) return;
+    toast("Alleen het scherm Klanten is in dit prototype uitgewerkt.");
+  };
+});
+
+setRol("Directie");
+})();
+</script>
+
+</body></html>
