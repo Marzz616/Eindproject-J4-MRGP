@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Producten & Voorraad</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="layout">
+    <!-- Zijbalk -->
+    <aside class="sidebar">
+      <div class="sidebar-icon active" title="Producten & Voorraad">🛡</div>
+      <div class="sidebar-icon" title="Bestellingen">🛍</div>
+      <div class="sidebar-icon" title="Transport">🚚</div>
+      <div class="sidebar-spacer"></div>
+      <div class="sidebar-avatar">R</div>
+    </aside>
+
+    <!-- Hoofdinhoud -->
+    <main class="main">
+      <header class="page-header">
+        <div>
+          <h1>Producten & Voorraad</h1>
+          <p class="subtitle">Real-time overzicht van magazijnlocaties en houdbaarheden</p>
+        </div>
+        <button class="view-toggle">Magazijnmedewerker view</button>
+      </header>
+
+      <section class="card capacity-card">
+        <div class="capacity-header">
+          <span class="capacity-title">Magazijn Capaciteit Indicator</span>
+          <span class="capacity-value" id="capaciteit-tekst">– % Vol (– / – stuks)</span>
+        </div>
+        <div class="capacity-bar">
+          <div class="capacity-bar-fill" id="capaciteit-vulling" style="width: 0%"></div>
+        </div>
+      </section>
+
+      <!-- De categorie-pills worden uit de tabel Categorie geladen (app.js) -->
+      <nav class="filters" id="filters">
+        <button class="filter-pill active" data-categorie="Alles">Alles</button>
+        <button class="filter-pill add-pill" id="btn-nieuw">+ Nieuw product</button>
+      </nav>
+
+      <div class="search-bar">
+        <span class="search-icon">◎</span>
+        <input type="text" id="zoekveld" placeholder="Zoek op naam of EAN..." />
+      </div>
+
+      <section class="card table-card">
+        <table>
+          <thead>
+            <tr>
+              <th>Productnaam</th>
+              <th>Categorie</th>
+              <th>Voorraad</th>
+              <th>THT</th>
+              <th>Locatie</th>
+              <th class="acties-kop"></th>
+            </tr>
+          </thead>
+          <tbody id="producten-body">
+            <tr><td colspan="6" class="laad-rij">Producten laden...</td></tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+
+  <!-- Formulier modal (aanmaken / bewerken) -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal">
+      <h2 id="modal-titel">Nieuw product</h2>
+      <form id="product-form">
+        <input type="hidden" id="product-id" />
+
+        <label>Productnaam
+          <input type="text" id="veld-naam" maxlength="45" required />
+        </label>
+
+        <div class="form-row">
+          <label>Categorie
+            <select id="veld-categorie" required></select>
+          </label>
+          <label>EAN (optioneel)
+            <input type="text" id="veld-ean" maxlength="45" inputmode="numeric" />
+          </label>
+        </div>
+
+        <div class="form-row">
+          <label>Voorraad (stuks)
+            <input type="number" id="veld-voorraad" min="0" step="1" required />
+          </label>
+          <label>THT
+            <input type="date" id="veld-tht" required />
+          </label>
+        </div>
+
+        <label>Locatie
+          <input type="text" id="veld-locatie" maxlength="45" placeholder="bijv. Vak A-3" required />
+        </label>
+
+        <p class="form-fout" id="form-fout"></p>
+
+        <div class="modal-acties">
+          <button type="button" class="btn-secundair" id="btn-annuleren">Annuleren</button>
+          <button type="submit" class="btn-primair">Opslaan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
