@@ -1,0 +1,580 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Gebruikers en Toegangsbeheer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@600;700&family=Source+Sans+3:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --page:#FAFAF7; --side:#F1F0EA; --card:#FFFFFF; --row-alt:#F4F3EE;
+  --ink:#1F2419; --ink-2:#5C6153; --ink-3:#8E9282;
+  --line:#E5E4DC; --line-2:#D6D4C9;
+  --green:#2E6B4A; --green-dk:#26583C; --green-soft:#E4EFE4;
+  --amber:#9A6714; --amber-soft:#FAF0DC; --amber-line:#E2C892;
+  --red:#8E3B3B; --red-soft:#FBE9E9; --red-line:#E2BCBC;
+  --grey-soft:#EDEBE3;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);
+  font-family:"Source Sans 3",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:"Zilla Slab",Georgia,serif;margin:0;line-height:1.2;text-wrap:balance}
+button,input,select{font-family:inherit;font-size:inherit;color:inherit}
+.mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-variant-numeric:tabular-nums}
+:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+
+/* ===== shell ===== */
+.app{display:grid;grid-template-columns:266px 1fr;min-height:100vh}
+aside{background:var(--side);border-right:1px solid var(--line);
+  padding:22px 14px 18px;display:flex;flex-direction:column;gap:22px}
+.brand{display:flex;gap:11px;align-items:center;padding:0 8px}
+.brand .mark{width:38px;height:38px;border-radius:10px;background:var(--green);flex:none;
+  display:grid;place-items:center}
+.brand .mark svg{width:20px;height:20px;fill:none;stroke:#fff;stroke-width:2}
+.brand b{display:block;font-family:"Zilla Slab",serif;font-weight:700;font-size:16.5px;letter-spacing:-.01em}
+.brand span{display:block;font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink-3);margin-top:1px}
+nav{display:flex;flex-direction:column;gap:3px}
+nav button{display:flex;align-items:center;gap:13px;width:100%;text-align:left;background:none;
+  border:0;border-radius:9px;padding:0 14px;height:48px;cursor:pointer;color:var(--ink-2);font-size:15.5px}
+nav button:hover{background:rgba(46,107,74,.07);color:var(--ink)}
+nav button.on{background:var(--green-soft);color:var(--green);font-weight:600}
+nav svg{width:19px;height:19px;flex:none;fill:none;stroke:currentColor;stroke-width:1.7;
+  stroke-linecap:round;stroke-linejoin:round}
+.me{margin-top:auto;padding-top:16px;border-top:1px solid var(--line);
+  display:flex;gap:11px;align-items:center}
+.me .av{width:34px;height:34px;border-radius:50%;background:var(--grey-soft);flex:none;
+  display:grid;place-items:center;font-weight:600;font-size:14px;color:var(--ink-2)}
+.me b{display:block;font-size:14.5px;font-weight:600}
+.me span{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--ink-3)}
+.me span::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--green)}
+
+main{min-width:0;display:flex;flex-direction:column}
+.topbar{padding:26px 34px 18px;display:flex;align-items:flex-start;gap:20px;
+  border-bottom:1px solid var(--line);flex-wrap:wrap}
+.topbar h1{font-size:31px;font-weight:700;letter-spacing:-.015em}
+.topbar p{margin:5px 0 0;color:var(--ink-2);font-size:15.5px}
+.topbar .sp{flex:1}
+.viewchip{display:inline-flex;align-items:center;background:var(--row-alt);
+  border:1px solid var(--line-2);border-radius:7px;padding:9px 13px;cursor:pointer;
+  font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.11em;
+  text-transform:uppercase;color:var(--ink-2);font-weight:500}
+.viewchip:hover{border-color:var(--ink-3)}
+.content{padding:26px 34px 70px;flex:1}
+
+/* ===== controls ===== */
+.controls{display:flex;gap:12px;margin-bottom:20px;align-items:center;flex-wrap:wrap}
+.search{position:relative;flex:1;max-width:556px;min-width:240px}
+.search input{width:100%;height:50px;padding:0 14px 0 44px;border:1px solid var(--line-2);
+  border-radius:9px;background:var(--card);font-size:15px}
+.search svg{position:absolute;left:15px;top:16px;width:17px;height:17px;stroke:var(--ink-3);
+  stroke-width:2;fill:none}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:50px;padding:0 20px;
+  border-radius:9px;border:1px solid transparent;cursor:pointer;font-weight:600;font-size:15px;white-space:nowrap}
+.btn.primary{background:var(--green);color:#fff}
+.btn.primary:hover{background:var(--green-dk)}
+.btn.sec{background:var(--card);border-color:var(--line-2)}
+.btn.sec:hover{background:var(--row-alt)}
+.btn.ghost{background:transparent;color:var(--ink-2)}
+.btn.ghost:hover{background:var(--row-alt);color:var(--ink)}
+.btn.danger{background:var(--red);color:#fff}
+.btn.sm{height:38px;padding:0 14px;font-size:14px;border-radius:7px}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.btn svg{width:16px;height:16px;stroke:currentColor;stroke-width:2.2;fill:none}
+
+/* ===== table ===== */
+.panel{background:var(--card);border:1px solid var(--line);border-radius:11px;overflow:hidden}
+.thead,.trow{display:grid;grid-template-columns:1.85fr 2fr 1.25fr 1.5fr .95fr;
+  gap:16px;align-items:center;padding:0 24px}
+.thead{height:54px;background:var(--row-alt);border-bottom:1px solid var(--line)}
+.thead span{font-size:14.5px;color:var(--ink-2);font-weight:600}
+.trow{height:64px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--card)}
+.grp:last-child .trow{border-bottom:0}
+.trow:hover{background:var(--row-alt)}
+.grp.open .trow{background:var(--row-alt)}
+.naamcel{display:flex;align-items:center;gap:9px;min-width:0}
+.naamcel b{font-weight:700;font-size:15.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chev{width:14px;height:14px;stroke:var(--ink-2);stroke-width:2.4;fill:none;flex:none;
+  transition:transform .18s ease}
+.grp.open .chev{transform:rotate(180deg)}
+.mailcel{color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+.rolpill{display:inline-flex;align-items:center;font-family:"IBM Plex Mono",monospace;font-size:10px;
+  letter-spacing:.1em;text-transform:uppercase;padding:5px 11px;border-radius:6px;font-weight:500;
+  border:1px solid var(--line-2);background:var(--card);color:var(--ink-2);white-space:nowrap}
+.rolpill[data-r="Directie"]{border-color:var(--green);color:var(--green)}
+.rolpill[data-r="Magazijnmedewerker"]{border-color:var(--amber-line);color:var(--amber)}
+.rolpill[data-r="Administratie"]{border-color:var(--line-2);color:var(--ink-2)}
+
+.statuspill{display:inline-flex;align-items:center;font-family:"IBM Plex Mono",monospace;font-size:10px;
+  letter-spacing:.1em;text-transform:uppercase;padding:5px 11px;border-radius:6px;font-weight:500;white-space:nowrap}
+.statuspill.on{background:var(--green-soft);color:var(--green)}
+.statuspill.off{background:var(--grey-soft);color:var(--ink-3)}
+
+/* ===== expanded ===== */
+.detail{display:none;padding:2px 24px 26px;background:var(--card);border-bottom:1px solid var(--line)}
+.grp.open .detail{display:block}
+.detail h3{font-size:18px;font-weight:600;margin:12px 0 16px}
+.perms{display:grid;grid-template-columns:1fr 1fr;gap:14px 40px;max-width:1100px}
+.perm{display:flex;align-items:flex-start;gap:12px;font-size:15px}
+.perm svg{width:19px;height:19px;flex:none;margin-top:1px}
+.perm.ja svg rect{fill:var(--green);stroke:var(--green)}
+.perm.ja svg path{stroke:#fff}
+.perm.nee svg rect{fill:none;stroke:var(--line-2)}
+.perm.nee svg path{display:none}
+.perm.nee span{color:var(--ink-3);text-decoration:line-through}
+.detailacts{display:flex;gap:9px;margin-top:22px;flex-wrap:wrap}
+
+.empty{padding:60px 24px;text-align:center}
+.empty h3{font-size:19px;margin-bottom:6px}
+.empty p{color:var(--ink-2);margin:0 0 18px}
+
+/* ===== drawer ===== */
+.scrim{position:fixed;inset:0;background:rgba(31,36,25,.45);opacity:0;pointer-events:none;
+  transition:opacity .2s;z-index:40}
+.scrim.on{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(520px,100%);background:var(--card);
+  border-left:1px solid var(--line);transform:translateX(100%);transition:transform .24s ease;
+  z-index:50;display:flex;flex-direction:column}
+.drawer.on{transform:none}
+.drawer>header{padding:22px 26px;border-bottom:1px solid var(--line);display:flex;gap:14px;align-items:flex-start}
+.drawer>header h2{font-size:22px;font-weight:700}
+.drawer>header .m{font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--ink-3);margin-top:3px}
+.x{margin-left:auto;background:none;border:0;cursor:pointer;color:var(--ink-3);padding:4px 8px;
+  border-radius:7px;font-size:24px;line-height:1}
+.x:hover{background:var(--row-alt);color:var(--ink)}
+.dbody{overflow-y:auto;padding:24px 26px;flex:1}
+.drawer>footer{padding:16px 26px;border-top:1px solid var(--line);display:flex;gap:10px;align-items:center}
+
+fieldset{border:0;padding:0;margin:0 0 28px}
+legend{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ink-3);padding:0;margin-bottom:14px}
+.f{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.f label{font-size:13.5px;font-weight:600;color:var(--ink-2)}
+.f input,.f select{height:46px;padding:0 13px;border:1px solid var(--line-2);border-radius:8px;
+  background:var(--page);font-size:15px;width:100%}
+.f input:focus,.f select:focus{border-color:var(--green)}
+.f .e{font-size:12.5px;color:var(--red);display:none}
+.f.bad input,.f.bad select{border-color:var(--red);background:var(--red-soft)}
+.f.bad .e{display:block}
+.req::after{content:" *";color:var(--red)}
+.hint{font-size:13px;color:var(--ink-3);margin:-6px 0 0}
+.rolinfo{border:1px solid var(--line);border-radius:9px;background:var(--page);padding:14px 16px}
+.rolinfo h4{margin:0 0 10px;font-size:14px;font-weight:700}
+.rolinfo .perms{grid-template-columns:1fr;gap:8px}
+.rolinfo .perm{font-size:14px}
+
+.toast{position:fixed;right:22px;bottom:22px;background:var(--card);border:1px solid var(--line);
+  border-left:4px solid var(--green);border-radius:9px;padding:14px 17px;max-width:350px;z-index:70;
+  transform:translateY(160%);transition:transform .24s ease;font-size:14.5px}
+.toast.on{transform:none}
+
+@media (max-width:1100px){
+  .thead,.trow{grid-template-columns:1.8fr 1.15fr 1.4fr .9fr;gap:14px}
+  .thead span:nth-child(2),.trow .mailcel{display:none}
+  .perms{grid-template-columns:1fr}
+}
+@media (max-width:860px){
+  .app{grid-template-columns:1fr}
+  aside{flex-direction:row;align-items:center;gap:14px;padding:12px 16px;
+    border-right:0;border-bottom:1px solid var(--line);overflow-x:auto}
+  nav{flex-direction:row}
+  nav button{height:42px;padding:0 12px;white-space:nowrap}
+  nav button span{display:none}
+  .me{margin:0 0 0 auto;border:0;padding:0}
+  .me b,.me span{display:none}
+  .topbar,.content{padding-left:18px;padding-right:18px}
+  .thead{display:none}
+  .trow{grid-template-columns:1fr;row-gap:8px;padding:16px 18px;height:auto;align-items:start}
+  .trow .mailcel{display:block}
+  .detail{padding-left:18px;padding-right:18px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="app">
+  <aside>
+    <div class="brand">
+      <div class="mark"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.5-7-9a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 4.5-7 9-7 9z"/></svg></div>
+      <div><b>VB Maaskantje</b><span>Back-office</span></div>
+    </div>
+    <nav id="nav">
+      <button><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span>Dashboard</span></button>
+      <button><svg viewBox="0 0 24 24"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg><span>Voedselpakketten</span></button>
+      <button><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="14" rx="2"/><path d="M8 6V4h8v2"/><path d="M9 12h6"/></svg><span>Producten</span></button>
+      <button><svg viewBox="0 0 24 24"><rect x="1" y="6" width="13" height="10" rx="1.5"/><path d="M14 9h4l3 3v4h-7z"/><circle cx="5.5" cy="18.5" r="1.8"/><circle cx="17.5" cy="18.5" r="1.8"/></svg><span>Leveranciers</span></button>
+      <button><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 19a6.5 6.5 0 0 1 13 0"/><path d="M17 11.5a2.8 2.8 0 1 0 0-5.6"/><path d="M18.5 19a5.6 5.6 0 0 0-3-4.9"/></svg><span>Klanten</span></button>
+      <button><svg viewBox="0 0 24 24"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-7"/><path d="M22 20H2"/></svg><span>Rapportages</span></button>
+      <button class="on"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/></svg><span>Gebruikers</span></button>
+    </nav>
+    <div class="me">
+      <div class="av">P</div>
+      <div><b>Peter Abraham</b><span>Directie</span></div>
+    </div>
+  </aside>
+
+  <main>
+    <div class="topbar">
+      <div>
+        <h1>Gebruikers &amp; Toegangsbeheer</h1>
+        <p>Beheer de rollen, permissies en toegangsrechten van medewerkers en vrijwilligers</p>
+      </div>
+      <div class="sp"></div>
+      <button class="viewchip" id="viewChip" title="Wissel van rol">Directie view</button>
+    </div>
+
+    <div class="content">
+      <div class="controls">
+        <div class="search">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+          <input type="text" id="q" placeholder="Zoek gebruiker op naam of e-mail…" aria-label="Zoeken">
+        </div>
+        <div class="sp" style="flex:1"></div>
+        <button class="btn primary" id="btnNew">
+          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+          Nieuwe gebruiker
+        </button>
+      </div>
+
+      <div class="panel">
+        <div class="thead">
+          <span>Naam</span><span>E-mail</span><span>Rol</span><span>Laatste login</span><span>Status</span>
+        </div>
+        <div id="list"></div>
+        <div class="empty" id="empty" hidden>
+          <h3>Geen gebruikers gevonden</h3>
+          <p id="emptyMsg">Pas je zoekopdracht aan.</p>
+          <button class="btn sec" id="btnClear">Zoekopdracht wissen</button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+
+<section class="drawer" id="drawer" aria-hidden="true" aria-labelledby="dTitle">
+  <header>
+    <div><h2 id="dTitle">Nieuwe gebruiker</h2><div class="m" id="dMeta"></div></div>
+    <button class="x" id="dClose" aria-label="Sluiten">&times;</button>
+  </header>
+  <div class="dbody">
+    <fieldset>
+      <legend>Accountgegevens</legend>
+      <div class="f" id="f-naam"><label class="req" for="i-naam">Naam</label>
+        <input id="i-naam" type="text" placeholder="Ank de Groot"><span class="e">Naam is verplicht.</span></div>
+      <div class="f" id="f-mail"><label class="req" for="i-mail">E-mailadres</label>
+        <input id="i-mail" type="email" placeholder="a.degroot@voedselbank.nl"><span class="e">Vul een geldig e-mailadres in.</span></div>
+      <div class="f" id="f-gnaam"><label class="req" for="i-gnaam">Gebruikersnaam</label>
+        <input id="i-gnaam" type="text" placeholder="a.degroot"><span class="e">Gebruikersnaam is verplicht en moet uniek zijn.</span></div>
+      <div class="f" id="f-pw"><label for="i-pw">Wachtwoord</label>
+        <input id="i-pw" type="password" placeholder="Minimaal 8 tekens"><span class="e">Gebruik minimaal 8 tekens.</span></div>
+      <p class="hint" id="pwHint">Laat leeg om het huidige wachtwoord te laten staan.</p>
+    </fieldset>
+
+    <fieldset>
+      <legend>Rol en rechten</legend>
+      <div class="f" id="f-rol"><label class="req" for="i-rol">Rol</label>
+        <select id="i-rol"></select><span class="e">Kies een rol.</span></div>
+      <div class="rolinfo">
+        <h4>Wat deze rol mag</h4>
+        <div class="perms" id="rolPerms"></div>
+      </div>
+      <p class="hint" style="margin-top:12px">
+        Rechten horen bij de rol, niet bij de persoon. Wil je iemand andere rechten geven,
+        dan wijzig je de rol — of je past de rol zelf aan, en dat geldt dan voor iedereen met die rol.
+      </p>
+    </fieldset>
+  </div>
+  <footer>
+    <button class="btn ghost sm" id="btnBlock">Toegang blokkeren</button>
+    <span style="flex:1"></span>
+    <button class="btn sec" id="btnCancel">Annuleren</button>
+    <button class="btn primary" id="btnSave">Opslaan</button>
+  </footer>
+</section>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+"use strict";
+var $=function(s){return document.querySelector(s);};
+
+/* ===== Permissie ===== */
+var PERMISSIES=[
+ {id:1,naam:"Pakketten samenstellen & bewerken"},
+ {id:2,naam:"Cliëntenregistratie inzien"},
+ {id:3,naam:"Leveringen registreren"},
+ {id:4,naam:"Voorraadniveaus corrigeren (Magazijn)"},
+ {id:5,naam:"Financiële rapportages genereren (Directie)"},
+ {id:6,naam:"Gebruikersaccounts beheren (Admin)"}
+];
+
+/* ===== Rol + Rol_has_Permissie ===== */
+var ROLLEN=[
+ {id:1,naam:"Directie",           perms:[1,2,3,4,5,6]},
+ {id:2,naam:"Magazijnmedewerker", perms:[3,4]},
+ {id:3,naam:"Vrijwilliger",       perms:[1,2,3]},
+ {id:4,naam:"Administratie",      perms:[2,3,5]}
+];
+function rolVan(id){ return ROLLEN.filter(function(r){return r.id===id;})[0]; }
+function rolLabel(r){ return r.naam==="Magazijnmedewerker" ? "Magazijn" : r.naam; }
+
+/* ===== Gebruiker ===== */
+var GEBRUIKERS=[
+ {id:1,naam:"Ank de Groot",  mail:"ank.degroot@voedselbank.nl",  gnaam:"a.degroot",  rol:3, login:"Vandaag, 10:14",      actief:true},
+ {id:2,naam:"Peter Abraham", mail:"p.abraham@voedselbank.nl",    gnaam:"p.abraham",  rol:1, login:"Gisteren, 16:45",     actief:true},
+ {id:3,naam:"Rob Veenstra",  mail:"rob.veenstra@voedselbank.nl", gnaam:"r.veenstra", rol:2, login:"24 okt 2024, 08:30",  actief:true},
+ {id:4,naam:"Mirjam Snel",   mail:"m.snel@voedselbank.nl",       gnaam:"m.snel",     rol:4, login:"19 okt 2024, 11:20",  actief:true},
+ {id:5,naam:"Kees de Graaf", mail:"k.degraaf@voedselbank.nl",    gnaam:"k.degraaf",  rol:3, login:"12 okt 2024, 14:02",  actief:false}
+];
+var nextId=6;
+
+var rol="Directie", open=null, editing=null;
+
+function toast(m){ var e=$("#toast"); e.textContent=m; e.classList.add("on");
+  clearTimeout(e._t); e._t=setTimeout(function(){e.classList.remove("on");},3200); }
+
+function vinkje(ja){
+  var s=document.createElementNS("http://www.w3.org/2000/svg","svg");
+  s.setAttribute("viewBox","0 0 24 24");
+  var r=document.createElementNS("http://www.w3.org/2000/svg","rect");
+  r.setAttribute("x","3"); r.setAttribute("y","3"); r.setAttribute("width","18");
+  r.setAttribute("height","18"); r.setAttribute("rx","4"); r.setAttribute("stroke-width","1.8");
+  s.appendChild(r);
+  var p=document.createElementNS("http://www.w3.org/2000/svg","path");
+  p.setAttribute("d","M7.5 12.4l3 3 6-6.4"); p.setAttribute("fill","none");
+  p.setAttribute("stroke-width","2.2"); p.setAttribute("stroke-linecap","round");
+  p.setAttribute("stroke-linejoin","round");
+  s.appendChild(p);
+  return s;
+}
+function permRij(naam, ja){
+  var d=document.createElement("div"); d.className="perm "+(ja?"ja":"nee");
+  d.appendChild(vinkje(ja));
+  var s=document.createElement("span"); s.textContent=naam; d.appendChild(s);
+  return d;
+}
+function chevron(){
+  var s=document.createElementNS("http://www.w3.org/2000/svg","svg");
+  s.setAttribute("viewBox","0 0 24 24"); s.setAttribute("class","chev");
+  var p=document.createElementNS("http://www.w3.org/2000/svg","path");
+  p.setAttribute("d","M6 9l6 6 6-6"); s.appendChild(p); return s;
+}
+function cell(cls){ var d=document.createElement("div"); if(cls) d.className=cls; return d; }
+
+/* ===== rol van de ingelogde gebruiker ===== */
+function setRol(r){
+  rol=r;
+  $("#viewChip").textContent = r==="Directie" ? "Directie view" : "Vrijwilliger view";
+  $("#btnNew").hidden = r!=="Directie";
+  closeDrawer(); open=null; render();
+}
+
+/* ===== lijst ===== */
+function filtered(){
+  var q=$("#q").value.trim().toLowerCase();
+  if(!q) return GEBRUIKERS;
+  return GEBRUIKERS.filter(function(g){
+    return (g.naam+" "+g.mail+" "+g.gnaam).toLowerCase().indexOf(q)!==-1;
+  });
+}
+
+function render(){
+  var list=filtered(), wrap=$("#list");
+  wrap.textContent="";
+
+  list.forEach(function(g){
+    var r=rolVan(g.rol);
+    var grp=document.createElement("div");
+    grp.className="grp"+(open===g.id?" open":"");
+
+    var row=document.createElement("div");
+    row.className="trow"; row.tabIndex=0; row.setAttribute("role","button");
+    row.setAttribute("aria-expanded", open===g.id);
+
+    var c1=cell("naamcel");
+    var nm=document.createElement("b"); nm.textContent=g.naam;
+    c1.appendChild(nm); c1.appendChild(chevron());
+    row.appendChild(c1);
+
+    var c2=cell("mailcel"); c2.textContent=g.mail; row.appendChild(c2);
+
+    var c3=cell();
+    var rp=document.createElement("span"); rp.className="rolpill";
+    rp.setAttribute("data-r", r.naam); rp.textContent=rolLabel(r);
+    c3.appendChild(rp); row.appendChild(c3);
+
+    var c4=cell(); c4.textContent=g.login;
+    c4.style.color="var(--ink-2)"; row.appendChild(c4);
+
+    var c5=cell();
+    var sp=document.createElement("span");
+    sp.className="statuspill "+(g.actief?"on":"off");
+    sp.textContent=g.actief?"Actief":"Inactief";
+    c5.appendChild(sp); row.appendChild(c5);
+
+    row.onclick=function(){ open = open===g.id ? null : g.id; render(); };
+    row.onkeydown=function(e){ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); row.onclick(); } };
+    grp.appendChild(row);
+
+    /* ---- uitgeklapt ---- */
+    var det=document.createElement("div"); det.className="detail";
+    var h=document.createElement("h3"); h.textContent="Toegewezen Permissies & Rechten";
+    det.appendChild(h);
+
+    var grid=document.createElement("div"); grid.className="perms";
+    var heeft=PERMISSIES.filter(function(p){ return r.perms.indexOf(p.id)!==-1; });
+    var mist =PERMISSIES.filter(function(p){ return r.perms.indexOf(p.id)===-1; });
+    var rijen=Math.max(heeft.length, mist.length);
+    for(var i=0;i<rijen;i++){
+      grid.appendChild(heeft[i] ? permRij(heeft[i].naam,true)  : cell());
+      grid.appendChild(mist[i]  ? permRij(mist[i].naam,false)  : cell());
+    }
+    det.appendChild(grid);
+
+    if(rol==="Directie"){
+      var acts=document.createElement("div"); acts.className="detailacts";
+      var bE=document.createElement("button"); bE.className="btn sec sm";
+      bE.textContent="Gebruiker bewerken";
+      bE.onclick=function(e){ e.stopPropagation(); openDrawer(g); };
+      acts.appendChild(bE);
+
+      var bB=document.createElement("button");
+      bB.className="btn "+(g.actief?"ghost":"primary")+" sm";
+      bB.textContent = g.actief ? "Toegang blokkeren" : "Toegang herstellen";
+      bB.onclick=function(e){ e.stopPropagation(); blokkeer(g, !g.actief); };
+      acts.appendChild(bB);
+      det.appendChild(acts);
+    }
+
+    grp.appendChild(det);
+    wrap.appendChild(grp);
+  });
+
+  $("#empty").hidden = list.length>0;
+  if(!list.length){
+    $("#emptyMsg").textContent='Geen gebruiker gevonden voor "'+$("#q").value.trim()+'".';
+  }
+}
+
+function blokkeer(g, actief){
+  if(!actief && aantalActieveDirectie(g) === 0){
+    toast("Er moet minimaal één directielid actief blijven.");
+    return;
+  }
+  g.actief=actief; render();
+  toast(g.naam + (actief ? " kan weer inloggen." : " kan niet meer inloggen."));
+}
+
+/* Hoeveel directieleden blijven er actief als we deze gebruiker blokkeren? */
+function aantalActieveDirectie(zonder){
+  return GEBRUIKERS.filter(function(g){
+    return g.actief && rolVan(g.rol).naam==="Directie" && g.id!==zonder.id;
+  }).length;
+}
+
+/* ===== drawer ===== */
+function openDrawer(g){
+  editing=g||null;
+  $("#dTitle").textContent = g ? g.naam : "Nieuwe gebruiker";
+  $("#dMeta").textContent  = g ? ("idGebruiker "+g.id+" · laatste login "+g.login) : "Nieuw account";
+  $("#i-naam").value  = g?g.naam:"";
+  $("#i-mail").value  = g?g.mail:"";
+  $("#i-gnaam").value = g?g.gnaam:"";
+  $("#i-pw").value    = "";
+  $("#pwHint").textContent = g
+    ? "Laat leeg om het huidige wachtwoord te laten staan."
+    : "Minimaal 8 tekens. Het wachtwoord wordt versleuteld opgeslagen.";
+  $("#i-rol").value   = g?g.rol:3;
+  ["naam","mail","gnaam","pw","rol"].forEach(function(f){ $("#f-"+f).classList.remove("bad"); });
+  $("#btnBlock").hidden = !g;
+  if(g) $("#btnBlock").textContent = g.actief ? "Toegang blokkeren" : "Toegang herstellen";
+  toonRolPerms();
+  $("#drawer").classList.add("on"); $("#drawer").setAttribute("aria-hidden","false");
+  $("#scrim").classList.add("on");
+  setTimeout(function(){ $("#i-naam").focus(); },200);
+}
+function closeDrawer(){
+  $("#drawer").classList.remove("on"); $("#drawer").setAttribute("aria-hidden","true");
+  $("#scrim").classList.remove("on"); editing=null;
+}
+
+function toonRolPerms(){
+  var r=rolVan(parseInt($("#i-rol").value,10));
+  var box=$("#rolPerms"); box.textContent="";
+  if(!r) return;
+  PERMISSIES.forEach(function(p){
+    box.appendChild(permRij(p.naam, r.perms.indexOf(p.id)!==-1));
+  });
+}
+
+function valideer(){
+  var ok=true;
+  function c(f,cond){ var e=$("#f-"+f); e.classList.toggle("bad",!cond); if(!cond) ok=false; }
+  var gnaam=$("#i-gnaam").value.trim().toLowerCase();
+  var dubbel=GEBRUIKERS.some(function(g){
+    return g.gnaam.toLowerCase()===gnaam && (!editing || g.id!==editing.id);
+  });
+  c("naam",  $("#i-naam").value.trim().length>2);
+  c("mail",  /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test($("#i-mail").value.trim()));
+  c("gnaam", gnaam.length>2 && !dubbel);
+  c("rol",   !!$("#i-rol").value);
+  var pw=$("#i-pw").value;
+  c("pw", editing ? (pw==="" || pw.length>=8) : pw.length>=8);
+  if(dubbel) $("#f-gnaam").querySelector(".e").textContent="Deze gebruikersnaam bestaat al.";
+  return ok;
+}
+
+function opslaan(){
+  if(!valideer()){ toast("Controleer de rood gemarkeerde velden."); return; }
+  var rolId=parseInt($("#i-rol").value,10);
+
+  if(editing){
+    // laatste directielid mag zichzelf niet degraderen
+    if(rolVan(editing.rol).naam==="Directie" && rolVan(rolId).naam!=="Directie"
+       && aantalActieveDirectie(editing)===0){
+      toast("Er moet minimaal één directielid overblijven.");
+      return;
+    }
+    editing.naam=$("#i-naam").value.trim();
+    editing.mail=$("#i-mail").value.trim();
+    editing.gnaam=$("#i-gnaam").value.trim();
+    editing.rol=rolId;
+    toast("Wijzigingen opgeslagen voor "+editing.naam+".");
+  } else {
+    GEBRUIKERS.push({id:nextId++, naam:$("#i-naam").value.trim(), mail:$("#i-mail").value.trim(),
+      gnaam:$("#i-gnaam").value.trim(), rol:rolId, login:"Nog niet ingelogd", actief:true});
+    toast($("#i-naam").value.trim()+" kan nu inloggen.");
+  }
+  closeDrawer(); render();
+}
+
+/* ===== events ===== */
+$("#viewChip").onclick=function(){ setRol(rol==="Directie"?"Vrijwilliger":"Directie"); };
+$("#q").oninput=render;
+$("#btnClear").onclick=function(){ $("#q").value=""; render(); };
+$("#btnNew").onclick=function(){ openDrawer(null); };
+$("#dClose").onclick=$("#btnCancel").onclick=$("#scrim").onclick=closeDrawer;
+$("#btnSave").onclick=opslaan;
+$("#i-rol").onchange=toonRolPerms;
+$("#btnBlock").onclick=function(){ if(editing){ blokkeer(editing, !editing.actief); closeDrawer(); } };
+document.addEventListener("keydown",function(e){
+  if(e.key==="Escape" && $("#drawer").classList.contains("on")) closeDrawer();
+});
+Array.prototype.forEach.call(document.querySelectorAll("#nav button"),function(b){
+  b.onclick=function(){
+    if(b.classList.contains("on")) return;
+    toast("Dit scherm is nog niet uitgewerkt.");
+  };
+});
+
+ROLLEN.forEach(function(r){
+  var o=document.createElement("option"); o.value=r.id; o.textContent=r.naam;
+  $("#i-rol").appendChild(o);
+});
+setRol("Directie");
+})();
+</script>
+
+</body></html>
