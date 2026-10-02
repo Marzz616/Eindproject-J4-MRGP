@@ -1,5 +1,4 @@
 require('dotenv').config();
-const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const mysql = require('mysql2/promise');
@@ -7,7 +6,7 @@ const mysql = require('mysql2/promise');
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(__dirname));
 
 const MAX_CAPACITEIT = Number(process.env.MAX_CAPACITEIT) || 6500;
 
@@ -111,6 +110,43 @@ app.get('/api/categorieen', async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Kon categorieën niet ophalen' });
+  }
+});
+
+// ------------------------------------------------------------
+// POST /api/categorieen   (Create, voor "+ Nieuwe categorie" in het formulier)
+// ------------------------------------------------------------
+app.post('/api/categorieen', async (req, res) => {
+  const naam = typeof req.body.naam === 'string' ? req.body.naam.trim() : '';
+  const omschrijving = typeof req.body.omschrijving === 'string' ? req.body.omschrijving.trim() : '';
+
+  const fouten = [];
+  if (!naam) fouten.push('Categorienaam is verplicht');
+  if (naam.length > 45) fouten.push('Categorienaam mag maximaal 45 tekens zijn');
+  if (omschrijving.length > 45) fouten.push('Omschrijving mag maximaal 45 tekens zijn');
+
+  try {
+    const [bestaand] = await pool.query(
+      'SELECT idCategorie FROM Categorie WHERE Naam = ? LIMIT 1',
+      [naam]
+    );
+    if (bestaand.length) fouten.push('Deze categorie bestaat al');
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: 'Kon categorieën niet controleren' });
+  }
+
+  if (fouten.length) return res.status(400).json({ error: fouten.join('. ') });
+
+  try {
+    const [resultaat] = await pool.query(
+      'INSERT INTO Categorie (Naam, Omschrijving) VALUES (?, ?)',
+      [naam, omschrijving || null]
+    );
+    res.status(201).json({ id: resultaat.insertId, naam, omschrijving });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Kon categorie niet aanmaken' });
   }
 });
 

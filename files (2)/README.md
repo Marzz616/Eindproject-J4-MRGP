@@ -37,6 +37,23 @@ Zet `DB_NAME` in `.env` op de naam van jouw database. De server werkt ook als
 `Aantal_voorraad` bij jou nog VARCHAR is. Zorg wel dat de tabel `Categorie`
 minstens één rij heeft, anders kun je geen product aanmaken.
 
+> **Let op bij een zelfgemaakte database:** de id-kolommen moeten
+> `AUTO_INCREMENT` zijn, anders kan de server geen categorie of product
+> aanmaken (MySQL: *Field 'idCategorie' doesn't have a default value*).
+> Controleer dat met:
+>
+> ```sql
+> SHOW CREATE TABLE Categorie;
+> SHOW CREATE TABLE Product;
+> ```
+>
+> Zie je bij `idCategorie` of `idProduct` geen `AUTO_INCREMENT`, voer dan uit:
+>
+> ```sql
+> ALTER TABLE Categorie MODIFY idCategorie INT NOT NULL AUTO_INCREMENT;
+> ALTER TABLE Product   MODIFY idProduct    INT NOT NULL AUTO_INCREMENT;
+> ```
+
 ## 2. Project starten
 
 Node.js 18+ is nodig.
@@ -53,7 +70,9 @@ Open [http://localhost:3001](http://localhost:3001).
 ## Hoe de pagina de tabellen gebruikt
 
 - **Categorie-pills en keuzelijst** worden uit de tabel `Categorie` geladen.
-  Een nieuwe categorie toevoegen? Voeg een rij toe in `Categorie` en herlaad de pagina.
+  Staat een categorie er niet bij, dan kun je die in het productformulier
+  zelf aanmaken met **"Nieuwe categorie toevoegen"**. De categorie wordt naar
+  `Categorie` geschreven en staat meteen in de keuzelijst en de filterpills.
 - **Read**: `Product` gekoppeld aan `Categorie`, met filter en zoeken op
   productnaam of EAN.
 - **Create / Update / Delete**: schrijven direct naar `Product`.
@@ -69,6 +88,7 @@ Open [http://localhost:3001](http://localhost:3001).
 | Methode | Endpoint | Werking |
 |---|---|---|
 | GET | `/api/categorieen` | alle categorieën |
+| POST | `/api/categorieen` | categorie aanmaken (`{ naam, omschrijving }`) |
 | GET | `/api/producten` | lijst, optioneel `?categorie=<id>&zoek=` |
 | GET | `/api/producten/:id` | één product |
 | POST | `/api/producten` | aanmaken |
@@ -82,5 +102,8 @@ Open [http://localhost:3001](http://localhost:3001).
   gegevens in `.env`?
 - **Access denied for user**: wachtwoord of rechten in `.env` kloppen niet.
 - **Unknown column 'THT'**: voer de `ALTER TABLE` hierboven uit.
+- **Lege categorie-keuzelijst**: `Categorie` bevat geen rijen. Voer de seed uit
+  of voeg categorieën toe via de knop "Nieuwe categorie toevoegen" in het
+  productformulier.
 - **Table 'voorraadbeheer.product' doesn't exist** op Linux: tabelnamen zijn
   daar hoofdlettergevoelig. Gebruik de namen uit `schema.sql`.

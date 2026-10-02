@@ -89,6 +89,20 @@
           </label>
         </div>
 
+        <p class="form-hint">
+          Staat je categorie er niet bij?
+          <button type="button" class="link-knop" id="btn-nieuwe-categorie">Nieuwe categorie toevoegen</button>
+        </p>
+
+        <div class="form-row" id="rij-nieuwe-categorie" hidden>
+          <label>Nieuwe categorie
+            <input type="text" id="veld-nieuwe-categorie" maxlength="45" placeholder="bijv. Vleeswaren" />
+          </label>
+          <label>Omschrijving (optioneel)
+            <input type="text" id="veld-nieuwe-omschrijving" maxlength="45" placeholder="bijv. Worst en kaas" />
+          </label>
+        </div>
+
         <div class="form-row">
           <label>Voorraad (stuks)
             <input type="number" id="veld-voorraad" min="0" step="1" required />

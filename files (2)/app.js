@@ -21,6 +21,11 @@ const veldVoorraad = document.getElementById('veld-voorraad');
 const veldTht = document.getElementById('veld-tht');
 const veldLocatie = document.getElementById('veld-locatie');
 
+const knopNieuweCategorie = document.getElementById('btn-nieuwe-categorie');
+const rijNieuweCategorie = document.getElementById('rij-nieuwe-categorie');
+const veldNieuweCategorie = document.getElementById('veld-nieuwe-categorie');
+const veldNieuweOmschrijving = document.getElementById('veld-nieuwe-omschrijving');
+
 // ------------------------------------------------------------
 // Datums: "2026-08-14" handmatig verwerken (geen tijdzone-gedoe)
 // ------------------------------------------------------------
@@ -55,13 +60,28 @@ function escapeHtml(str) {
 // ------------------------------------------------------------
 // Categorieën uit de database (tabel Categorie)
 // ------------------------------------------------------------
+let categorieen = [];
+
+function bouwCategorieKeuzelijst(selectie) {
+  veldCategorie.innerHTML = categorieen.length
+    ? categorieen
+        .map((c) => `<option value="${c.id}">${escapeHtml(c.naam)}</option>`)
+        .join('')
+    : '<option value="">Geen categorieën gevonden</option>';
+
+  if (selectie && categorieen.some((c) => String(c.id) === String(selectie))) {
+    veldCategorie.value = String(selectie);
+  }
+}
+
 async function laadCategorieen() {
   try {
     const res = await fetch(`${API}/categorieen`);
     if (!res.ok) throw new Error('Serverfout');
-    const categorieen = await res.json();
+    categorieen = await res.json();
 
     // Pills, vóór de "+ Nieuw product" knop
+    filtersNav.querySelectorAll('.filter-pill[data-categorie]').forEach((el) => el.remove());
     categorieen.forEach((c) => {
       const pill = document.createElement('button');
       pill.className = 'filter-pill';
@@ -71,12 +91,11 @@ async function laadCategorieen() {
       filtersNav.insertBefore(pill, nieuwKnop);
     });
 
-    // Keuzelijst in het formulier
-    veldCategorie.innerHTML = categorieen
-      .map((c) => `<option value="${c.id}">${escapeHtml(c.naam)}</option>`)
-      .join('');
+    bouwCategorieKeuzelijst(huidigeCategorie !== 'Alles' ? huidigeCategorie : null);
   } catch (err) {
     console.error('Kon categorieën niet laden', err);
+    categorieen = [];
+    veldCategorie.innerHTML = '<option value="">Kon categorieën niet laden</option>';
   }
 }
 
@@ -165,11 +184,18 @@ zoekveld.addEventListener('input', () => {
 // ------------------------------------------------------------
 // Modal
 // ------------------------------------------------------------
+function verbergNieuweCategorie() {
+  rijNieuweCategorie.hidden = true;
+  veldNieuweCategorie.value = '';
+  veldNieuweOmschrijving.value = '';
+}
+
 function openModalNieuw() {
   modalTitel.textContent = 'Nieuw product';
   form.reset();
   veldId.value = '';
   formFout.textContent = '';
+  verbergNieuweCategorie();
   // Standaard de categorie kiezen waarop nu gefilterd is
   if (huidigeCategorie !== 'Alles') veldCategorie.value = huidigeCategorie;
   overlay.classList.add('open');
@@ -186,6 +212,7 @@ function openModalBewerken(p) {
   veldTht.value = p.tht ? p.tht.slice(0, 10) : '';
   veldLocatie.value = p.locatie ?? '';
   formFout.textContent = '';
+  verbergNieuweCategorie();
   overlay.classList.add('open');
   veldNaam.focus();
 }
@@ -198,6 +225,55 @@ nieuwKnop.addEventListener('click', openModalNieuw);
 document.getElementById('btn-annuleren').addEventListener('click', sluitModal);
 overlay.addEventListener('click', (e) => { if (e.target === overlay) sluitModal(); });
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') sluitModal(); });
+
+// ------------------------------------------------------------
+// Nieuwe categorie aanmaken en meteen in de keuzelijst zetten
+// ------------------------------------------------------------
+knopNieuweCategorie.addEventListener('click', () => {
+  rijNieuweCategorie.hidden = !rijNieuweCategorie.hidden;
+  if (!rijNieuweCategorie.hidden) veldNieuweCategorie.focus();
+});
+
+knopNieuweCategorie.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    knopNieuweCategorie.click();
+  }
+});
+
+veldNieuweCategorie.addEventListener('keydown', async (e) => {
+  if (e.key !== 'Enter') return;
+  e.preventDefault();
+  await maakCategorie();
+});
+
+async function maakCategorie() {
+  const naam = veldNieuweCategorie.value.trim();
+  if (!naam) {
+    formFout.textContent = 'Vul een naam voor de nieuwe categorie in.';
+    veldNieuweCategorie.focus();
+    return;
+  }
+
+  try {
+    const res = await fetch(`${API}/categorieen`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ naam, omschrijving: veldNieuweOmschrijving.value.trim() }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Opslaan mislukt');
+
+    // Nieuwe lijst ophalen zodat categorie én pill-refresh kloppen,
+    // en selecteer meteen de nieuwe categorie
+    await laadCategorieen();
+    bouwCategorieKeuzelijst(data.id);
+    verbergNieuweCategorie();
+    formFout.textContent = '';
+  } catch (err) {
+    formFout.textContent = err.message;
+  }
+}
 
 // ------------------------------------------------------------
 // Aanmaken / bijwerken (Create / Update)
