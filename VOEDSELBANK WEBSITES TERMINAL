@@ -1,0 +1,8 @@
+cd <uitgepakte map>\voedselbank
+dir                          # je moet docker-compose.yml zien staan
+
+
+
+docker compose down -v
+docker compose up -d --build
+docker compose ps
