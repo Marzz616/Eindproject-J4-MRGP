@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mijn account · Voedselbank Maaskantje</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@600;700&family=Source+Sans+3:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/app.css">
+</head>
+<body>
+<div class="app" id="app"></div>
+
+<script src="assets/app.js"></script>
+<script>
+(async function () {
+  const ik = await start({
+    slug: 'account',
+    titel: 'Mijn account',
+    onder: 'Je gegevens, je rechten en je wachtwoord',
+  });
+  if (!ik) { return; }
+
+  let permissies = [];
+  try {
+    const d = await api('auth.php?actie=rechten');
+    permissies = d.rechten.map(r => ({ code: r.Code, naam: r.Naam }));
+  } catch (e) {
+    permissies = ik.permissies.map(c => ({ code: c, naam: c.replace(/_/g, ' ') }));
+  }
+
+  document.getElementById('inhoud').innerHTML = `
+    <div class="rooster k2">
+      <div class="card">
+        <div class="kop"><h2>Mijn gegevens</h2></div>
+        <div class="body">
+          <div class="horizontaal" style="gap:14px;margin-bottom:18px">
+            <div style="width:54px;height:54px;border-radius:50%;background:var(--green);color:#fff;
+                        display:grid;place-items:center;font-weight:700;font-size:21px">${esc(initialen(ik.naam))}</div>
+            <div>
+              <div style="font-family:'Zilla Slab',serif;font-size:20px;font-weight:700">${esc(ik.naam)}</div>
+              <div style="color:var(--ink-2)">${esc(ik.rol)}</div>
+            </div>
+          </div>
+          <ul class="lijstje">
+            <li><span style="color:var(--ink-3);width:130px">Gebruikersnaam</span><span class="mono">${esc(ik.gnaam)}</span></li>
+            <li><span style="color:var(--ink-3);width:130px">E-mailadres</span><span>${esc(ik.email)}</span></li>
+            <li><span style="color:var(--ink-3);width:130px">Rol</span><span>${esc(ik.rol)}</span></li>
+          </ul>
+          <div class="melding grijs" style="margin-top:16px"><div>
+            Kloppen je naam, gebruikersnaam of rol niet? Alleen de directie of de administratie kan die aanpassen.
+          </div></div>
+          <button type="button" class="knop uit" id="uitloggenAccount" style="margin-top:4px">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                 stroke-linecap="round" stroke-linejoin="round" width="17" height="17">
+              <path d="M10 17l5-5-5-5"/><path d="M15 12H3"/>
+              <path d="M15 4h4a1 1 0 011 1v14a1 1 0 01-1 1h-4"/>
+            </svg>
+            Uitloggen
+          </button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="kop"><h2>Wachtwoord wijzigen</h2></div>
+        <div class="body">
+          <form id="vorm" novalidate>
+            <div class="veld">
+              <label for="huidig">Huidig wachtwoord</label>
+              <input type="password" id="huidig" name="huidig" autocomplete="current-password">
+            </div>
+            <div class="veld">
+              <label for="nieuw">Nieuw wachtwoord</label>
+              <input type="password" id="nieuw" name="nieuw" autocomplete="new-password">
+              <div class="hint">Minimaal 8 tekens met letters én cijfers.</div>
+            </div>
+            <div class="veld">
+              <label for="herhaal">Nieuw wachtwoord herhalen</label>
+              <input type="password" id="herhaal" name="herhaal" autocomplete="new-password">
+            </div>
+            <button type="submit" class="knop primair volle">Wachtwoord opslaan</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:18px">
+      <div class="kop"><h2>Wat mag ik in deze applicatie?</h2></div>
+      <div class="body">
+        <ul class="lijstje" style="display:grid;grid-template-columns:1fr 1fr;gap:0 22px">
+          ${permissies.map(p => `<li><span class="vink">✓</span>${esc(p.naam)}</li>`).join('')}
+        </ul>
+        <div style="margin-top:14px;font-size:13.5px;color:var(--ink-2)">
+          Deze rechten horen bij de rol <b>${esc(ik.rol)}</b>. De server controleert ze bij elke actie,
+          dus wat hier niet staat lukt ook niet via een omweg.
+        </div>
+      </div>
+    </div>`;
+
+  koppelUitloggen();   // ook de knop die deze pagina zelf tekent
+
+  const vorm = document.getElementById('vorm');
+  vorm.onsubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await api('auth.php?actie=wachtwoord', {
+        body: { huidig: vorm.huidig.value, nieuw: vorm.nieuw.value, herhaal: vorm.herhaal.value },
+      });
+      vorm.reset();
+      vorm.querySelectorAll('.veld.mis').forEach(x => x.classList.remove('mis'));
+      vorm.querySelectorAll('.fout').forEach(x => x.remove());
+      melding.goed('Je wachtwoord is gewijzigd.');
+    } catch (err) { foutMelden(err, vorm); }
+  };
+})();
+</script>
+</body>
+</html>

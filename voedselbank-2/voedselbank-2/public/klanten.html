@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Klanten &amp; Gezinnen · Voedselbank Maaskantje</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@600;700&family=Source+Sans+3:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/app.css">
+<style>
+  #lijst { --kolommen: 22px 2.05fr 1.5fr 1.1fr 1.95fr 1.25fr .9fr; }
+  #lijst .inner { --subkolommen: 2fr 1.3fr .9fr 1.8fr; }
+  .lid { display: grid; grid-template-columns: 1.35fr 1.05fr .85fr 2.4fr auto; gap: 10px; align-items: start;
+         margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px dashed var(--line); }
+  .lid:last-child { border-bottom: 0; }
+  .lid .weg { margin-top: 4px; }
+  /* uitzonderingen: per aangevinkte wens één regel onder het gezinslid */
+  .lid .uitz { grid-column: 1 / -1; display: grid; gap: 6px; }
+  .lid .uitz:empty { display: none; }
+  .uitzrij { background: var(--side); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; }
+  .uitzrij label { display: flex; align-items: center; gap: 7px; font-size: 13.5px; cursor: pointer; margin: 0; }
+  .uitzrij input[type=checkbox] { width: 15px; height: 15px; accent-color: var(--green); margin: 0; }
+  .uitzrij input[type=text] { margin-top: 7px; width: 100%; height: 34px; font-size: 13.5px;
+                              border: 1px solid var(--line-2); border-radius: 7px; padding: 0 9px; font-family: inherit; }
+  .uitzrij input[type=text][disabled] { background: #F4F3EE; color: var(--ink-3); }
+  .uitzrij.mis input[type=text] { border-color: var(--red); }
+  .uitzrij .streng { color: var(--red); font-weight: 600; }
+  @media (max-width: 1180px) {
+    #lijst { --kolommen: 22px 2fr 1.05fr 1.8fr 1fr; }
+    #lijst .c-adres, #lijst .c-laatste, .thead span.c-adres, .thead span.c-laatste { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+
+<div class="drawer" id="drawer">
+  <div class="kop">
+    <div style="flex:1">
+      <h2 id="drawerTitel">Nieuwe klant</h2>
+      <div class="onder" id="drawerOnder">Registreer een gezin bij de voedselbank</div>
+    </div>
+    <button class="icoonknop" id="drawerDicht" aria-label="Sluiten">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <div class="body">
+    <form id="vorm" novalidate>
+      <input type="hidden" name="id">
+
+      <div id="contactblok">
+        <h3 style="font-size:15px;margin-bottom:12px">Contactgegevens</h3>
+        <div class="veld">
+          <label for="k-naam">Gezinsnaam</label>
+          <input type="text" id="k-naam" name="naam" placeholder="Familie Bakker">
+        </div>
+        <div class="veld">
+          <label for="k-adres">Adres</label>
+          <input type="text" id="k-adres" name="adres" placeholder="Dorpsstraat 12">
+        </div>
+        <div class="rij2">
+          <div class="veld">
+            <label for="k-postcode">Postcode</label>
+            <input type="text" id="k-postcode" name="postcode" placeholder="5492 AB" maxlength="7">
+          </div>
+          <div class="veld">
+            <label for="k-plaats">Plaats</label>
+            <input type="text" id="k-plaats" name="plaats" value="Maaskantje">
+          </div>
+        </div>
+        <div class="rij2">
+          <div class="veld">
+            <label for="k-tel">Telefoonnummer</label>
+            <input type="text" id="k-tel" name="telefoon" placeholder="06-12345678">
+          </div>
+          <div class="veld">
+            <label for="k-mail">E-mailadres</label>
+            <input type="email" id="k-mail" name="email" placeholder="naam@voorbeeld.nl">
+          </div>
+        </div>
+      </div>
+
+      <div id="opmerkingenblok">
+        <h3 style="font-size:15px;margin:22px 0 12px">Voorkeuren van dit gezin</h3>
+        <div class="veld">
+          <label for="k-opm">Wat moet de vrijwilliger weten bij het samenstellen?</label>
+          <textarea id="k-opm" name="opmerkingen" rows="3" maxlength="500"
+                    style="width:100%;font:inherit;padding:9px 11px;border:1px solid var(--line-2);
+                           border-radius:9px;resize:vertical"
+                    placeholder="Liever rijst dan pasta. Geen koffie, wel thee."></textarea>
+          <div class="hint">
+            Vrije tekst, maximaal 500 tekens. Dit is géén allergie — die hoort bij het gezinslid zelf.
+            De vrijwilliger ziet deze tekst in beeld bij het samenstellen van het pakket.
+          </div>
+        </div>
+      </div>
+
+      <h3 style="font-size:15px;margin:22px 0 12px">Gezinssamenstelling</h3>
+      <div id="leden"></div>
+      <div style="display:flex;gap:9px;flex-wrap:wrap">
+        <button type="button" class="knop klein" id="lidErbij">+ Gezinslid toevoegen</button>
+        <button type="button" class="knop klein" id="wensErbij">+ Eigen dieetwens toevoegen</button>
+      </div>
+      <div class="hint" style="margin-top:8px">
+        Het type (baby, kind of volwassene) wordt automatisch bepaald uit de geboortedatum.
+        Een ⚠ voor een wens betekent een ernstige allergie: zo'n product wordt hard geblokkeerd.
+        Staat een wens er niet bij? Voeg hem zelf toe; daarna kun je hem bij elk gezinslid aanvinken.
+        Wil het gezin een geblokkeerd product tóch ontvangen, vink dan de uitzondering aan en
+        noteer waarom — die reden komt bij het samenstellen en op de pakbon te staan.
+      </div>
+    </form>
+  </div>
+  <div class="voet">
+    <button class="knop" id="annuleer">Annuleren</button>
+    <button class="knop primair" id="bewaar">Opslaan</button>
+  </div>
+</div>
+
+<script src="assets/app.js"></script>
+<script>
+let KLANTEN = [], WENSEN = [], RECHTEN = {};
+let term = '', filterStatus = '';
+const open = new Set();
+
+(async function () {
+  const ik = await start({
+    slug: 'klanten',
+    titel: 'Klanten- & Gezinnenadministratie',
+    onder: 'Inzicht in huishoudens en individuele dieetbehoeften',
+  });
+  if (!ik) { return; }
+
+  document.getElementById('drawerDicht').onclick = dicht;
+  document.getElementById('annuleer').onclick = dicht;
+  document.getElementById('bewaar').onclick = () => bewaren();
+  document.getElementById('lidErbij').onclick = () => lidRij();
+  document.getElementById('wensErbij').onclick = eigenWens;
+
+  await laden();
+})();
+
+function dicht() { drawer.dicht(document.getElementById('drawer')); }
+
+async function laden() {
+  try {
+    const r = await api('klanten.php?actie=lijst');
+    KLANTEN = r.klanten;
+    RECHTEN = r.rechten;
+    WENSEN = await api('klanten.php?actie=wensen');
+  } catch (e) { foutMelden(e); return; }
+  teken();
+}
+
+function statusPil(k) {
+  if (k.status === null)  { return '<span class="pil2 wacht">Wacht op beoordeling</span>'; }
+  if (k.status === false) { return '<span class="pil2 nee">Afgewezen</span>'; }
+  if (k.pakketDezeWeek)   { return '<span class="pil2 ok">Pakket deze week</span>'; }
+  return '<span class="pil2 ok">Actief</span>';
+}
+
+function dieten(k) {
+  const set = new Set();
+  k.leden.forEach(l => l.wensen.forEach(w => set.add(w.naam)));
+  if (!set.size) { return '<span style="color:var(--ink-3)">Geen</span>'; }
+  return '<div class="pillen">' + [...set].map(w => `<span class="pil2 diet">${esc(w)}</span>`).join('') + '</div>';
+}
+
+function teken() {
+  const zichtbaar = KLANTEN.filter(k => {
+    if (filterStatus === 'actief'  && k.status !== true)  { return false; }
+    if (filterStatus === 'wacht'   && k.status !== null)  { return false; }
+    if (filterStatus === 'afgewezen' && k.status !== false) { return false; }
+    if (!term) { return true; }
+    const hooi = [k.naam, k.nummer, k.adres, k.plaats, k.postcode,
+                  ...k.leden.map(l => l.naam)].join(' ').toLowerCase();
+    return hooi.includes(term);
+  });
+
+  document.getElementById('inhoud').innerHTML = `
+    ${RECHTEN.contact ? '' : `<div class="melding grijs"><div>
+      Je ziet de gezinssamenstelling en de dieetwensen, maar geen adres-, telefoon- of
+      e-mailgegevens. Die zijn privacygevoelig en alleen zichtbaar voor de directie en de administratie.
+    </div></div>`}
+
+    <div class="zoekbalk">
+      <div class="zoek">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+        <input type="search" id="zoek" placeholder="Zoek op achternaam, registratienummer of adres…" value="${esc(term)}">
+      </div>
+      <select id="status" style="height:42px;border:1px solid var(--line-2);border-radius:9px;padding:0 12px;font:inherit;background:#fff">
+        <option value="">Status: alle</option>
+        <option value="actief"${filterStatus === 'actief' ? ' selected' : ''}>Status: actief</option>
+        <option value="wacht"${filterStatus === 'wacht' ? ' selected' : ''}>Status: wacht op beoordeling</option>
+        <option value="afgewezen"${filterStatus === 'afgewezen' ? ' selected' : ''}>Status: afgewezen</option>
+      </select>
+      ${RECHTEN.beheren ? '<button class="knop primair" id="nieuw">+ Nieuwe klant</button>' : ''}
+    </div>
+
+    <div class="tbl" id="lijst">
+      <div class="thead">
+        <span></span><span>Naam</span><span class="c-adres">Adres</span><span>Gezinsgrootte</span>
+        <span>Dieetbeperkingen</span><span class="c-laatste">Laatste uitgifte</span><span>Status</span>
+      </div>
+      ${zichtbaar.length ? zichtbaar.map(groep).join('')
+        : '<div class="leeg"><h3>Geen gezinnen gevonden</h3><div>Pas je zoekopdracht of het filter aan.</div></div>'}
+    </div>`;
+
+  document.getElementById('zoek').oninput = (e) => {
+    term = e.target.value.trim().toLowerCase();
+    const pos = e.target.selectionStart;
+    teken();
+    const v = document.getElementById('zoek'); v.focus(); v.setSelectionRange(pos, pos);
+  };
+  document.getElementById('status').onchange = (e) => { filterStatus = e.target.value; teken(); };
+  const n = document.getElementById('nieuw');
+  if (n) { n.onclick = () => openDrawer(null); }
+
+  document.querySelectorAll('.grp .trow').forEach(r => r.onclick = () => {
+    const id = Number(r.closest('.grp').dataset.id);
+    if (open.has(id)) { open.delete(id); } else { open.add(id); }
+    r.closest('.grp').classList.toggle('open');
+  });
+
+  document.querySelectorAll('[data-actie]').forEach(b => b.onclick = (e) => {
+    e.stopPropagation();
+    const k = KLANTEN.find(x => x.id === Number(b.dataset.id));
+    if (b.dataset.actie === 'bewerk')   { openDrawer(k); }
+    if (b.dataset.actie === 'accept')   { status(k, true); }
+    if (b.dataset.actie === 'afwijs')   { status(k, false); }
+    if (b.dataset.actie === 'pakketten'){ pakketten(k); }
+    if (b.dataset.actie === 'verwijder'){ verwijderen(k); }
+  });
+}
+
+function groep(k) {
+  const acties = [];
+  if (RECHTEN.beheren && k.status === null) {
+    acties.push(`<button class="knop klein primair" data-actie="accept" data-id="${k.id}">Aanvraag accepteren</button>`);
+    acties.push(`<button class="knop klein gevaar" data-actie="afwijs" data-id="${k.id}">Afwijzen</button>`);
+  }
+  if (RECHTEN.beheren && k.status === false) {
+    acties.push(`<button class="knop klein" data-actie="accept" data-id="${k.id}">Alsnog accepteren</button>`);
+  }
+  if (RECHTEN.beheren && k.status === true) {
+    acties.push(`<button class="knop klein gevaar" data-actie="afwijs" data-id="${k.id}">Op non-actief zetten</button>`);
+  }
+  acties.push(`<button class="knop klein" data-actie="bewerk" data-id="${k.id}">Gezin bewerken</button>`);
+  acties.push(`<button class="knop klein" data-actie="pakketten" data-id="${k.id}">Pakketgeschiedenis</button>`);
+  if (RECHTEN.beheren) {
+    acties.push(`<button class="knop klein gevaar rechts" data-actie="verwijder" data-id="${k.id}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+           stroke-linecap="round" stroke-linejoin="round" width="15" height="15">
+        <path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg>
+      Klant verwijderen</button>`);
+  }
+
+  return `
+  <div class="grp${open.has(k.id) ? ' open' : ''}" data-id="${k.id}">
+    <div class="trow">
+      <svg class="chev" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+      <div><span class="nm">${esc(k.naam)}</span><span class="code">${esc(k.nummer)}</span></div>
+      <div class="c-adres" style="color:var(--ink-2)">${RECHTEN.contact ? esc(k.adres || '—') : '<span style="color:var(--ink-3)">Afgeschermd</span>'}</div>
+      <div>${k.grootte} ${k.grootte === 1 ? 'persoon' : 'personen'}</div>
+      <div>${dieten(k)}</div>
+      <div class="c-laatste" style="color:var(--ink-2)">${datumKort(k.laatste)}</div>
+      <div>${statusPil(k)}</div>
+    </div>
+    <div class="detail">
+      <h3>Samenstelling huishouden &amp; individuele behoeften</h3>
+      ${RECHTEN.contact ? `<div class="melding grijs" style="margin-bottom:14px"><div>
+        <b>Contact:</b> ${esc(k.adres)}, ${esc(k.postcode)} ${esc(k.plaats)} ·
+        ${esc(k.telefoon)} · ${esc(k.email)} · aangemeld ${datumKort(k.aanmeld)}
+      </div></div>` : ''}
+      ${k.opmerkingen ? `<div class="melding grijs" style="margin-bottom:14px"><div>
+        <b>Voorkeuren:</b> ${esc(k.opmerkingen)}
+      </div></div>` : ''}
+      <div class="inner">
+        <div class="ihead"><span>Naam lid</span><span>Relatie</span><span>Leeftijd</span><span>Specifiek dieet</span></div>
+        ${k.leden.length ? k.leden.map(l => `
+          <div class="irow">
+            <div class="p">${esc(l.naam)}</div>
+            <div style="color:var(--ink-2)">${esc(l.relatie)}</div>
+            <div title="${esc(l.type)}">${l.leeftijd} jaar</div>
+            <div>${l.wensen.length
+              ? '<span class="diet">' + l.wensen.map(w => esc(w.naam)).join(', ') + '</span>' +
+                l.wensen.filter(w => w.uitzondering).map(w => `
+                  <div style="font-size:12.5px;color:var(--amber);margin-top:3px">
+                    Uitzondering op ${esc(w.naam)}: ${esc(w.toelichting || '')}</div>`).join('')
+              : '<span class="niets">Geen</span>'}</div>
+          </div>`).join('')
+          : '<div class="irow"><div class="niets">Nog geen gezinsleden ingevoerd.</div></div>'}
+      </div>
+      <div class="detailacts">${acties.join('')}</div>
+    </div>
+  </div>`;
+}
+
+/* ------------------------------------------------ drawer */
+function lidRij(lid) {
+  const bak = document.getElementById('leden');
+  const el = document.createElement('div');
+  el.className = 'lid';
+  el.innerHTML = `
+    <div class="veld" style="margin-bottom:0"><input type="text" placeholder="Naam" data-v="naam" value="${esc(lid ? lid.naam : '')}"></div>
+    <div class="veld" style="margin-bottom:0"><select data-v="relatie">
+      ${['Hoofdaanvrager', 'Partner', 'Ouder (Moeder)', 'Ouder (Vader)', 'Kind', 'Inwonend']
+        .map(r => `<option${lid && lid.relatie === r ? ' selected' : ''}>${r}</option>`).join('')}
+    </select></div>
+    <div class="veld" style="margin-bottom:0"><input type="date" data-v="gb" value="${esc(lid ? lid.gb : '')}"></div>
+    <div class="veld" style="margin-bottom:0"><select data-v="wensen" multiple size="3" style="height:auto;padding:6px 8px">
+      ${WENSEN.map(w => `<option value="${w.id}"${lid && lid.wensen.some(x => x.id === w.id) ? ' selected' : ''}>${w.streng ? '⚠ ' : ''}${esc(w.naam)}</option>`).join('')}
+    </select></div>
+    <button type="button" class="icoonknop weg" title="Gezinslid verwijderen">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+    <div class="uitz" data-v="uitz"></div>`;
+  el.querySelector('.weg').onclick = () => el.remove();
+  el.querySelector('[data-v=wensen]').onchange = () => tekenUitzonderingen(el);
+  bak.appendChild(el);
+  tekenUitzonderingen(el, lid);
+}
+
+/**
+ * Onder elk gezinslid één regel per aangevinkte wens: "gezin wil dit tóch
+ * ontvangen" plus een verplichte reden. Een aangevinkte uitzondering haalt de
+ * harde blokkade weg bij het samenstellen; de reden blijft zichtbaar.
+ */
+function tekenUitzonderingen(el, lid) {
+  const sel = el.querySelector('[data-v=wensen]');
+  const bak = el.querySelector('[data-v=uitz]');
+
+  // wat al ingevuld is bewaren, zodat opnieuw tekenen niets wist
+  const al = {};
+  bak.querySelectorAll('.uitzrij').forEach(r => {
+    al[r.dataset.wens] = {
+      aan:   r.querySelector('input[type=checkbox]').checked,
+      reden: r.querySelector('input[type=text]').value,
+    };
+  });
+  if (lid) {
+    lid.wensen.forEach(w => {
+      if (w.uitzondering) { al[w.id] = { aan: true, reden: w.toelichting || '' }; }
+    });
+  }
+
+  const gekozen = [...sel.selectedOptions].map(o => Number(o.value));
+  bak.innerHTML = gekozen.map(id => {
+    const w = WENSEN.find(x => x.id === id) || { naam: 'Wens ' + id, streng: false };
+    const s = al[id] || { aan: false, reden: '' };
+    return `<div class="uitzrij" data-wens="${id}">
+      <label><input type="checkbox"${s.aan ? ' checked' : ''}>
+        <span><b>${esc(w.naam)}</b> — het gezin wil dit tóch ontvangen
+        ${w.streng ? '<span class="streng">(heft de blokkade op)</span>' : ''}</span></label>
+      <input type="text" maxlength="255" placeholder="Reden, bijvoorbeeld: alleen vader eet het niet"
+             value="${esc(s.reden)}"${s.aan ? '' : ' disabled'}>
+    </div>`;
+  }).join('');
+
+  bak.querySelectorAll('.uitzrij').forEach(r => {
+    const c = r.querySelector('input[type=checkbox]');
+    const t = r.querySelector('input[type=text]');
+    c.onchange = () => {
+      t.disabled = !c.checked;
+      r.classList.remove('mis');
+      if (c.checked) { t.focus(); } else { t.value = ''; }
+    };
+    t.oninput = () => r.classList.remove('mis');
+  });
+}
+
+function openDrawer(k) {
+  const v = document.getElementById('vorm');
+  v.querySelectorAll('.veld.mis').forEach(x => x.classList.remove('mis'));
+  v.querySelectorAll('.fout').forEach(x => x.remove());
+
+  document.getElementById('contactblok').classList.toggle('verborgen', !RECHTEN.contact);
+  // de voorkeuren legt de directie vast; een vrijwilliger leest ze alleen
+  document.getElementById('opmerkingenblok').classList.toggle('verborgen', !RECHTEN.beheren);
+  document.getElementById('drawerTitel').textContent = k ? 'Gezin bewerken' : 'Nieuwe klant';
+  document.getElementById('drawerOnder').textContent = k ? k.naam + ' · ' + k.nummer : 'Registreer een gezin bij de voedselbank';
+
+  v.id.value       = k ? k.id : '';
+  v.naam.value     = k ? k.naam : '';
+  v.adres.value    = k && k.adres ? k.adres : '';
+  v.postcode.value = k && k.postcode ? k.postcode : '';
+  v.plaats.value   = k && k.plaats ? k.plaats : 'Maaskantje';
+  v.telefoon.value = k && k.telefoon ? k.telefoon : '';
+  v.email.value    = k && k.email ? k.email : '';
+  v.opmerkingen.value = k && k.opmerkingen ? k.opmerkingen : '';
+
+  document.getElementById('leden').innerHTML = '';
+  if (k && k.leden.length) { k.leden.forEach(lidRij); } else { lidRij(); }
+
+  drawer.open(document.getElementById('drawer'));
+}
+
+async function bewaren() {
+  const v = document.getElementById('vorm');
+
+  // Een aangevinkte uitzondering zonder reden slaan we niet op: zonder uitleg
+  // weet de vrijwilliger niet waarom hij een allergieproduct toch mag meegeven.
+  let zonderReden = 0;
+  document.querySelectorAll('#leden .uitzrij').forEach(r => {
+    const c = r.querySelector('input[type=checkbox]');
+    const t = r.querySelector('input[type=text]');
+    if (c.checked && t.value.trim() === '') { r.classList.add('mis'); zonderReden++; }
+  });
+  if (zonderReden) {
+    melding.fout('Vul een reden in bij elke uitzondering, of haal het vinkje weg.');
+    const eerste = document.querySelector('#leden .uitzrij.mis input[type=text]');
+    if (eerste) { eerste.focus(); }
+    return;
+  }
+
+  const leden = [...document.querySelectorAll('#leden .lid')].map(el => {
+    const uitzonderingen = {};
+    el.querySelectorAll('.uitzrij').forEach(r => {
+      const c = r.querySelector('input[type=checkbox]');
+      const t = r.querySelector('input[type=text]');
+      if (c.checked && t.value.trim() !== '') { uitzonderingen[r.dataset.wens] = t.value.trim(); }
+    });
+    return {
+      naam:    el.querySelector('[data-v=naam]').value.trim(),
+      relatie: el.querySelector('[data-v=relatie]').value,
+      gb:      el.querySelector('[data-v=gb]').value,
+      wensen:  [...el.querySelector('[data-v=wensen]').selectedOptions].map(o => Number(o.value)),
+      uitzonderingen,
+    };
+  }).filter(l => l.naam !== '' || l.gb !== '');
+
+  const lichaam = { id: Number(v.id.value) || 0, leden };
+  if (RECHTEN.contact) {
+    Object.assign(lichaam, {
+      naam: v.naam.value.trim(),
+      adres: v.adres.value.trim(),
+      postcode: v.postcode.value.trim(),
+      plaats: v.plaats.value.trim(),
+      telefoon: v.telefoon.value.trim(),
+      email: v.email.value.trim(),
+      opmerkingen: v.opmerkingen.value.trim(),
+    });
+  }
+
+  try {
+    const r = await api('klanten.php?actie=opslaan', { body: lichaam });
+    dicht();
+    melding.goed(r.melding || 'Klant opgeslagen.');
+    await laden();
+  } catch (e) { foutMelden(e, v); }
+}
+
+/* ------------------------------------------------ eigen wens (US-KLT-10 / KLT-6) */
+async function eigenWens() {
+  const uit = await formulierModal({
+    titel: 'Eigen dieetwens toevoegen',
+    tekst: '<p>Bijvoorbeeld \u201cGeen vis\u201d of \u201cZoutarm\u201d. De wens komt daarna bij elk ' +
+           'gezinslid in de keuzelijst te staan.</p>',
+    velden: [
+      { naam: 'naam', label: 'Omschrijving van de wens', type: 'text', waarde: '' },
+      { naam: 'tag', label: 'Waar botst het mee? (optioneel)', type: 'text', waarde: '',
+        hint: 'Bijvoorbeeld vis of zout. Producten met dit kenmerk geven dan een waarschuwing.' },
+      { naam: 'streng', label: 'Hoe streng is deze wens?', type: 'select', waarde: '0', opties: [
+        { waarde: '0', label: 'Wens of overtuiging — mag wel, met bevestiging' },
+        { waarde: '1', label: 'Ernstige allergie — mag helemaal niet in het pakket' },
+      ] },
+    ],
+    ja: 'Toevoegen',
+  });
+  if (!uit || !uit.naam.trim()) { return; }
+
+  try {
+    const r = await api('klanten.php?actie=wens', {
+      body: { naam: uit.naam.trim(), tag: uit.tag.trim(), streng: uit.streng === '1' },
+    });
+    if (!WENSEN.some(w => w.id === r.id)) { WENSEN.push({ id: r.id, naam: r.naam, streng: !!r.streng }); }
+    // de keuzelijsten bijwerken zonder de ingevulde gezinsleden kwijt te raken
+    document.querySelectorAll('#leden [data-v=wensen]').forEach(sel => {
+      if (![...sel.options].some(o => Number(o.value) === r.id)) {
+        const o = document.createElement('option');
+        o.value = r.id; o.textContent = (r.streng ? '⚠ ' : '') + r.naam;
+        sel.appendChild(o);
+      }
+    });
+    melding.goed('\u201c' + r.naam + '\u201d staat nu in de lijst.');
+  } catch (e) { foutMelden(e); }
+}
+
+/* ------------------------------------------------ status */
+async function status(k, akkoord, alBevestigd = false) {
+  if (!alBevestigd) {
+    const ja = await bevestig({
+      titel: akkoord ? 'Aanvraag accepteren?' : 'Klant op non-actief zetten?',
+      tekst: akkoord
+        ? `<p><b>${esc(k.naam)}</b> kan daarna voedselpakketten ontvangen.</p>`
+        : `<p><b>${esc(k.naam)}</b> kan daarna geen nieuwe pakketten meer krijgen.
+           De gegevens en de pakketgeschiedenis blijven bewaard.</p>`,
+      ja: akkoord ? 'Ja, accepteren' : 'Ja, op non-actief', gevaar: !akkoord,
+    });
+    if (!ja) { return; }
+  }
+
+  try {
+    const r = await api('klanten.php?actie=status', { body: { id: k.id, geaccepteerd: akkoord } });
+    melding.goed(r.melding || 'Status bijgewerkt.');
+    await laden();
+  } catch (e) { foutMelden(e); }
+}
+
+/* ------------------------------------------------ verwijderen (US-KLT-01) */
+async function verwijderen(k) {
+  const ja = await bevestig({
+    titel: 'Klant verwijderen?',
+    tekst: `<p><b>${esc(k.naam)}</b> wordt uit de administratie gehaald. De
+            ${k.grootte} ${k.grootte === 1 ? 'persoon' : 'gezinsleden'} en hun dieetwensen
+            verdwijnen mee. Dit kan niet ongedaan worden gemaakt.</p>`,
+    ja: 'Ja, verwijderen', nee: 'Annuleren', gevaar: true,
+  });
+  if (!ja) { return; }
+
+  try {
+    const r = await api('klanten.php?actie=verwijderen', { body: { id: k.id } });
+    melding.goed(r.melding || 'Klant verwijderd.');
+    open.delete(k.id);
+    await laden();
+  } catch (e) {
+    const d = e.data || {};
+    if (e.status === 409 && d.reden === 'heeft_historie') {
+      const nonActief = await bevestig({
+        titel: 'Dit gezin kan niet weg',
+        tekst: `<p>${esc(d.fout)}</p>
+                <div class="melding grijs" style="margin:0"><div>${esc(d.suggestie)}</div></div>`,
+        ja: 'Op non-actief zetten', nee: 'Sluiten',
+      });
+      if (nonActief) { await status(k, false, true); }
+      return;
+    }
+    foutMelden(e);
+  }
+}
+
+/* ------------------------------------------------ pakketgeschiedenis */
+async function pakketten(k) {
+  let lijst;
+  try { lijst = await api('klanten.php?actie=pakketten&klant=' + k.id); } catch (e) { foutMelden(e); return; }
+
+  await bevestig({
+    titel: 'Pakketgeschiedenis · ' + k.naam,
+    tekst: lijst.length
+      ? '<div class="inner" style="--subkolommen:1fr 1.2fr 2.4fr;max-height:50vh;overflow:auto">' +
+        '<div class="ihead"><span>Datum</span><span>Status</span><span>Inhoud</span></div>' +
+        lijst.map(p => `<div class="irow"><div class="p">${datumKort(p.uitgifte || p.samen)}</div>
+          <div>${esc(p.status)}</div>
+          <div style="font-size:13px;color:var(--ink-2)">${p.regels.length
+            ? esc(p.regels.map(r => r.aantal + '× ' + r.product).join(', ')) : '—'}</div></div>`).join('') +
+        '</div>'
+      : '<p>Dit gezin heeft nog geen pakket ontvangen.</p>',
+    ja: 'Sluiten', nee: 'Terug',
+  });
+}
+</script>
+</body>
+</html>
