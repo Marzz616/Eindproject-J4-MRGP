@@ -82,6 +82,7 @@
           wachtwoord: vorm.wachtwoord.value,
         },
       });
+      if (r.token) { localStorage.setItem('voedselbank_token', r.token); }
       const terug = new URLSearchParams(location.search).get('terug');
       const mag = terug && r.gebruiker.paginas.some(p => terug.startsWith(p.replace('dashboard', 'index')));
       location.replace(mag ? terug : startpagina(r.gebruiker));

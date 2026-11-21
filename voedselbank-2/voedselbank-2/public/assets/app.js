@@ -9,6 +9,10 @@
 /** Roept de API aan en vertaalt fouten naar iets bruikbaars. */
 async function api(pad, opties = {}) {
   const conf = { headers: {}, credentials: 'same-origin', ...opties };
+  const token = localStorage.getItem('voedselbank_token');
+  if (token) {
+    conf.headers.Authorization = 'Bearer ' + token;
+  }
   if (conf.body !== undefined && typeof conf.body !== 'string') {
     conf.method = conf.method || 'POST';
     conf.headers['Content-Type'] = 'application/json';
@@ -26,8 +30,9 @@ async function api(pad, opties = {}) {
   let data = {};
   try { data = tekst ? JSON.parse(tekst) : {}; } catch (e) { data = { fout: 'Onverwacht antwoord van de server.' }; }
 
-  if (res.status === 401 && data.login_nodig) {
-    naarLogin();
+  if (res.status === 401) {
+    localStorage.removeItem('voedselbank_token');
+    if (data.login_nodig) { naarLogin(); }
     throw { status: 401, data };
   }
   if (!res.ok) { throw { status: res.status, data }; }
@@ -283,6 +288,7 @@ async function uitloggen() {
   if (!ja) { return; }
 
   try { await api('auth.php?actie=logout', { method: 'POST', body: {} }); } catch (e) { /* toch uitloggen */ }
+  localStorage.removeItem('voedselbank_token');
   location.href = 'login.html';
 }
 

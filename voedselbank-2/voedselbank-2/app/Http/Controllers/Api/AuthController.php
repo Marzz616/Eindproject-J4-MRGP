@@ -19,28 +19,32 @@ class AuthController
     public function login(Request $request)
     {
         $credentials = $request->validate([
-            'email' => 'required|email',
+            'gebruikersnaam' => 'required_without:email|string',
+            'email' => 'required_without:gebruikersnaam|email',
             'wachtwoord' => 'required|string',
         ]);
 
-        $user = User::where('email', $credentials['email'])->first();
+        $login = $credentials['gebruikersnaam'] ?? $credentials['email'] ?? null;
+        $user = User::where('gebruikersnaam', $login)
+            ->orWhere('email', $login)
+            ->first();
 
         if (!$user || !Hash::check($credentials['wachtwoord'], $user->wachtwoord)) {
-            return response()->json(['error' => 'Ongeldig e-mailadres of wachtwoord.'], 401);
+            return response()->json(['fout' => 'Ongeldige gebruikersnaam, e-mailadres of wachtwoord.'], 401);
         }
 
         // US-GBR-03: Geblokkeerde gebruikers hebben geen toegang meer tot het systeem
         if ($user->is_geblokkeerd) {
             Log::warning("Geblokkeerde gebruiker probeerde in te loggen: ID {$user->id}"); // TECH-08
-            return response()->json(['error' => 'Uw account is geblokkeerd (US-GBR-03).'], 403);
+            return response()->json(['fout' => 'Uw account is geblokkeerd.'], 403);
         }
 
         $token = $user->createToken('voedselbank-herd-token')->plainTextToken;
 
         return response()->json([
-            'message' => 'Succesvol ingelogd.',
+            'ingelogd' => true,
+            'gebruiker' => $this->gebruikerData($user),
             'token' => $token,
-            'user' => $user,
         ], 200);
     }
 
@@ -49,7 +53,42 @@ class AuthController
      */
     public function me(Request $request)
     {
-        return response()->json($request->user(), 200);
+        $user = $request->user();
+
+        if (!$user) {
+            return response()->json(['ingelogd' => false], 200);
+        }
+
+        return response()->json([
+            'ingelogd' => true,
+            'gebruiker' => $this->gebruikerData($user),
+        ], 200);
+    }
+
+    private function gebruikerData(User $user): array
+    {
+        $paginas = match ($user->rol) {
+            'directie' => ['dashboard', 'pakketten', 'uitgifte', 'producten', 'leveranciers', 'klanten', 'rapportages', 'gebruikers', 'account'],
+            'administratie' => ['klanten', 'rapportages', 'gebruikers', 'account'],
+            'magazijnmedewerker' => ['dashboard', 'producten', 'leveranciers', 'account'],
+            'vrijwilliger' => ['pakketten', 'uitgifte', 'producten', 'klanten', 'account'],
+            default => ['account'],
+        };
+
+        return [
+            'id' => $user->id,
+            'naam' => $user->naam,
+            'gebruikersnaam' => $user->gebruikersnaam,
+            'email' => $user->email,
+            'rol' => match ($user->rol) {
+                'directie' => 'Directie',
+                'administratie' => 'Administratie',
+                'magazijnmedewerker' => 'Magazijnmedewerker',
+                'vrijwilliger' => 'Vrijwilliger',
+                default => ucfirst($user->rol),
+            },
+            'paginas' => $paginas,
+        ];
     }
 
     /**

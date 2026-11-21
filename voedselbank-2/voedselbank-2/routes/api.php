@@ -38,7 +38,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/leveranciers.php', [LeverancierController::class, 'index']);
         Route::get('/leveranciers/{leverancier}', [LeverancierController::class, 'show']);
         Route::post('/leveranciers/{leverancier}/leveringen', [LeverancierController::class, 'verwerkLevering']);
-    });
 
     Route::middleware('role:directie')->group(function () {
         Route::post('/leveranciers', [LeverancierController::class, 'store']);
@@ -100,7 +99,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/gebruikers', [GebruikerController::class, 'index']);
         Route::get('/gebruikers.php', [GebruikerController::class, 'index']);
         Route::post('/gebruikers', [GebruikerController::class, 'store']);
-        Route::post('/gebruikers.php', [GebruikerController::class, 'store']);
+        Route::post('/gebruikers.php', [GebruikerController::class, 'legacy']);
         Route::put('/gebruikers/{gebruiker}', [GebruikerController::class, 'update']);
         Route::patch('/gebruikers/{gebruiker}/blokkeer', [GebruikerController::class, 'blokkeer']);
 
@@ -109,4 +108,5 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/rapportages/leveranciers', [RapportageController::class, 'leveranciersPerCategorie']);
         Route::get('/rapportages/postcodes', [RapportageController::class, 'maandoverzichtPerPostcode']);
     });
+});
 });
