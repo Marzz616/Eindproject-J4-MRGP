@@ -1,0 +1,59 @@
+# Voedselbank Maaskantje — alles starten met:  docker compose up -d --build
+#
+#   web         http://localhost:8080   de applicatie (Vue + PHP-API)
+#   db          localhost:3307          MySQL 8 met schema en testdata
+#   phpmyadmin  http://localhost:8081   database bekijken
+services:
+  web:
+    build: .
+    container_name: vb_web
+    ports:
+      - "8080:80"
+    volumes:
+      # backend-code live meelezen: PHP aanpassen zonder opnieuw te bouwen
+      - ./backend:/var/www/backend
+    environment:
+      DB_HOST: db
+      DB_NAME: voedselbank
+      DB_USER: vbuser
+      DB_PASS: vbpass
+      TZ: Europe/Amsterdam
+      APP_TZ: Europe/Amsterdam
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: mysql:8.0
+    container_name: vb_db
+    ports:
+      - "3307:3306"
+    environment:
+      TZ: Europe/Amsterdam
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: voedselbank
+      MYSQL_USER: vbuser
+      MYSQL_PASSWORD: vbpass
+    volumes:
+      - ./database:/docker-entrypoint-initdb.d
+      - vb_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-prootpass"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: vb_pma
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: db
+      PMA_USER: vbuser
+      PMA_PASSWORD: vbpass
+    depends_on:
+      - db
+
+volumes:
+  vb_data:
