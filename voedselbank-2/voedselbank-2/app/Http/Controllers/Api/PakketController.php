@@ -7,6 +7,7 @@ use App\Models\Pakket;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Carbon;
 
 /**
  * Module 3: Voedselpakketten & Uitgifte – Rick & Mario (US-PAK-01 t/m US-PAK-12, US-WRK-04, US-WRK-05)
@@ -19,6 +20,10 @@ class PakketController
      */
     public function index(Request $request)
     {
+        if ($request->query('actie') === 'start') {
+            return $this->startData();
+        }
+
         $query = Pakket::with(['klant', 'producten']);
 
         if ($request->filled('uitgiftedatum')) {
@@ -30,6 +35,78 @@ class PakketController
         }
 
         return response()->json($query->orderBy('uitgiftedatum', 'asc')->get(), 200);
+    }
+
+    private function startData()
+    {
+        $vandaag = now()->toDateString();
+        $weekStart = now()->startOfWeek()->toDateString();
+        $weekEinde = now()->endOfWeek()->toDateString();
+
+        $pakkettenDezeWeek = DB::table('Pakket')
+            ->whereBetween('Samenstellingsdatum', [$weekStart, $weekEinde])
+            ->orderByDesc('idPakket')
+            ->get(['idPakket', 'Klant_idKlant', 'Status'])
+            ->unique('Klant_idKlant')
+            ->keyBy('Klant_idKlant');
+
+        $gezinsleden = DB::table('Gezinslid')
+            ->select('Klant_idKlant', DB::raw('COUNT(*) as totaal'))
+            ->groupBy('Klant_idKlant')
+            ->pluck('totaal', 'Klant_idKlant');
+
+        $klanten = DB::table('Klant')
+            ->where('Geaccepteerd', true)
+            ->orderBy('Gezinsnaam')
+            ->get(['idKlant', 'Gezinsnaam'])
+            ->map(function ($klant) use ($gezinsleden, $pakkettenDezeWeek) {
+                $pakket = $pakkettenDezeWeek->get($klant->idKlant);
+                $grootte = (int) ($gezinsleden->get($klant->idKlant) ?? 0);
+
+                return [
+                    'id' => (int) $klant->idKlant,
+                    'naam' => $klant->Gezinsnaam,
+                    'gezinsgrootte' => $grootte,
+                    'advies' => $grootte,
+                    'dezeWeek' => (bool) $pakket,
+                    'weekStatus' => $pakket->Status ?? null,
+                ];
+            });
+
+        $producten = DB::table('Product')
+            ->join('Categorie', 'Product.Categorie_idCategorie', '=', 'Categorie.idCategorie')
+            ->orderBy('Categorie.Naam')
+            ->orderBy('Product.Productnaam')
+            ->get([
+                'Product.idProduct',
+                'Product.Productnaam',
+                'Product.Aantal_voorraad',
+                'Product.Houdbaar_tot',
+                'Product.Locatie',
+                'Product.Allergenen',
+                'Categorie.Kort as CategorieNaam',
+            ])
+            ->map(function ($product) use ($vandaag) {
+                $thtDagen = $product->Houdbaar_tot
+                    ? Carbon::parse($vandaag)->diffInDays(Carbon::parse($product->Houdbaar_tot), false)
+                    : null;
+
+                return [
+                    'id' => (int) $product->idProduct,
+                    'naam' => $product->Productnaam,
+                    'categorie' => $product->CategorieNaam,
+                    'voorraad' => (int) $product->Aantal_voorraad,
+                    'allergenen' => $product->Allergenen,
+                    'locatie' => $product->Locatie,
+                    'verlopen' => $thtDagen !== null && $thtDagen < 0,
+                    'thtDagen' => $thtDagen,
+                ];
+            });
+
+        return response()->json([
+            'klanten' => $klanten,
+            'producten' => $producten,
+        ]);
     }
 
     /**
