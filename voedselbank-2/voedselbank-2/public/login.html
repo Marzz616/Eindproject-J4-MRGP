@@ -77,12 +77,19 @@
 
     try {
       const r = await api('auth.php?actie=login', {
-        body: {
+        body: new URLSearchParams({
           gebruikersnaam: vorm.gebruikersnaam.value.trim(),
           wachtwoord: vorm.wachtwoord.value,
-        },
+        }).toString(),
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       });
+<<<<<<< Updated upstream
       if (r.token) { localStorage.setItem('voedselbank_token', r.token); }
+=======
+      if (r.token) {
+        localStorage.setItem('voedselbank_token', r.token);
+      }
+>>>>>>> Stashed changes
       const terug = new URLSearchParams(location.search).get('terug');
       const mag = terug && r.gebruiker.paginas.some(p => terug.startsWith(p.replace('dashboard', 'index')));
       location.replace(mag ? terug : startpagina(r.gebruiker));

@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * Authenticatie & Wachtwoordbeheer (TECH-02, US-GBR-03, US-GBR-04, US-SEC-05)
@@ -18,6 +19,7 @@ class AuthController
      */
     public function login(Request $request)
     {
+<<<<<<< Updated upstream
         $credentials = $request->validate([
             'gebruikersnaam' => 'required_without:email|string',
             'email' => 'required_without:gebruikersnaam|email',
@@ -31,6 +33,21 @@ class AuthController
 
         if (!$user || !Hash::check($credentials['wachtwoord'], $user->wachtwoord)) {
             return response()->json(['fout' => 'Ongeldige gebruikersnaam, e-mailadres of wachtwoord.'], 401);
+=======
+        $identifier = $request->input('email', $request->input('gebruikersnaam'));
+        $wachtwoord = $request->input('wachtwoord');
+
+        if (!$identifier || !$wachtwoord) {
+            return response()->json(['error' => 'Vul een gebruikersnaam/e-mailadres en wachtwoord in.'], 422);
+        }
+
+        $user = User::where('email', $identifier)
+            ->orWhere('gebruikersnaam', $identifier)
+            ->first();
+
+        if (!$user || !Hash::check($wachtwoord, $user->wachtwoord)) {
+            return response()->json(['error' => 'Ongeldig e-mailadres of wachtwoord.'], 401);
+>>>>>>> Stashed changes
         }
 
         // US-GBR-03: Geblokkeerde gebruikers hebben geen toegang meer tot het systeem
@@ -39,7 +56,17 @@ class AuthController
             return response()->json(['fout' => 'Uw account is geblokkeerd.'], 403);
         }
 
+        Auth::login($user);
         $token = $user->createToken('voedselbank-herd-token')->plainTextToken;
+
+        if ($request->has('gebruikersnaam') || $request->query('actie') === 'login') {
+            $user->setAttribute('paginas', $this->paginasVoorRol($user->rol));
+            return response()->json([
+                'ingelogd' => true,
+                'gebruiker' => $user,
+                'token' => $token,
+            ], 200);
+        }
 
         return response()->json([
             'ingelogd' => true,
@@ -53,6 +80,7 @@ class AuthController
      */
     public function me(Request $request)
     {
+<<<<<<< Updated upstream
         $user = $request->user();
 
         if (!$user) {
@@ -89,6 +117,33 @@ class AuthController
             },
             'paginas' => $paginas,
         ];
+=======
+        if ($request->query('actie') === 'ik') {
+            if (!Auth::check()) {
+                return response()->json(['ingelogd' => false], 200);
+            }
+
+            $user = Auth::user();
+            $user->setAttribute('paginas', $this->paginasVoorRol($user->rol));
+            return response()->json([
+                'ingelogd' => true,
+                'gebruiker' => $user,
+            ], 200);
+        }
+
+        return response()->json($request->user(), 200);
+>>>>>>> Stashed changes
+    }
+
+    private function paginasVoorRol(string $rol): array
+    {
+        return match ($rol) {
+            'directie' => ['dashboard', 'pakketten', 'uitgifte', 'producten', 'leveranciers', 'klanten', 'gebruikers', 'account'],
+            'administratie' => ['klanten', 'gebruikers', 'account'],
+            'magazijnmedewerker' => ['dashboard', 'producten', 'leveranciers', 'account'],
+            'vrijwilliger' => ['pakketten', 'uitgifte', 'klanten', 'producten', 'account'],
+            default => ['account'],
+        };
     }
 
     /**

@@ -26,6 +26,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me', [AuthController::class, 'me']);
     Route::get('/auth.php', [AuthController::class, 'me']);
+    Route::get('/auth.php', [AuthController::class, 'me']);
     Route::patch('/wachtwoord', [AuthController::class, 'wijzigWachtwoord']);
 
     // Dashboard & Weekcyclus (US-WRK-02 t/m 06)

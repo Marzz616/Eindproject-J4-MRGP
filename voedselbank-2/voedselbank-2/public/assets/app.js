@@ -11,7 +11,11 @@ async function api(pad, opties = {}) {
   const conf = { headers: {}, credentials: 'same-origin', ...opties };
   const token = localStorage.getItem('voedselbank_token');
   if (token) {
+<<<<<<< Updated upstream
     conf.headers.Authorization = 'Bearer ' + token;
+=======
+    conf.headers['Authorization'] = 'Bearer ' + token;
+>>>>>>> Stashed changes
   }
   if (conf.body !== undefined && typeof conf.body !== 'string') {
     conf.method = conf.method || 'POST';

@@ -22,4 +22,9 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions) {
         // TECH-06: Centrale foutafhandeling
+        $exceptions->render(function (\Illuminate\Auth\AuthenticationException $exception, $request) {
+            if ($request->is('api/*')) {
+                return response()->json(['login_nodig' => true, 'error' => 'Log eerst in.'], 401);
+            }
+        });
     })->create();
