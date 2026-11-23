@@ -1,0 +1,106 @@
+@extends('layouts.app')
+
+@section('title', 'Pakbon')
+
+@push('styles')
+<style>
+  body { background: var(--side); }
+  .vel { max-width: 760px; margin: 28px auto; }
+  .bon { background: #fff; border: 1px solid var(--line-2); border-radius: 12px; padding: 30px 34px; }
+  .bonkop { display: flex; align-items: flex-start; gap: 16px; border-bottom: 2px solid var(--ink); padding-bottom: 16px; }
+  .sticker { border: 2px dashed var(--line-2); border-radius: 10px; padding: 18px 20px; margin-top: 22px; }
+  .sticker .groot { font-family: 'Zilla Slab', serif; font-size: 27px; font-weight: 700; }
+  .regel { display: grid; grid-template-columns: 52px 1fr 1fr; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--line); }
+  .regel:last-child { border-bottom: 0; }
+  @media print {
+    body { background: #fff; }
+    .vel { margin: 0; max-width: none; }
+    .bon { border: 0; border-radius: 0; padding: 0; }
+    .nietprint { display: none !important; }
+  }
+</style>
+@endpush
+
+@section('body')
+<div class="vel">
+  <div class="nietprint" style="display:flex;gap:10px;margin-bottom:14px">
+    <button class="knop" onclick="history.back()">← Terug</button>
+    <button class="knop primair" onclick="window.print()">Afdrukken</button>
+  </div>
+  <div class="bon" id="bon"><div class="skelet">Bezig met laden…</div></div>
+</div>
+@endsection
+
+@push('scripts')
+<script>
+(async function () {
+  const id = Number(new URLSearchParams(location.search).get('id') || 0);
+  const bak = document.getElementById('bon');
+
+  let d;
+  try { d = await api('pakketten.php?actie=pakbon&id=' + id); }
+  catch (e) {
+    bak.innerHTML = '<div class="melding rood"><div>' + esc((e.data || {}).fout || 'Pakbon kon niet worden geladen.') + '</div></div>';
+    return;
+  }
+
+  const p = d.pakket;
+  const totaal = d.inhoud.reduce((s, r) => s + r.aantal, 0);
+  const nummer = 'K-' + String(p.klantId).padStart(3, '0');
+
+  bak.innerHTML = `
+    <div class="bonkop">
+      <div style="width:46px;height:46px;border-radius:11px;background:var(--green);color:#fff;
+                  font-family:'Zilla Slab',serif;font-weight:700;display:grid;place-items:center;font-size:17px">VB</div>
+      <div style="flex:1">
+        <div style="font-family:'Zilla Slab',serif;font-weight:700;font-size:20px">Voedselbank Maaskantje</div>
+        <div style="color:var(--ink-2);font-size:13.5px">Pakbon voedselpakket</div>
+      </div>
+      <div style="text-align:right">
+        <div class="mono" style="font-size:15px;font-weight:500">Pakket #${p.id}</div>
+        <div style="color:var(--ink-2);font-size:13px">${datumKort(p.uitgifte || p.datum)}</div>
+      </div>
+    </div>
+
+    <div class="sticker">
+      <div style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);font-weight:700">Voor</div>
+      <div class="groot">${esc(p.klant)}</div>
+      <div class="mono" style="color:var(--ink-2);margin-top:2px">${nummer} · ${d.gezin.length} ${d.gezin.length === 1 ? 'persoon' : 'personen'}</div>
+      ${d.wensen.length
+        ? '<div class="pillen" style="margin-top:11px">' + d.wensen.map(w => `<span class="pil2 diet">${esc(w)}</span>`).join('') + '</div>'
+        : '<div style="margin-top:9px;color:var(--ink-3);font-size:13.5px">Geen dieetbeperkingen</div>'}
+      ${p.opmerkingen ? `<div style="margin-top:11px;font-size:13.5px">
+        <b>Voorkeuren:</b> ${esc(p.opmerkingen)}</div>` : ''}
+      ${(d.uitzonderingen || []).map(u => `<div style="margin-top:9px;font-size:13.5px;
+          border-left:3px solid var(--amber);padding-left:9px">
+        <b>Uitzondering op ${esc(u.wens)}:</b> ${esc(u.toelichting)}</div>`).join('')}
+    </div>
+
+    <h3 style="font-family:'Zilla Slab',serif;font-size:17px;margin:24px 0 8px">Inhoud (${totaal} stuks)</h3>
+    <div class="regel" style="font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);font-weight:700;border-bottom:1px solid var(--line-2)">
+      <div>Aantal</div><div>Product</div><div>Categorie / locatie</div>
+    </div>
+    ${d.inhoud.map(r => `
+      <div class="regel">
+        <div class="mono" style="font-weight:500">${r.aantal}×</div>
+        <div style="font-weight:600">${esc(r.naam)}${r.conflict.length ? ' <span class="pil2 nee">let op: ' + r.conflict.map(c => esc(c.wens)).join(', ') + '</span>' : ''}</div>
+        <div style="color:var(--ink-2)">${esc(r.categorie)}${r.locatie ? ' · ' + esc(r.locatie) : ''}</div>
+      </div>`).join('')}
+
+    <div style="margin-top:26px;display:grid;grid-template-columns:1fr 1fr;gap:26px;font-size:13.5px;color:var(--ink-2)">
+      <div>
+        <div><b>Status:</b> ${esc(p.status)}</div>
+        <div><b>Samengesteld door:</b> ${esc(p.door || '—')}</div>
+        ${p.uitgever ? '<div><b>Uitgegeven door:</b> ' + esc(p.uitgever) + '</div>' : ''}
+        ${p.legitimatie ? '<div><b>Geïdentificeerd met:</b> ' + esc(p.legitimatie) + '</div>' : ''}
+      </div>
+      <div>
+        <div style="height:46px;border-bottom:1px solid var(--ink-3)"></div>
+        <div style="margin-top:6px">Handtekening voor ontvangst</div>
+      </div>
+    </div>`;
+
+  document.title = 'Pakbon ' + p.klant + ' · Voedselbank Maaskantje';
+})();
+</script>
+@endpush

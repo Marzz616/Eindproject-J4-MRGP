@@ -1,0 +1,498 @@
+@extends('layouts.app')
+
+@section('title', 'Voedselpakket samenstellen')
+
+@push('styles')
+<style>
+  .drie { display: grid; grid-template-columns: 1fr 1.15fr 1fr; gap: 18px; align-items: start; }
+  @media (max-width: 1240px) { .drie { grid-template-columns: 1fr; } }
+
+  .kgroep { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; font-weight: 700;
+            color: var(--ink-3); padding: 14px 20px 7px; }
+  .kitem { display: flex; gap: 11px; align-items: center; width: 100%; text-align: left;
+           padding: 11px 20px; border: 0; background: none; font: inherit; cursor: pointer;
+           border-bottom: 1px solid var(--line); }
+  .kitem:hover { background: var(--row-alt); }
+  .kitem.aan { background: var(--green-soft); }
+  .kitem .nm { font-weight: 600; font-size: 14.5px; }
+  .kitem .sub { font-size: 12.5px; color: var(--ink-3); }
+  .kitem.klaar { opacity: .66; }
+
+  .catkop { display: flex; align-items: center; gap: 9px; width: 100%; text-align: left;
+            padding: 10px 20px; border: 0; background: var(--row-alt);
+            border-bottom: 1px solid var(--line); cursor: pointer; font: inherit;
+            font-size: 13px; font-weight: 700; color: var(--ink-2); }
+  .catkop:hover { background: var(--grey-soft); }
+  .catkop .chev { width: 13px; height: 13px; stroke: var(--ink-3); stroke-width: 2.4; fill: none;
+                  transition: transform .16s ease; flex: 0 0 13px; }
+  .catkop .tel { margin-left: auto; font-family: 'IBM Plex Mono', monospace; font-weight: 500;
+                 color: var(--ink-3); }
+  .catgroep:last-child .pitem:last-child { border-bottom: 0; }
+
+  .pitem { display: flex; gap: 11px; align-items: center; padding: 11px 20px;
+           border-bottom: 1px solid var(--line); }
+  .pitem:last-child { border-bottom: 0; }
+  .pitem .nm { font-weight: 600; font-size: 14.5px; }
+  .pitem .sub { font-size: 12.5px; color: var(--ink-3); }
+  .pitem.bots { background: var(--red-soft); }
+
+  .mandje { display: flex; gap: 10px; align-items: center; padding: 10px 20px; border-bottom: 1px solid var(--line); }
+  .mandje:last-child { border-bottom: 0; }
+  .aantalknop { display: flex; align-items: center; gap: 2px; }
+  .aantalknop button { width: 26px; height: 26px; border: 1px solid var(--line-2); background: #fff;
+                       border-radius: 6px; cursor: pointer; font: inherit; line-height: 1; }
+  .aantalknop button:hover { background: var(--row-alt); }
+  .aantalknop span { min-width: 30px; text-align: center; font-family: 'IBM Plex Mono', monospace; font-weight: 500; }
+</style>
+@endpush
+
+@section('body')
+<div class="app" id="app"></div>
+@endsection
+
+@push('scripts')
+<script>
+let START = { klanten: [], producten: [] };
+let GEKOZEN = null;         // { klant, gezin, tags, advies, lopend }
+let MANDJE = new Map();     // productId -> aantal
+let PAKKET_ID = 0;
+let zoekKlant = '', zoekProduct = '', alleenPassend = true;
+const dicht = new Set();     // ingeklapte categorieën in de voorraadlijst
+
+(async function () {
+  const ik = await start({
+    slug: 'pakketten',
+    titel: 'Voedselpakket samenstellen',
+    onder: 'Samenstellen op basis van gezinssamenstelling en allergieprofiel',
+  });
+  if (!ik) { return; }
+  await laden();
+})();
+
+async function laden() {
+  try { START = await api('pakketten.php?actie=start'); }
+  catch (e) { foutMelden(e); return; }
+  teken();
+}
+
+function teken() {
+  document.getElementById('inhoud').innerHTML = `
+    <div class="drie">
+      <div class="card" id="kolomKlant"></div>
+      <div class="card" id="kolomVoorraad"></div>
+      <div class="card" id="kolomMandje"></div>
+    </div>`;
+  tekenKlanten();
+  tekenVoorraad();
+  tekenMandje();
+}
+
+/* ------------------------------------------------ kolom 1: gezinsprofiel */
+function tekenKlanten() {
+  const nodig = START.klanten.filter(k => !k.dezeWeek);
+  const klaar = START.klanten.filter(k => k.dezeWeek);
+
+  const zoek = (lijst) => lijst.filter(k => !zoekKlant || k.naam.toLowerCase().includes(zoekKlant));
+
+  const item = (k) => `
+    <button class="kitem${k.dezeWeek ? ' klaar' : ''}${GEKOZEN && GEKOZEN.klant.id === k.id ? ' aan' : ''}" data-klant="${k.id}">
+      <div style="flex:1">
+        <div class="nm">${esc(k.naam)}</div>
+        <div class="sub">${k.gezinsgrootte} ${k.gezinsgrootte === 1 ? 'persoon' : 'personen'} · advies ${k.advies} producten</div>
+      </div>
+      ${!k.dezeWeek ? '<span class="pil2 ok">Pakket nodig</span>'
+        : k.weekStatus === 'Uitgegeven' ? '<span class="pil2 off">Uitgegeven</span>'
+        : k.weekStatus === 'Klaar' ? '<span class="pil2 wacht">Staat klaar</span>'
+        : '<span class="pil2 wacht">Concept</span>'}
+    </button>`;
+
+  document.getElementById('kolomKlant').innerHTML = `
+    <div class="kop"><h2>Gezinsprofiel</h2></div>
+    <div class="body" style="padding:14px 20px">
+      <div style="font-size:13.5px;color:var(--ink-2);margin-bottom:11px">
+        ${nodig.length} ${nodig.length === 1 ? 'gezin wacht' : 'gezinnen wachten'} nog op een pakket deze week.
+      </div>
+      <div class="zoek" style="position:relative">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+             style="position:absolute;left:12px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:var(--ink-3)">
+          <circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+        <input type="search" id="zoekKlant" placeholder="Zoek klant op naam" value="${esc(zoekKlant)}"
+               style="width:100%;height:40px;padding:0 12px 0 36px;border:1px solid var(--line-2);border-radius:9px;font:inherit">
+      </div>
+    </div>
+    <div style="max-height:560px;overflow:auto;border-top:1px solid var(--line)">
+      <div class="kgroep">Pakket nodig (${zoek(nodig).length})</div>
+      ${zoek(nodig).map(item).join('') || '<div class="kitem" style="color:var(--ink-3)">Alle gezinnen hebben al een pakket.</div>'}
+      <div class="kgroep">Al een pakket deze week (${zoek(klaar).length})</div>
+      ${zoek(klaar).map(item).join('') || '<div class="kitem" style="color:var(--ink-3)">Nog niemand.</div>'}
+    </div>
+    ${GEKOZEN ? gezinsblok() : ''}`;
+
+  document.getElementById('zoekKlant').oninput = (e) => {
+    zoekKlant = e.target.value.trim().toLowerCase();
+    const pos = e.target.selectionStart;
+    tekenKlanten();
+    const v = document.getElementById('zoekKlant'); v.focus(); v.setSelectionRange(pos, pos);
+  };
+  document.querySelectorAll('[data-klant]').forEach(b => b.onclick = () => kiesKlant(Number(b.dataset.klant)));
+}
+
+function gezinsblok() {
+  const g = GEKOZEN;
+  return `
+    <div style="border-top:1px solid var(--line);padding:16px 20px">
+      <h3 style="font-size:15px;margin-bottom:10px">${esc(g.klant.naam)}</h3>
+      ${g.klant.opmerkingen ? `<div class="melding grijs" style="margin-bottom:12px"><div>
+        <b>Voorkeuren van dit gezin:</b> ${esc(g.klant.opmerkingen)}</div></div>` : ''}
+      ${g.wensen.length
+        ? '<div class="pillen" style="margin-bottom:12px">' + g.wensen.map(w =>
+            `<span class="pil2 ${w.streng ? 'nee' : 'diet'}"
+                   title="${esc(w.personen.join(', '))}">${w.streng ? 'Allergie: ' : ''}${esc(w.wens)}
+             <span style="opacity:.75;font-weight:400">&nbsp;${w.personen.length}/${w.gezinsgrootte}</span></span>`).join('') +
+          '</div>' +
+          (g.wensen.some(w => w.streng)
+            ? '<div style="font-size:12.5px;color:var(--red);margin:-6px 0 12px">' +
+              'Producten met een ernstige allergie kun je niet toevoegen. De overige wensen mogen wel, ' +
+              'maar vragen om een bevestiging.</div>' : '') +
+          g.wensen.filter(w => w.uitzondering).map(w =>
+            `<div class="melding amber" style="margin:-4px 0 12px"><div>
+              <b>Uitzondering op ${esc(w.wens)}:</b> ${esc(w.toelichting)}</div></div>`).join('')
+        : '<div style="font-size:13px;color:var(--ink-3);margin-bottom:12px">Geen dieetbeperkingen.</div>'}
+      <div class="inner" style="--subkolommen:1.6fr 1.2fr .8fr">
+        <div class="ihead"><span>Naam</span><span>Relatie</span><span>Leeftijd</span></div>
+        ${g.gezin.map(l => `<div class="irow">
+          <div class="p">${esc(l.naam)}</div>
+          <div style="color:var(--ink-2)">${esc(l.relatie)}</div>
+          <div title="${esc(l.type)}">${l.leeftijd} jr</div></div>`).join('')}
+      </div>
+    </div>`;
+}
+
+async function kiesKlant(id) {
+  if (MANDJE.size && (!GEKOZEN || GEKOZEN.klant.id !== id)) {
+    const ja = await bevestig({
+      titel: 'Ander gezin kiezen?',
+      tekst: '<p>Het pakket dat je nu aan het samenstellen bent wordt leeggemaakt.</p>',
+      ja: 'Ja, ander gezin', nee: 'Terug',
+    });
+    if (!ja) { return; }
+  }
+
+  try { GEKOZEN = await api('pakketten.php?actie=klant&id=' + id); }
+  catch (e) { foutMelden(e); return; }
+
+  MANDJE = new Map();
+  PAKKET_ID = 0;
+
+  // bestaand concept van deze week openen zodat je verder kunt waar je gebleven was
+  if (GEKOZEN.lopend && GEKOZEN.lopend.status !== 'Uitgegeven') {
+    try {
+      const p = await api('pakketten.php?actie=pakket&id=' + GEKOZEN.lopend.id);
+      PAKKET_ID = p.pakket.id;
+      p.inhoud.forEach(r => MANDJE.set(r.productId, r.aantal));
+      melding.info('Bestaand pakket van deze week geopend (' + p.pakket.status.toLowerCase() + ').');
+    } catch (e) { /* dan beginnen we gewoon leeg */ }
+  }
+
+  teken();
+}
+
+/* ------------------------------------------------ kolom 2: voorraad */
+/** Welke dieetwensen van dit gezin botsen met dit product? */
+function botst(p) {
+  if (!GEKOZEN || !p.allergenen) { return []; }
+  const heeft = p.allergenen.split(',').map(s => s.trim());
+  return (GEKOZEN.wensen || []).filter(w => heeft.includes(w.tag));
+}
+
+/** Mag dit product helemaal niet in het pakket? */
+function geblokkeerd(p) {
+  if (p.verlopen) { return 'verlopen'; }
+  if (botst(p).some(w => w.streng)) { return 'allergie'; }
+  return null;
+}
+
+function tekenVoorraad() {
+  const lijst = START.producten
+    .filter(p => p.voorraad > 0)
+    .filter(p => !zoekProduct || (p.naam + ' ' + p.categorie).toLowerCase().includes(zoekProduct))
+    .filter(p => !(GEKOZEN && geblokkeerd(p) === 'verlopen'))
+    .filter(p => !(alleenPassend && GEKOZEN && botst(p).length));
+
+  // Per categorie groeperen. Bij honderden producten is één lange lijst
+  // onwerkbaar; zo zie je de kopjes en klap je open wat je nodig hebt.
+  const groepen = new Map();
+  lijst.forEach(p => {
+    if (!groepen.has(p.categorie)) { groepen.set(p.categorie, []); }
+    groepen.get(p.categorie).push(p);
+  });
+  const sorteerd = [...groepen.entries()].sort((a, b) => a[0].localeCompare(b[0], 'nl'));
+
+  // Tijdens het zoeken alles open, anders zie je alleen kopjes.
+  const open = (naam) => !!zoekProduct || !dicht.has(naam);
+
+  const blokken = sorteerd.map(([naam, items]) => `
+    <div class="catgroep">
+      <button class="catkop" data-cat="${esc(naam)}" aria-expanded="${open(naam)}">
+        <svg class="chev" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"
+             style="transform:rotate(${open(naam) ? '0' : '-90'}deg)"><path d="M6 9l6 6 6-6"/></svg>
+        <span>${esc(naam)}</span>
+        <span class="tel">${items.length}</span>
+      </button>
+      ${open(naam) ? items.map(prodRij).join('') : ''}
+    </div>`).join('');
+
+  document.getElementById('kolomVoorraad').innerHTML = `
+    <div class="kop">
+      <h2>Beschikbare magazijnvoorraad</h2>
+      <span class="tel rechts">${lijst.length} producten in ${sorteerd.length} categorie\u00ebn</span>
+    </div>
+    <div class="body" style="padding:14px 20px">
+      <div class="zoek" style="position:relative;margin-bottom:11px">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+             style="position:absolute;left:12px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:var(--ink-3)">
+          <circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+        <input type="search" id="zoekProduct" placeholder="Zoek product of categorie" value="${esc(zoekProduct)}"
+               style="width:100%;height:40px;padding:0 12px 0 36px;border:1px solid var(--line-2);border-radius:9px;font:inherit">
+      </div>
+      <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+        <label style="display:flex;gap:8px;align-items:center;font-size:13.5px;color:var(--ink-2);cursor:pointer">
+          <input type="checkbox" id="filterPassend" ${alleenPassend ? 'checked' : ''}>
+          Gefilterd op compatibiliteit met dit gezin
+        </label>
+        <button class="knop klein rechts" id="klapAlles">
+          ${dicht.size ? 'Alles uitklappen' : 'Alles inklappen'}</button>
+      </div>
+    </div>
+    <div style="max-height:620px;overflow:auto;border-top:1px solid var(--line)">
+      ${lijst.length ? blokken : '<div class="leeg">Geen producten gevonden.</div>'}
+    </div>`;
+
+  document.getElementById('zoekProduct').oninput = (e) => {
+    zoekProduct = e.target.value.trim().toLowerCase();
+    const pos = e.target.selectionStart;
+    tekenVoorraad();
+    const v = document.getElementById('zoekProduct'); v.focus(); v.setSelectionRange(pos, pos);
+  };
+  document.getElementById('filterPassend').onchange = (e) => {
+    alleenPassend = e.target.checked; tekenVoorraad();
+  };
+  document.getElementById('klapAlles').onclick = () => {
+    if (dicht.size) { dicht.clear(); } else { sorteerd.forEach(([naam]) => dicht.add(naam)); }
+    tekenVoorraad();
+  };
+  document.querySelectorAll('[data-cat]').forEach(b => b.onclick = () => {
+    const naam = b.dataset.cat;
+    if (dicht.has(naam)) { dicht.delete(naam); } else { dicht.add(naam); }
+    tekenVoorraad();
+  });
+  document.querySelectorAll('[data-voeg]').forEach(b => b.onclick = () => voegToe(Number(b.dataset.voeg)));
+}
+
+function prodRij(p) {
+  const bots = botst(p);
+  const slot = geblokkeerd(p);
+  const inMandje = MANDJE.get(p.id) || 0;
+  const over = p.voorraad - inMandje;
+  const uit = slot !== null || over <= 0;
+
+  const labels = bots.map(w => {
+    const wie = w.personen.length + ' van de ' + w.gezinsgrootte + ': ' + w.personen.join(', ')
+              + (w.uitzondering ? ' \u2014 ' + w.toelichting : '');
+    return `<span class="pil2 ${w.streng ? 'nee' : 'wacht'}" title="${esc(wie)}">
+      ${w.streng ? 'Allergie: ' : ''}${esc(w.wens)} (${w.personen.length}\u00d7)${w.uitzondering ? ' \u00b7 mag toch' : ''}</span>`;
+  });
+  if (p.verlopen) {
+    labels.unshift('<span class="pil2 nee">Over de datum</span>');
+  } else if (p.thtDagen !== null && p.thtDagen !== undefined && p.thtDagen <= 3) {
+    labels.push(`<span class="pil2 wacht">THT over ${p.thtDagen} dag${p.thtDagen === 1 ? '' : 'en'}</span>`);
+  }
+
+  return `
+    <div class="pitem${slot ? ' bots' : ''}">
+      <div style="flex:1;min-width:0">
+        <div class="nm">${esc(p.naam)}</div>
+        <div class="sub">${p.locatie ? esc(p.locatie) : esc(p.categorie)}</div>
+        ${labels.length ? '<div class="pillen" style="margin-top:5px">' + labels.join('') + '</div>' : ''}
+      </div>
+      <div style="text-align:right">
+        <div class="mono" style="font-size:13.5px;${over <= 0 ? 'color:var(--red)' : ''}">${over} st.</div>
+        <button class="knop klein" data-voeg="${p.id}" ${uit ? 'disabled' : ''} style="margin-top:5px"
+          title="${slot === 'verlopen' ? 'Dit product is over de houdbaarheidsdatum'
+                : slot === 'allergie' ? 'Dit product botst met een ernstige allergie in dit gezin'
+                : over <= 0 ? 'Niet meer op voorraad' : 'Toevoegen aan het pakket'}">
+          ${slot ? 'Mag niet' : '+ Voeg toe'}</button>
+      </div>
+    </div>`;
+}
+
+function voegToe(id) {
+  if (!GEKOZEN) { melding.fout('Kies eerst een gezin.'); return; }
+  const p = START.producten.find(x => x.id === id);
+
+  const slot = geblokkeerd(p);
+  if (slot === 'verlopen') {
+    melding.fout(p.naam + ' is over de houdbaarheidsdatum en mag niet in een pakket.');
+    return;
+  }
+  if (slot === 'allergie') {
+    const w = botst(p).find(x => x.streng);
+    melding.fout(p.naam + ' kan niet: ' + w.wens + ' bij ' + w.personen.join(' en ') + '.');
+    return;
+  }
+  const nu = MANDJE.get(id) || 0;
+  if (nu + 1 > p.voorraad) { melding.fout('Er is niet genoeg voorraad van ' + p.naam + '.'); return; }
+  MANDJE.set(id, nu + 1);
+  tekenVoorraad();
+  tekenMandje();
+}
+
+/* ------------------------------------------------ kolom 3: pakketinhoud */
+function tekenMandje() {
+  const regels = [...MANDJE.entries()].map(([id, aantal]) => ({
+    p: START.producten.find(x => x.id === id), aantal,
+  })).filter(r => r.p);
+
+  const totaal = regels.reduce((s, r) => s + r.aantal, 0);
+  const advies = GEKOZEN ? GEKOZEN.advies : 0;
+  const waarschuwing = regels.filter(r => botst(r.p).length);   // alleen wensen, geen allergie
+
+  document.getElementById('kolomMandje').innerHTML = `
+    <div class="kop">
+      <h2>Lopend overzicht pakketinhoud</h2>
+    </div>
+    <div class="body" style="padding:14px 20px">
+      ${GEKOZEN ? `
+        <div style="font-weight:600;margin-bottom:8px">${totaal} van ${advies} items toegevoegd</div>
+        <div class="balk ${totaal >= advies ? '' : 'amber'}"><span style="width:${Math.min(100, advies ? totaal / advies * 100 : 0)}%"></span></div>
+      ` : '<div style="color:var(--ink-3);font-size:13.5px">Kies links een gezin om te beginnen.</div>'}
+      ${waarschuwing.length ? `<div class="melding rood" style="margin:12px 0 0">
+        <div><b>Let op:</b> ${waarschuwing.map(r => esc(r.p.naam)).join(', ')}
+        ${waarschuwing.length === 1 ? 'past' : 'passen'} niet bij de wensen van dit gezin.</div></div>` : ''}
+    </div>
+    <div style="border-top:1px solid var(--line);max-height:480px;overflow:auto">
+      ${regels.length ? regels.map(mandjeRij).join('')
+        : '<div class="leeg" style="padding:30px 20px">Nog niets toegevoegd.</div>'}
+    </div>
+    ${GEKOZEN ? `
+    <div style="padding:16px 20px;border-top:1px solid var(--line);display:flex;gap:9px;flex-wrap:wrap">
+      <button class="knop" id="bewaarConcept" ${regels.length ? '' : 'disabled'}>Concept opslaan</button>
+      <button class="knop primair" id="bewaarKlaar" ${regels.length ? '' : 'disabled'}>Pakket klaarzetten</button>
+      ${PAKKET_ID ? '<button class="knop gevaar" id="pakketWeg">Pakket verwijderen</button>' : ''}
+      ${PAKKET_ID ? '<button class="knop" id="pakbon">Pakbon afdrukken</button>' : ''}
+    </div>` : ''}`;
+
+  document.querySelectorAll('[data-min]').forEach(b => b.onclick = () => wijzig(Number(b.dataset.min), -1));
+  document.querySelectorAll('[data-plus]').forEach(b => b.onclick = () => wijzig(Number(b.dataset.plus), 1));
+  document.querySelectorAll('[data-weg]').forEach(b => b.onclick = () => { MANDJE.delete(Number(b.dataset.weg)); tekenVoorraad(); tekenMandje(); });
+
+  const c = document.getElementById('bewaarConcept');
+  if (c) { c.onclick = () => opslaan('Concept'); }
+  const k = document.getElementById('bewaarKlaar');
+  if (k) { k.onclick = () => opslaan('Klaar'); }
+  const w = document.getElementById('pakketWeg');
+  if (w) { w.onclick = verwijderPakket; }
+  const pb = document.getElementById('pakbon');
+  if (pb) { pb.onclick = () => window.open('/pakbon?id=' + PAKKET_ID, '_blank'); }
+}
+
+function mandjeRij(r) {
+  return `
+    <div class="mandje">
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:600;font-size:14px">${esc(r.p.naam)}</div>
+        <div style="font-size:12.5px;color:var(--ink-3)">${esc(r.p.categorie)}</div>
+      </div>
+      <div class="aantalknop">
+        <button data-min="${r.p.id}" aria-label="Eén minder">−</button>
+        <span>${r.aantal}</span>
+        <button data-plus="${r.p.id}" aria-label="Eén meer">+</button>
+      </div>
+      <button class="icoonknop" data-weg="${r.p.id}" title="Verwijderen">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>`;
+}
+
+function wijzig(id, delta) {
+  const p = START.producten.find(x => x.id === id);
+  const nu = MANDJE.get(id) || 0;
+  const nieuw = nu + delta;
+  if (nieuw <= 0) { MANDJE.delete(id); }
+  else if (nieuw > p.voorraad) { melding.fout('Niet genoeg voorraad van ' + p.naam + '.'); return; }
+  else { MANDJE.set(id, nieuw); }
+  tekenVoorraad();
+  tekenMandje();
+}
+
+/* ------------------------------------------------ opslaan */
+async function opslaan(status, forceer = false) {
+  const regels = [...MANDJE.entries()].map(([product, aantal]) => ({ product, aantal }));
+
+  try {
+    const r = await api('pakketten.php?actie=opslaan', {
+      body: { id: PAKKET_ID, klant: GEKOZEN.klant.id, status, regels, forceer },
+    });
+    PAKKET_ID = r.id;
+    melding.goed(r.melding);
+    await laden();
+    // gezin opnieuw selecteren zodat het scherm klopt
+    const id = GEKOZEN.klant.id;
+    GEKOZEN = await api('pakketten.php?actie=klant&id=' + id);
+    teken();
+  } catch (e) {
+    const d = e.data || {};
+    if (e.status === 409 && d.reden === 'geblokkeerd') {
+      await bevestig({
+        titel: 'Dit pakket kan zo niet',
+        tekst: '<p>Deze producten mogen niet in het pakket van dit gezin:</p><ul>' +
+               d.geblokkeerd.map(g => `<li><b>${esc(g.product)}</b> ${esc(g.uitleg)}</li>`).join('') +
+               '</ul><p>Haal ze eruit en sla daarna opnieuw op.</p>',
+        ja: 'Begrepen', nee: 'Sluiten',
+      });
+      return;
+    }
+    if (e.status === 409 && d.reden === 'conflict') {
+      const ja = await bevestig({
+        titel: 'Past niet bij de wensen van dit gezin',
+        tekst: '<p>Deze producten botsen met een dieetwens. Dat mag wel — het gezin kan ze '
+             + 'onderling verdelen — maar bevestig het even:</p><ul>' +
+               d.conflicten.map(c => `<li><b>${esc(c.product)}</b> — ${esc(c.uitleg)}</li>`).join('') +
+               '</ul>',
+        ja: 'Toch opslaan', nee: 'Aanpassen', gevaar: true,
+      });
+      if (ja) { await opslaan(status, true); }
+      return;
+    }
+    if (e.status === 409 && d.reden === 'te_weinig_voorraad') {
+      await bevestig({
+        titel: 'Niet genoeg voorraad',
+        tekst: '<ul>' + d.tekort.map(t =>
+          `<li><b>${esc(t.product)}</b>: ${t.gevraagd} nodig, ${t.voorraad} op voorraad</li>`).join('') + '</ul>',
+        ja: 'Begrepen', nee: 'Sluiten',
+      });
+      await laden();
+      return;
+    }
+    foutMelden(e);
+  }
+}
+
+async function verwijderPakket() {
+  const ja = await bevestig({
+    titel: 'Pakket verwijderen?',
+    tekst: '<p>De producten gaan terug naar de voorraad.</p>',
+    ja: 'Ja, verwijderen', gevaar: true,
+  });
+  if (!ja) { return; }
+
+  try {
+    const r = await api('pakketten.php?actie=verwijderen', { body: { id: PAKKET_ID } });
+    melding.goed(r.melding);
+    MANDJE = new Map();
+    PAKKET_ID = 0;
+    await laden();
+  } catch (e) { foutMelden(e); }
+}
+</script>
+@endpush
