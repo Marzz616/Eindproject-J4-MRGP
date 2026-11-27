@@ -1,0 +1,3704 @@
+{
+  "uitgevoerd": "2026-11-26T13:48:23.360Z",
+  "omgeving": "http://127.0.0.1:8000",
+  "totaal": 113,
+  "geslaagd": 113,
+  "resultaten": [
+    {
+      "id": "TC-01",
+      "functie": "Inloggen met gebruikersnaam",
+      "eisen": [
+        "GBR-1",
+        "TEC-6"
+      ],
+      "soort": "Positief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Directie",
+      "testdata": "p.abraham / voedselbank",
+      "stappen": [
+        "Open /login",
+        "Vul gebruikersnaam p.abraham en wachtwoord voedselbank in",
+        "Klik op Inloggen"
+      ],
+      "verwacht": "Dashboard opent; naam en rol staan linksonder in de zijbalk.",
+      "userStories": [
+        {
+          "id": "US-GBR-05",
+          "titel": "Directielid heeft volledige toegang"
+        },
+        {
+          "id": "US-SEC-05",
+          "titel": "Voldoen aan AVG- en beveiligingsrichtlijnen"
+        }
+      ],
+      "pagina": "Inloggen",
+      "onderdeel": "A. Inloggen, rechten en eigen account",
+      "module": "01-inloggen",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Pagina \"Dashboard\" geopend, zijbalk toont \"Peter Abraham\".",
+      "screenshot": "TC-01.png",
+      "duurMs": 864
+    },
+    {
+      "id": "TC-02",
+      "functie": "Inloggen met e-mailadres",
+      "eisen": [
+        "GBR-1"
+      ],
+      "soort": "Alternatief pad",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Directie",
+      "testdata": "p.abraham@voedselbank.nl / voedselbank",
+      "stappen": [
+        "Open /login",
+        "Vul het e-mailadres in plaats van de gebruikersnaam in",
+        "Klik op Inloggen"
+      ],
+      "verwacht": "Inloggen lukt ook met het e-mailadres.",
+      "userStories": [
+        {
+          "id": "US-SEC-03",
+          "titel": "Duidelijke en intuïtieve interface"
+        }
+      ],
+      "pagina": "Inloggen",
+      "onderdeel": "A. Inloggen, rechten en eigen account",
+      "module": "01-inloggen",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Ingelogd met e-mailadres, dashboard geopend.",
+      "screenshot": null,
+      "duurMs": 687
+    },
+    {
+      "id": "TC-03",
+      "functie": "Inloggen met fout wachtwoord",
+      "eisen": [
+        "TEC-6"
+      ],
+      "soort": "Negatief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "—",
+      "testdata": "p.abraham / fout123",
+      "stappen": [
+        "Open /login",
+        "Vul p.abraham en een fout wachtwoord in",
+        "Klik op Inloggen"
+      ],
+      "verwacht": "Melding \"Gebruikersnaam of wachtwoord is onjuist.\"; je blijft op het inlogscherm; wachtwoordveld wordt leeggemaakt.",
+      "userStories": [
+        {
+          "id": "US-SEC-05",
+          "titel": "Voldoen aan AVG- en beveiligingsrichtlijnen"
+        }
+      ],
+      "pagina": "Inloggen",
+      "onderdeel": "A. Inloggen, rechten en eigen account",
+      "module": "01-inloggen",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Melding \"Gebruikersnaam of wachtwoord is onjuist.\", wachtwoordveld leeg: ja.",
+      "screenshot": "TC-03.png",
+      "duurMs": 1281
+    },
+    {
+      "id": "TC-04",
+      "functie": "Inloggen met onbekende gebruiker",
+      "eisen": [
+        "TEC-6"
+      ],
+      "soort": "Negatief",
+      "testvorm": "Technisch (API)",
+      "rol": "—",
+      "testdata": "bestaatniet / voedselbank",
+      "stappen": [
+        "POST /api/auth/login met een onbekende gebruikersnaam"
+      ],
+      "verwacht": "Status 401 met exact dezelfde melding als bij een fout wachtwoord (zo kun je niet raden welke accounts bestaan).",
+      "userStories": [
+        {
+          "id": "US-SEC-05",
+          "titel": "Voldoen aan AVG- en beveiligingsrichtlijnen"
+        }
+      ],
+      "pagina": "Inloggen (achter de schermen: API)",
+      "onderdeel": "A. Inloggen, rechten en eigen account",
+      "module": "01-inloggen",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Onbekend: 401 \"Gebruikersnaam of wachtwoord is onjuist.\"; fout wachtwoord: 401 \"Gebruikersnaam of wachtwoord is onjuist.\".",
+      "screenshot": null,
+      "duurMs": 941
+    },
+    {
+      "id": "TC-05",
+      "functie": "Inloggen met lege velden",
+      "eisen": [
+        "TEC-1"
+      ],
+      "soort": "Negatief",
+      "testvorm": "Technisch (API)",
+      "rol": "—",
+      "testdata": "leeg / leeg",
+      "stappen": [
+        "POST /api/auth/login zonder gebruikersnaam en wachtwoord"
+      ],
+      "verwacht": "Status 422 \"Vul je gebruikersnaam en wachtwoord in.\"",
+      "userStories": [
+        {
+          "id": "US-SEC-03",
+          "titel": "Duidelijke en intuïtieve interface"
+        }
+      ],
+      "pagina": "Inloggen (achter de schermen: API)",
+      "onderdeel": "A. Inloggen, rechten en eigen account",
+      "module": "01-inloggen",
+      "resultaat": "Geslaagd",
+      "werkelijk": "422 \"Vul je gebruikersnaam en wachtwoord in.\"",
+      "screenshot": null,
+      "duurMs": 15
+    },
+    {
+      "id": "TC-06",
+      "functie": "Geblokkeerd account kan niet inloggen",
+      "eisen": [
+        "GBR-6"
+      ],
+      "soort": "Negatief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Vrijwilliger (geblokkeerd)",
+      "testdata": "k.degraaf / voedselbank (Actief = 0)",
+      "stappen": [
+        "Open /login",
+        "Log in als k.degraaf"
+      ],
+      "verwacht": "Melding \"Je account is geblokkeerd. Neem contact op met de directie.\"",
+      "userStories": [
+        {
+          "id": "US-GBR-03",
+          "titel": "Gebruikers blokkeren"
+        }
+      ],
+      "pagina": "Inloggen",
+      "onderdeel": "A. Inloggen, rechten en eigen account",
+      "module": "01-inloggen",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Melding: \"Je account is geblokkeerd. Neem contact op met de directie.\"",
+      "screenshot": null,
+      "duurMs": 461
+    },
+    {
+      "id": "TC-07",
+      "functie": "Account op slot na 10 mislukte pogingen",
+      "eisen": [
+        "TEC-6"
+      ],
+      "soort": "Grensgeval",
+      "testvorm": "Beveiliging",
+      "rol": "Magazijnmedewerker",
+      "testdata": "r.veenstra, 10× fout wachtwoord, daarna het goede",
+      "stappen": [
+        "Probeer 10 keer in te loggen met een fout wachtwoord",
+        "Probeer daarna met het goede wachtwoord"
+      ],
+      "verwacht": "Na 10 pogingen status 429 \"Te veel mislukte pogingen\", ook met het goede wachtwoord.",
+      "userStories": [
+        {
+          "id": "US-SEC-05",
+          "titel": "Voldoen aan AVG- en beveiligingsrichtlijnen"
+        }
+      ],
+      "pagina": "Inloggen",
+      "onderdeel": "A. Inloggen, rechten en eigen account",
+      "module": "01-inloggen",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Teller in database: 10; 11e poging met goed wachtwoord: 429 \"Te veel mislukte pogingen. Neem contact op met de directie.\".",
+      "screenshot": null,
+      "duurMs": 5960
+    },
+    {
+      "id": "TC-08",
+      "functie": "Uitloggen met bevestiging",
+      "eisen": [
+        "TEC-1",
+        "TEC-6"
+      ],
+      "soort": "Positief + alternatief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Vrijwilliger",
+      "testdata": "a.degroot",
+      "stappen": [
+        "Klik op Uitloggen in de zijbalk",
+        "Kies Annuleren",
+        "Klik opnieuw op Uitloggen",
+        "Kies \"Ja, uitloggen\""
+      ],
+      "verwacht": "Na Annuleren blijf je ingelogd; na bevestigen ben je uitgelogd en sta je op het inlogscherm. De sessie is op de server vernietigd.",
+      "userStories": [
+        {
+          "id": "US-SEC-05",
+          "titel": "Voldoen aan AVG- en beveiligingsrichtlijnen"
+        },
+        {
+          "id": "US-SEC-03",
+          "titel": "Duidelijke en intuïtieve interface"
+        }
+      ],
+      "pagina": "Zijbalk → Uitloggen (elke pagina)",
+      "onderdeel": "A. Inloggen, rechten en eigen account",
+      "module": "01-inloggen",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Dialoog \"Uitloggen?Je wordt afgemeld en komt terug op het inlogscherm…\"; na Annuleren nog ingelogd: ja; na bevestigen /api/auth/me → ingelogd=false.",
+      "screenshot": "TC-08.png",
+      "duurMs": 1539
+    },
+    {
+      "id": "TC-09",
+      "functie": "Doorsturen naar inloggen en terug naar gevraagde pagina",
+      "eisen": [
+        "TEC-2",
+        "TEC-6"
+      ],
+      "soort": "Alternatief pad",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Directie",
+      "testdata": "URL /klanten zonder sessie",
+      "stappen": [
+        "Open /klanten zonder in te loggen",
+        "Log in als p.abraham"
+      ],
+      "verwacht": "Eerst doorgestuurd naar /login?terug=/klanten; na inloggen direct op de klantenpagina.",
+      "userStories": [
+        {
+          "id": "US-SEC-01",
+          "titel": "Alleen toegestane functies tonen"
+        },
+        {
+          "id": "US-WRK-06",
+          "titel": "Schermvolgorde aanpassen aan dagelijkse werkzaamheden"
+        }
+      ],
+      "pagina": "Inloggen → Klanten",
+      "onderdeel": "A. Inloggen, rechten en eigen account",
+      "module": "01-inloggen",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Doorgestuurd naar /login?terug=/klanten, na inloggen op /login.",
+      "screenshot": null,
+      "duurMs": 354
+    },
+    {
+      "id": "TC-10",
+      "functie": "Menu toont alleen pagina's van de eigen rol",
+      "eisen": [
+        "GBR-1",
+        "GBR-2",
+        "GBR-3",
+        "GBR-4"
+      ],
+      "soort": "Positief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Alle vier de rollen",
+      "testdata": "p.abraham, r.veenstra, a.degroot, m.snel",
+      "stappen": [
+        "Log per rol in",
+        "Lees de menu-items in de zijbalk"
+      ],
+      "verwacht": "Directie: alles. Magazijn: dashboard, producten, leveranciers, account. Vrijwilliger: dashboard, pakketten, uitgifte, producten (voorraad), klanten, account. Administratie: dashboard, klanten, rapportages, gebruikers, account.",
+      "userStories": [
+        {
+          "id": "US-SEC-01",
+          "titel": "Alleen toegestane functies tonen"
+        },
+        {
+          "id": "US-GBR-05",
+          "titel": "Directielid heeft volledige toegang"
+        },
+        {
+          "id": "US-GBR-06",
+          "titel": "Magazijnmedewerker heeft beperkte toegang"
+        },
+        {
+          "id": "US-GBR-07",
+          "titel": "Vrijwilliger heeft toegang tot pakketten"
+        }
+      ],
+      "pagina": "Zijbalk / menu (alle rollen)",
+      "onderdeel": "A. Inloggen, rechten en eigen account",
+      "module": "01-inloggen",
+      "resultaat": "Geslaagd",
+      "werkelijk": "p.abraham: Dashboard,Voedselpakketten,Uitgifte,Producten,Leveranciers,Klanten,Rapportages,Gebruikers,Mijn account | r.veenstra: Dashboard,Producten,Leveranciers,Mijn account | a.degroot: Dashboard,Voedselpakketten,Uitgifte,Producten,Klanten,Mijn account | m.snel: Dashboard,Klanten,Rapportages,Gebruikers,Mijn account",
+      "screenshot": null,
+      "duurMs": 3259
+    },
+    {
+      "id": "TC-11",
+      "functie": "Pagina zonder recht via de URL openen",
+      "eisen": [
+        "GBR-3",
+        "TEC-4"
+      ],
+      "soort": "Negatief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Magazijnmedewerker",
+      "testdata": "r.veenstra opent /klanten",
+      "stappen": [
+        "Log in als magazijnmedewerker",
+        "Typ /klanten in de adresbalk"
+      ],
+      "verwacht": "Pagina \"Geen toegang\" met de pagina's waar de rol wel bij mag; er worden geen klantgegevens geladen.",
+      "userStories": [
+        {
+          "id": "US-SEC-01",
+          "titel": "Alleen toegestane functies tonen"
+        },
+        {
+          "id": "US-GBR-06",
+          "titel": "Magazijnmedewerker heeft beperkte toegang"
+        }
+      ],
+      "pagina": "Klanten (via de adresbalk)",
+      "onderdeel": "A. Inloggen, rechten en eigen account",
+      "module": "01-inloggen",
+      "resultaat": "Geslaagd",
+      "werkelijk": "\"Je hebt geen rechten voor deze pagina. Als magazijnmedewerker kun je wel bij: Dashboard, Producten, Leveranciers, Mijn account.\" — verzoek naar /api/klanten gedaan: nee.",
+      "screenshot": "TC-11.png",
+      "duurMs": 1298
+    },
+    {
+      "id": "TC-12",
+      "functie": "Server weigert acties zonder permissie (403)",
+      "eisen": [
+        "GBR-3",
+        "GBR-4",
+        "TEC-4",
+        "TEC-6"
+      ],
+      "soort": "Negatief",
+      "testvorm": "Beveiliging",
+      "rol": "Vrijwilliger, Magazijn, Administratie",
+      "testdata": "API-verzoeken buiten de eigen rol",
+      "stappen": [
+        "Vrijwilliger: GET /api/gebruikers",
+        "Magazijn: GET /api/klanten",
+        "Administratie: POST /api/categorieen",
+        "Vrijwilliger: DELETE /api/klanten/9"
+      ],
+      "verwacht": "Alle vier geven status 403 \"Je hebt geen rechten voor deze actie.\" en er verandert niets.",
+      "userStories": [
+        {
+          "id": "US-SEC-01",
+          "titel": "Alleen toegestane functies tonen"
+        },
+        {
+          "id": "US-GBR-06",
+          "titel": "Magazijnmedewerker heeft beperkte toegang"
+        },
+        {
+          "id": "US-GBR-09",
+          "titel": "Vrijwilliger mag geen productbeheer uitvoeren"
+        }
+      ],
+      "pagina": "Achter de schermen (API)",
+      "onderdeel": "A. Inloggen, rechten en eigen account",
+      "module": "01-inloggen",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Statussen: 403, 403, 403, 403; klant 9 bestaat nog: ja.",
+      "screenshot": null,
+      "duurMs": 913
+    },
+    {
+      "id": "TC-13",
+      "functie": "Server weigert verzoeken zonder sessie (401)",
+      "eisen": [
+        "TEC-6"
+      ],
+      "soort": "Negatief",
+      "testvorm": "Beveiliging",
+      "rol": "—",
+      "testdata": "Geen cookie",
+      "stappen": [
+        "GET /api/dashboard, /api/producten en /api/klanten zonder sessie"
+      ],
+      "verwacht": "Status 401 met login_nodig = true; de frontend stuurt dan naar het inlogscherm.",
+      "userStories": [
+        {
+          "id": "US-SEC-05",
+          "titel": "Voldoen aan AVG- en beveiligingsrichtlijnen"
+        }
+      ],
+      "pagina": "Achter de schermen (API)",
+      "onderdeel": "A. Inloggen, rechten en eigen account",
+      "module": "01-inloggen",
+      "resultaat": "Geslaagd",
+      "werkelijk": "401 {\"fout\":\"Je bent niet (meer) ingelogd.\",\"login_nodig\":true} | 401 {\"fout\":\"Je bent niet (meer) ingelogd.\",\"login_nodig\":true} | 401 {\"fout\":\"Je bent niet (meer) ingelogd.\",\"login_nodig\":true}",
+      "screenshot": null,
+      "duurMs": 24
+    },
+    {
+      "id": "TC-14",
+      "functie": "Blokkeren werkt direct, ook bij een open sessie",
+      "eisen": [
+        "GBR-6",
+        "TEC-6"
+      ],
+      "soort": "Grensgeval",
+      "testvorm": "Beveiliging",
+      "rol": "Directie + Vrijwilliger",
+      "testdata": "a.degroot is ingelogd; directie blokkeert haar",
+      "stappen": [
+        "Vrijwilliger logt in",
+        "Directie blokkeert de vrijwilliger",
+        "Vrijwilliger doet een nieuw verzoek"
+      ],
+      "verwacht": "Het volgende verzoek van de vrijwilliger geeft 401; de sessie is ongeldig.",
+      "userStories": [
+        {
+          "id": "US-GBR-03",
+          "titel": "Gebruikers blokkeren"
+        }
+      ],
+      "pagina": "Gebruikers (+ API)",
+      "onderdeel": "A. Inloggen, rechten en eigen account",
+      "module": "01-inloggen",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Voor blokkeren: 200; na blokkeren: 401.",
+      "screenshot": null,
+      "duurMs": 650
+    },
+    {
+      "id": "TC-15",
+      "functie": "Eigen wachtwoord wijzigen",
+      "eisen": [
+        "GBR-5"
+      ],
+      "soort": "Positief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Vrijwilliger",
+      "testdata": "huidig voedselbank → nieuw Vrijdag2026",
+      "stappen": [
+        "Ga naar Mijn account",
+        "Vul huidig, nieuw en herhaling in",
+        "Klik op Wachtwoord opslaan",
+        "Log uit en in met het nieuwe wachtwoord"
+      ],
+      "verwacht": "Melding \"Je wachtwoord is gewijzigd.\"; inloggen lukt met het nieuwe en niet meer met het oude wachtwoord.",
+      "userStories": [
+        {
+          "id": "US-GBR-04",
+          "titel": "Eigen wachtwoord wijzigen"
+        }
+      ],
+      "pagina": "Mijn account",
+      "onderdeel": "A. Inloggen, rechten en eigen account",
+      "module": "01-inloggen",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Toast \"Je wachtwoord is gewijzigd.\"; oud wachtwoord: 401, nieuw wachtwoord: 200.",
+      "screenshot": null,
+      "duurMs": 3068
+    },
+    {
+      "id": "TC-16",
+      "functie": "Wachtwoord wijzigen met foute invoer",
+      "eisen": [
+        "GBR-5",
+        "TEC-6"
+      ],
+      "soort": "Negatief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Directie",
+      "testdata": "huidig \"fout\", nieuw \"kort\", herhaling \"anders\"",
+      "stappen": [
+        "Ga naar Mijn account",
+        "Vul een fout huidig wachtwoord, een te zwak nieuw wachtwoord en een afwijkende herhaling in",
+        "Klik op opslaan"
+      ],
+      "verwacht": "Drie veldmeldingen: huidig klopt niet; minimaal 8 tekens met letters én cijfers; wachtwoorden niet gelijk. Wachtwoord blijft ongewijzigd.",
+      "userStories": [
+        {
+          "id": "US-GBR-04",
+          "titel": "Eigen wachtwoord wijzigen"
+        }
+      ],
+      "pagina": "Mijn account",
+      "onderdeel": "A. Inloggen, rechten en eigen account",
+      "module": "01-inloggen",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Veldmeldingen: Je huidige wachtwoord klopt niet. / Gebruik minimaal 8 tekens met letters én cijfers. / De twee wachtwoorden zijn niet gelijk.. Oud wachtwoord werkt nog: ja.",
+      "screenshot": "TC-16.png",
+      "duurMs": 2524
+    },
+    {
+      "id": "TC-17",
+      "functie": "Mijn account: gegevens en eigen rechten",
+      "eisen": [
+        "GBR-1",
+        "TEC-1"
+      ],
+      "soort": "Positief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Magazijnmedewerker",
+      "testdata": "r.veenstra",
+      "stappen": [
+        "Ga naar Mijn account"
+      ],
+      "verwacht": "Naam, gebruikersnaam, e-mail en rol staan er; de rechtenlijst bevat precies de rechten van de rol.",
+      "userStories": [
+        {
+          "id": "US-SEC-01",
+          "titel": "Alleen toegestane functies tonen"
+        }
+      ],
+      "pagina": "Mijn account",
+      "onderdeel": "A. Inloggen, rechten en eigen account",
+      "module": "01-inloggen",
+      "resultaat": "Geslaagd",
+      "werkelijk": "4 rechten getoond (database: 4): Leveringen registreren, Voorraadniveaus corrigeren (Magazijn), Producten toevoegen, wijzigen en verwijderen, Leveranciers toevoegen, wijzigen en verwijderen.",
+      "screenshot": null,
+      "duurMs": 1406
+    },
+    {
+      "id": "TC-18",
+      "functie": "Dashboard directie: volledig beeld",
+      "eisen": [
+        "GBR-2",
+        "TEC-3"
+      ],
+      "soort": "Positief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Directie",
+      "testdata": "p.abraham + standaard testdata",
+      "stappen": [
+        "Log in als directie",
+        "Bekijk het dashboard"
+      ],
+      "verwacht": "Taken, cijferkaarten voor voorraad, pakketten, uitgifte, klanten en medewerkers, de grafiek wekelijkse uitgifte en de lijsten.",
+      "userStories": [
+        {
+          "id": "US-GBR-05",
+          "titel": "Directielid heeft volledige toegang"
+        },
+        {
+          "id": "US-SEC-04",
+          "titel": "Gegevens snel en overzichtelijk toegankelijk"
+        }
+      ],
+      "pagina": "Dashboard",
+      "onderdeel": "B. Dashboard",
+      "module": "02-dashboard",
+      "resultaat": "Geslaagd",
+      "werkelijk": "9 kaarten (Voorraad totaal, Onder minimumvoorraad, Bijna over de THT, Eerstvolgende levering, Pakketten deze week, Nog samen te stellen, Klaar voor uitgifte, Klanten actief, Medewerkers); 8 blokken; grafiek zichtbaar: ja.",
+      "screenshot": "TC-18.png",
+      "duurMs": 1132
+    },
+    {
+      "id": "TC-19",
+      "functie": "Dashboard magazijnmedewerker",
+      "eisen": [
+        "GBR-3",
+        "TEC-2"
+      ],
+      "soort": "Positief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Magazijnmedewerker",
+      "testdata": "r.veenstra",
+      "stappen": [
+        "Log in als magazijnmedewerker",
+        "Bekijk het dashboard"
+      ],
+      "verwacht": "Voorraad, minimumvoorraad, THT en leveringen; géén klanten-, pakket- of gebruikerskaarten.",
+      "userStories": [
+        {
+          "id": "US-GBR-06",
+          "titel": "Magazijnmedewerker heeft beperkte toegang"
+        },
+        {
+          "id": "US-LEV-06",
+          "titel": "Eerstvolgende levering bekijken"
+        }
+      ],
+      "pagina": "Dashboard",
+      "onderdeel": "B. Dashboard",
+      "module": "02-dashboard",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Kaarten: Voorraad totaal, Onder minimumvoorraad, Bijna over de THT, Eerstvolgende levering.",
+      "screenshot": "TC-19.png",
+      "duurMs": 1017
+    },
+    {
+      "id": "TC-20",
+      "functie": "Dashboard vrijwilliger",
+      "eisen": [
+        "GBR-4",
+        "TEC-2"
+      ],
+      "soort": "Positief",
+      "testvorm": "Technisch (API)",
+      "rol": "Vrijwilliger",
+      "testdata": "a.degroot",
+      "stappen": [
+        "GET /api/dashboard als vrijwilliger"
+      ],
+      "verwacht": "Pakketten deze week, nog samen te stellen, klaar voor uitgifte en THT; géén totale voorraad of minimumvoorraad.",
+      "userStories": [
+        {
+          "id": "US-GBR-07",
+          "titel": "Vrijwilliger heeft toegang tot pakketten"
+        },
+        {
+          "id": "US-WRK-04",
+          "titel": "Op donderdag pakketten samenstellen"
+        }
+      ],
+      "pagina": "Dashboard (achter de schermen: API)",
+      "onderdeel": "B. Dashboard",
+      "module": "02-dashboard",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Kaarten: Bijna over de THT, Pakketten deze week, Nog samen te stellen, Klaar voor uitgifte, Klanten actief.",
+      "screenshot": null,
+      "duurMs": 302
+    },
+    {
+      "id": "TC-21",
+      "functie": "Dashboard administratie",
+      "eisen": [
+        "TEC-4"
+      ],
+      "soort": "Positief",
+      "testvorm": "Technisch (API)",
+      "rol": "Administratie",
+      "testdata": "m.snel",
+      "stappen": [
+        "GET /api/dashboard als administratie"
+      ],
+      "verwacht": "Klanten actief + de lijst \"Aanvragen die wachten op beoordeling\" (2 aanvragen), cijfers en medewerkers; géén voorraad.",
+      "userStories": [
+        {
+          "id": "US-KLT-12",
+          "titel": "Klanten accepteren of afwijzen"
+        },
+        {
+          "id": "US-SEC-02",
+          "titel": "Privacygevoelige klantgegevens beschermen"
+        }
+      ],
+      "pagina": "Dashboard (achter de schermen: API)",
+      "onderdeel": "B. Dashboard",
+      "module": "02-dashboard",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Kaarten: Klanten actief, Medewerkers. Blokken: Aanvragen die wachten op beoordeling, Wekelijkse uitgifte pakketten. Wachtende aanvragen: Familie Diallo, Dhr. Nowak.",
+      "screenshot": null,
+      "duurMs": 294
+    },
+    {
+      "id": "TC-22",
+      "functie": "Taken en links op het dashboard",
+      "eisen": [
+        "TEC-2",
+        "TEC-3",
+        "WRK-2"
+      ],
+      "soort": "Positief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Vrijwilliger",
+      "testdata": "a.degroot; gezin Familie Bakker heeft deze week nog geen pakket",
+      "stappen": [
+        "Klik in de takenlijst op \"Bekijken →\" bij de gezinnen zonder pakket",
+        "Ga terug en klik in \"Gezinnen zonder pakket deze week\" op Familie Bakker"
+      ],
+      "verwacht": "Eerste klik opent Voedselpakketten; tweede klik opent Voedselpakketten met Familie Bakker al gekozen.",
+      "userStories": [
+        {
+          "id": "US-WRK-06",
+          "titel": "Schermvolgorde aanpassen aan dagelijkse werkzaamheden"
+        },
+        {
+          "id": "US-SEC-04",
+          "titel": "Gegevens snel en overzichtelijk toegankelijk"
+        }
+      ],
+      "pagina": "Dashboard → Voedselpakketten",
+      "onderdeel": "B. Dashboard",
+      "module": "02-dashboard",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Taak-link → /pakketten; gezinslink → /pakketten?klant=1 met gekozen gezin \"Familie Bakker\".",
+      "screenshot": null,
+      "duurMs": 1655
+    },
+    {
+      "id": "TC-23",
+      "functie": "Overzicht gebruikers, rollen en rechten",
+      "eisen": [
+        "GBR-1",
+        "GBR-6"
+      ],
+      "soort": "Positief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Directie",
+      "testdata": "5 accounts, 4 rollen",
+      "stappen": [
+        "Ga naar Gebruikers",
+        "Klap Ank de Groot uit",
+        "Bekijk de tabel \"Rollen en wat ze mogen\""
+      ],
+      "verwacht": "Alle 5 accounts met rol, laatste login en status; per gebruiker de rechten met ✓/✕; per rol de rechten.",
+      "userStories": [
+        {
+          "id": "US-GBR-02",
+          "titel": "Gebruikersgegevens wijzigen"
+        },
+        {
+          "id": "US-SEC-01",
+          "titel": "Alleen toegestane functies tonen"
+        }
+      ],
+      "pagina": "Gebruikers",
+      "onderdeel": "C. Gebruikers en toegangsbeheer",
+      "module": "03-gebruikers",
+      "resultaat": "Geslaagd",
+      "werkelijk": "5 gebruikers; Ank de Groot: 4 rechten ✓ en 6 ✕; 4 rollen in de rechtentabel.",
+      "screenshot": "TC-23.png",
+      "duurMs": 1623
+    },
+    {
+      "id": "TC-24",
+      "functie": "Nieuwe gebruiker aanmaken",
+      "eisen": [
+        "GBR-6"
+      ],
+      "soort": "Positief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Directie",
+      "testdata": "Rick Test, r.test, rick.test@voedselbank.nl, Vrijwilliger, wachtwoord Welkom2026",
+      "stappen": [
+        "Klik op \"+ Nieuwe gebruiker\"",
+        "Vul alle velden in en kies rol Vrijwilliger",
+        "Klik op Opslaan",
+        "Log in met het nieuwe account"
+      ],
+      "verwacht": "Melding \"Account aangemaakt voor Rick Test.\"; account staat in de lijst; inloggen lukt en de gebruiker krijgt het vrijwilligersmenu.",
+      "userStories": [
+        {
+          "id": "US-GBR-01",
+          "titel": "Gebruikers toevoegen"
+        }
+      ],
+      "pagina": "Gebruikers → + Nieuwe gebruiker",
+      "onderdeel": "C. Gebruikers en toegangsbeheer",
+      "module": "03-gebruikers",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Toast \"Account aangemaakt voor Rick Test.\"; in lijst: ja; inloggen: 200 als Vrijwilliger.",
+      "screenshot": "TC-24.png",
+      "duurMs": 2443
+    },
+    {
+      "id": "TC-25",
+      "functie": "Nieuwe gebruiker: validatie en unieke gebruikersnaam",
+      "eisen": [
+        "GBR-6",
+        "TEC-6"
+      ],
+      "soort": "Negatief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Directie",
+      "testdata": "1) alles leeg  2) gebruikersnaam a.degroot (bestaat al), e-mail \"geen-mail\", wachtwoord \"abc\"",
+      "stappen": [
+        "Klik op \"+ Nieuwe gebruiker\" en direct op Opslaan",
+        "Vul een bestaande gebruikersnaam, ongeldig e-mailadres en zwak wachtwoord in",
+        "Klik op Opslaan"
+      ],
+      "verwacht": "Leeg: meldingen bij naam, gebruikersnaam, e-mail en wachtwoord. Daarna: \"Deze gebruikersnaam bestaat al.\", \"Vul een geldig e-mailadres in.\", wachtwoordeis. Er wordt niets opgeslagen.",
+      "userStories": [
+        {
+          "id": "US-GBR-01",
+          "titel": "Gebruikers toevoegen"
+        }
+      ],
+      "pagina": "Gebruikers → + Nieuwe gebruiker",
+      "onderdeel": "C. Gebruikers en toegangsbeheer",
+      "module": "03-gebruikers",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Leeg: Vul de naam in. / Gebruik 3 tot 60 tekens: letters, cijfers, punt, streepje of underscore. / Vul een geldig e-mailadres in. / Gebruik minimaal 8 tekens met letters én cijfers.. Foute invoer: Deze gebruikersnaam bestaat al. / Vul een geldig e-mailadres in. / Gebruik minimaal 8 tekens met letters én cijfers.. Aantal gebruikers voor/na: 6/6.",
+      "screenshot": "TC-25.png",
+      "duurMs": 2597
+    },
+    {
+      "id": "TC-26",
+      "functie": "Gebruiker bewerken en rol wijzigen",
+      "eisen": [
+        "GBR-6",
+        "GBR-1"
+      ],
+      "soort": "Positief",
+      "testvorm": "Functioneel (UI) + API",
+      "rol": "Directie",
+      "testdata": "Ank de Groot: Vrijwilliger → Magazijnmedewerker",
+      "stappen": [
+        "Klap Ank de Groot uit en klik op \"Account bewerken\"",
+        "Kies rol Magazijnmedewerker en sla op",
+        "Ank doet een verzoek naar pakketten en producten"
+      ],
+      "verwacht": "Melding \"Account bijgewerkt.\"; rolpil toont MAGAZIJNMEDEWERKER; de nieuwe rechten gelden direct (pakketten 403, producten beheren mag).",
+      "userStories": [
+        {
+          "id": "US-GBR-02",
+          "titel": "Gebruikersgegevens wijzigen"
+        }
+      ],
+      "pagina": "Gebruikers → Account bewerken",
+      "onderdeel": "C. Gebruikers en toegangsbeheer",
+      "module": "03-gebruikers",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Toast \"Account bijgewerkt.\"; rol nu MAGAZIJNMEDEWERKER; bestaande sessie van Ank: pakketten 403, producten beheren true.",
+      "screenshot": null,
+      "duurMs": 2619
+    },
+    {
+      "id": "TC-27",
+      "functie": "Account blokkeren en deblokkeren",
+      "eisen": [
+        "GBR-6"
+      ],
+      "soort": "Positief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Directie",
+      "testdata": "Mark Snel (m.snel)",
+      "stappen": [
+        "Klap Mark Snel uit, klik Blokkeren en bevestig",
+        "Probeer in te loggen als m.snel",
+        "Klik Deblokkeren en bevestig",
+        "Probeer opnieuw in te loggen"
+      ],
+      "verwacht": "Na blokkeren status \"Geblokkeerd\" en inloggen geweigerd (403); na deblokkeren status \"Actief\" en inloggen lukt. Account wordt niet verwijderd.",
+      "userStories": [
+        {
+          "id": "US-GBR-03",
+          "titel": "Gebruikers blokkeren"
+        }
+      ],
+      "pagina": "Gebruikers → Blokkeren",
+      "onderdeel": "C. Gebruikers en toegangsbeheer",
+      "module": "03-gebruikers",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Mirjam Snel: \"Mirjam Snel is geblokkeerd en kan niet meer inloggen.\" → login 403; \"Mirjam Snel kan weer inloggen.\" → login 200.",
+      "screenshot": "TC-27.png",
+      "duurMs": 2695
+    },
+    {
+      "id": "TC-28",
+      "functie": "Eigen account kan niet geblokkeerd worden",
+      "eisen": [
+        "GBR-6"
+      ],
+      "soort": "Negatief",
+      "testvorm": "Technisch (API)",
+      "rol": "Directie",
+      "testdata": "p.abraham blokkeert zichzelf",
+      "stappen": [
+        "PATCH /api/gebruikers/1/actief {actief:false} als p.abraham"
+      ],
+      "verwacht": "Status 409 \"Je kunt je eigen account niet blokkeren.\"",
+      "userStories": [
+        {
+          "id": "US-GBR-03",
+          "titel": "Gebruikers blokkeren"
+        }
+      ],
+      "pagina": "Gebruikers (achter de schermen: API)",
+      "onderdeel": "C. Gebruikers en toegangsbeheer",
+      "module": "03-gebruikers",
+      "resultaat": "Geslaagd",
+      "werkelijk": "409 \"Je kunt je eigen account niet blokkeren.\"",
+      "screenshot": null,
+      "duurMs": 319
+    },
+    {
+      "id": "TC-29",
+      "functie": "Laatste directielid blijft beschermd",
+      "eisen": [
+        "GBR-2",
+        "GBR-6"
+      ],
+      "soort": "Grensgeval",
+      "testvorm": "Technisch (API)",
+      "rol": "Administratie (heeft gebruiker_beheren)",
+      "testdata": "m.snel probeert p.abraham te blokkeren en te degraderen",
+      "stappen": [
+        "PATCH /api/gebruikers/1/actief {actief:false}",
+        "PUT /api/gebruikers/1 met rol Vrijwilliger"
+      ],
+      "verwacht": "Beide 409: het laatste actieve directie-account kan niet geblokkeerd of gedegradeerd worden.",
+      "userStories": [
+        {
+          "id": "US-GBR-03",
+          "titel": "Gebruikers blokkeren"
+        },
+        {
+          "id": "US-GBR-05",
+          "titel": "Directielid heeft volledige toegang"
+        }
+      ],
+      "pagina": "Gebruikers (achter de schermen: API)",
+      "onderdeel": "C. Gebruikers en toegangsbeheer",
+      "module": "03-gebruikers",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Blokkeren: 409 \"Dit is het laatste actieve directie-account en kan niet geblokkeerd worden.\". Degraderen: 409 \"Dit is het laatste actieve directie-account. Maak eerst iemand anders directielid.\".",
+      "screenshot": null,
+      "duurMs": 328
+    },
+    {
+      "id": "TC-30",
+      "functie": "Wachtwoord resetten door de beheerder",
+      "eisen": [
+        "GBR-6",
+        "GBR-5"
+      ],
+      "soort": "Positief + negatief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Directie",
+      "testdata": "Rob Veenstra: eerst \"kort\" (te zwak), dan Magazijn2026",
+      "stappen": [
+        "Klap Rob Veenstra uit en klik \"Wachtwoord resetten\"",
+        "Vul \"kort\" in en bevestig",
+        "Probeer opnieuw met Magazijn2026",
+        "Log in als r.veenstra met het nieuwe wachtwoord"
+      ],
+      "verwacht": "Zwak wachtwoord geweigerd met de wachtwoordeis; sterk wachtwoord geeft \"Nieuw wachtwoord ingesteld.\" en inloggen lukt.",
+      "userStories": [
+        {
+          "id": "US-GBR-02",
+          "titel": "Gebruikersgegevens wijzigen"
+        },
+        {
+          "id": "US-GBR-04",
+          "titel": "Eigen wachtwoord wijzigen"
+        }
+      ],
+      "pagina": "Gebruikers → Wachtwoord resetten",
+      "onderdeel": "C. Gebruikers en toegangsbeheer",
+      "module": "03-gebruikers",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Zwak: \"Gebruik minimaal 8 tekens met letters én cijfers.\". Sterk: \"Nieuw wachtwoord ingesteld.\". Inloggen met nieuw wachtwoord: 200.",
+      "screenshot": null,
+      "duurMs": 2633
+    },
+    {
+      "id": "TC-31",
+      "functie": "Klantenoverzicht, zoeken en statusfilter",
+      "eisen": [
+        "KLT-1",
+        "TEC-3"
+      ],
+      "soort": "Positief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Directie",
+      "testdata": "11 gezinnen; zoektermen \"Bakker\", \"Bart\" (gezinslid), \"K-003\"; filter \"wacht op beoordeling\"",
+      "stappen": [
+        "Ga naar Klanten",
+        "Zoek op \"Bakker\", daarna op \"Bart\" en \"K-003\"",
+        "Wis de zoekterm en kies Status: wacht op beoordeling"
+      ],
+      "verwacht": "Alle 11 gezinnen; \"Bakker\" en \"Bart\" vinden Familie Bakker; \"K-003\" vindt Mevr. Jansen; het filter toont de 2 wachtende aanvragen.",
+      "userStories": [
+        {
+          "id": "US-KLT-03",
+          "titel": "Klanten beheren en bekijken"
+        }
+      ],
+      "pagina": "Klanten",
+      "onderdeel": "D. Klanten en gezinnen",
+      "module": "04-klanten",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Totaal 11; \"Bakker\" → Familie Bakker; \"Bart\" → Familie Bakker; \"K-003\" → Mevr. Jansen; filter wacht → Dhr. Nowak, Familie Diallo.",
+      "screenshot": "TC-31.png",
+      "duurMs": 2317
+    },
+    {
+      "id": "TC-32",
+      "functie": "Gezinsdetails: leden, leeftijd, type en wensen",
+      "eisen": [
+        "KLT-1",
+        "KLT-5",
+        "KLT-7"
+      ],
+      "soort": "Positief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Directie",
+      "testdata": "Familie Bakker (5 personen, glutenvrij + notenallergie met uitzondering)",
+      "stappen": [
+        "Klap Familie Bakker uit"
+      ],
+      "verwacht": "Contactgegevens, 5 gezinsleden met relatie en leeftijd, per lid de dieetwens, en de uitzondering met reden.",
+      "userStories": [
+        {
+          "id": "US-KLT-03",
+          "titel": "Klanten beheren en bekijken"
+        },
+        {
+          "id": "US-KLT-05",
+          "titel": "Gezinssamenstelling registreren"
+        },
+        {
+          "id": "US-KLT-06",
+          "titel": "Volwassenen, kinderen en baby's afzonderlijk registreren"
+        }
+      ],
+      "pagina": "Klanten (gezin uitklappen)",
+      "onderdeel": "D. Klanten en gezinnen",
+      "module": "04-klanten",
+      "resultaat": "Geslaagd",
+      "werkelijk": "5 gezinsleden getoond; types uit geboortedatum: Volwassene, Kind; uitzondering zichtbaar: ja.",
+      "screenshot": "TC-32.png",
+      "duurMs": 1958
+    },
+    {
+      "id": "TC-33",
+      "functie": "Nieuwe klant registreren",
+      "eisen": [
+        "KLT-1",
+        "KLT-2",
+        "KLT-4",
+        "KLT-5"
+      ],
+      "soort": "Positief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Directie",
+      "testdata": "Familie Testers, Teststraat 1, 5492 TT, 0612345678, test@voorbeeld.nl; leden Tim (1985, hoofdaanvrager) en Saar (2025, kind)",
+      "stappen": [
+        "Klik \"+ Nieuwe klant\"",
+        "Vul contactgegevens in",
+        "Vul twee gezinsleden in",
+        "Klik Opslaan"
+      ],
+      "verwacht": "Melding \"Klantgegevens opgeslagen.\"; gezin staat in de lijst met status \"Wacht op beoordeling\" en 2 personen; Tim is volwassene, Saar baby (≤ 2 jaar).",
+      "userStories": [
+        {
+          "id": "US-KLT-01",
+          "titel": "Klanten toevoegen"
+        },
+        {
+          "id": "US-KLT-04",
+          "titel": "Klantgegevens registreren"
+        },
+        {
+          "id": "US-KLT-05",
+          "titel": "Gezinssamenstelling registreren"
+        },
+        {
+          "id": "US-KLT-06",
+          "titel": "Volwassenen, kinderen en baby's afzonderlijk registreren"
+        }
+      ],
+      "pagina": "Klanten → + Nieuwe klant",
+      "onderdeel": "D. Klanten en gezinnen",
+      "module": "04-klanten",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Toast \"Klantgegevens opgeslagen.\"; status \"Wacht op beoordeling\"; 2 personen; types: Tim Testers=Volwassene, Saar Testers=Baby; klantnummer K-012.",
+      "screenshot": "TC-33.png",
+      "duurMs": 2592
+    },
+    {
+      "id": "TC-34",
+      "functie": "Nieuwe klant: validatie",
+      "eisen": [
+        "KLT-2",
+        "TEC-6"
+      ],
+      "soort": "Negatief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Directie",
+      "testdata": "postcode \"12AB\", e-mail \"geen-email\", geen gezinsleden",
+      "stappen": [
+        "Klik \"+ Nieuwe klant\"",
+        "Vul naam en adres in, foute postcode en e-mail, geen gezinslid",
+        "Klik Opslaan"
+      ],
+      "verwacht": "Veldmeldingen bij postcode (\"Bijvoorbeeld 5492 AB.\"), telefoon, e-mail en melding \"Voeg minimaal één gezinslid toe.\"; niets opgeslagen.",
+      "userStories": [
+        {
+          "id": "US-KLT-04",
+          "titel": "Klantgegevens registreren"
+        }
+      ],
+      "pagina": "Klanten → + Nieuwe klant",
+      "onderdeel": "D. Klanten en gezinnen",
+      "module": "04-klanten",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Veldmeldingen: Bijvoorbeeld 5492 AB. / Telefoonnummer is verplicht. / Vul een geldig e-mailadres in.; gezinsleden: \"Voeg minimaal één gezinslid toe.\"; opgeslagen: 0.",
+      "screenshot": "TC-34.png",
+      "duurMs": 2224
+    },
+    {
+      "id": "TC-35",
+      "functie": "Gezin bewerken: gezinslid en dieetwens toevoegen",
+      "eisen": [
+        "KLT-1",
+        "KLT-6",
+        "KLT-7"
+      ],
+      "soort": "Positief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Directie",
+      "testdata": "Familie Veldhuis + nieuw lid \"Noor Veldhuis\" (2018-03-03) met wens Vegetarisch",
+      "stappen": [
+        "Klap Familie Veldhuis uit en klik \"Gezin bewerken\"",
+        "Klik \"+ Gezinslid toevoegen\", vul het lid in en kies Vegetarisch",
+        "Opslaan"
+      ],
+      "verwacht": "Gezin heeft 7 personen; Vegetarisch staat bij de dieetbeperkingen van het gezin; Noor is een kind.",
+      "userStories": [
+        {
+          "id": "US-KLT-02",
+          "titel": "Klantgegevens wijzigen"
+        },
+        {
+          "id": "US-KLT-05",
+          "titel": "Gezinssamenstelling registreren"
+        },
+        {
+          "id": "US-KLT-07",
+          "titel": "Meerdere wensen per klant registreren"
+        },
+        {
+          "id": "US-KLT-09",
+          "titel": "Veganistische en vegetarische wensen registreren"
+        }
+      ],
+      "pagina": "Klanten → Gezin bewerken",
+      "onderdeel": "D. Klanten en gezinnen",
+      "module": "04-klanten",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Toast \"Klantgegevens opgeslagen.\"; gezinsgrootte 7; Noor: type Kind, wens Vegetarisch.",
+      "screenshot": null,
+      "duurMs": 2715
+    },
+    {
+      "id": "TC-36",
+      "functie": "Eigen dieetwens toevoegen",
+      "eisen": [
+        "KLT-6"
+      ],
+      "soort": "Positief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Vrijwilliger",
+      "testdata": "Wens \"Geen vis\", conflict-tag \"vis\", niet streng",
+      "stappen": [
+        "Open \"Gezin bewerken\" bij een gezin",
+        "Klik \"+ Eigen dieetwens toevoegen\"",
+        "Vul \"Geen vis\" en tag \"vis\" in, kies \"Wens of overtuiging\"",
+        "Klik Toevoegen"
+      ],
+      "verwacht": "Melding \"“Geen vis” staat nu in de lijst.\"; de wens is direct te kiezen bij elk gezinslid.",
+      "userStories": [
+        {
+          "id": "US-KLT-10",
+          "titel": "Eigen voedingswens/allergie invoeren"
+        }
+      ],
+      "pagina": "Klanten → Gezin bewerken → Eigen dieetwens",
+      "onderdeel": "D. Klanten en gezinnen",
+      "module": "04-klanten",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Toast \"\"Geen vis\" staat nu in de lijst.\"; optie in keuzelijst: ja; database tag/streng: vis/0.",
+      "screenshot": "TC-36.png",
+      "duurMs": 2388
+    },
+    {
+      "id": "TC-37",
+      "functie": "Uitzondering op allergie vastleggen (reden verplicht)",
+      "eisen": [
+        "KLT-6",
+        "PAK-1"
+      ],
+      "soort": "Negatief + positief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Directie",
+      "testdata": "S. El Jafari, Samira: Notenallergie; reden \"Alleen Rayan reageert, apart bewaren\"",
+      "stappen": [
+        "Bewerk S. El Jafari",
+        "Vink bij Samira \"het gezin wil dit tóch ontvangen\" aan zonder reden en sla op",
+        "Vul een reden in en sla opnieuw op"
+      ],
+      "verwacht": "Zonder reden: melding \"Vul een reden in bij elke uitzondering…\" en niets opgeslagen. Met reden: opgeslagen; de uitzondering staat in de gezinsdetails.",
+      "userStories": [
+        {
+          "id": "US-KLT-07",
+          "titel": "Meerdere wensen per klant registreren"
+        },
+        {
+          "id": "US-KLT-08",
+          "titel": "Specifieke allergieën en voedingsbeperkingen registreren"
+        }
+      ],
+      "pagina": "Klanten → Gezin bewerken",
+      "onderdeel": "D. Klanten en gezinnen",
+      "module": "04-klanten",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Zonder reden: \"Vul een reden in bij elke uitzondering, of haal het vinkje weg.\" (uitzonderingen in db: 1). Met reden: \"Klantgegevens opgeslagen.\" (uitzonderingen in db: 2).",
+      "screenshot": null,
+      "duurMs": 2784
+    },
+    {
+      "id": "TC-38",
+      "functie": "Aanmelding accepteren",
+      "eisen": [
+        "KLT-4"
+      ],
+      "soort": "Positief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Directie",
+      "testdata": "Familie Diallo (wacht op beoordeling)",
+      "stappen": [
+        "Klap Familie Diallo uit",
+        "Klik \"Aanvraag accepteren\" en bevestig"
+      ],
+      "verwacht": "Melding \"Familie Diallo is geaccepteerd en kan pakketten ontvangen.\"; status \"Actief\"; gezin verschijnt bij het samenstellen van pakketten.",
+      "userStories": [
+        {
+          "id": "US-KLT-12",
+          "titel": "Klanten accepteren of afwijzen"
+        }
+      ],
+      "pagina": "Klanten → Aanvraag accepteren",
+      "onderdeel": "D. Klanten en gezinnen",
+      "module": "04-klanten",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Toast \"Familie Diallo is geaccepteerd en kan pakketten ontvangen.\"; status \"Actief\"; zichtbaar bij samenstellen: ja.",
+      "screenshot": null,
+      "duurMs": 2169
+    },
+    {
+      "id": "TC-39",
+      "functie": "Aanmelding afwijzen / op non-actief",
+      "eisen": [
+        "KLT-4",
+        "PAK-4"
+      ],
+      "soort": "Positief + negatief",
+      "testvorm": "Functioneel (UI) + API",
+      "rol": "Directie + Vrijwilliger",
+      "testdata": "Dhr. Nowak (wacht op beoordeling)",
+      "stappen": [
+        "Klap Dhr. Nowak uit, klik \"Afwijzen\" en bevestig",
+        "Vrijwilliger probeert via de API een pakket voor Nowak op te slaan"
+      ],
+      "verwacht": "Status \"Afgewezen\"; Nowak staat niet in de samenstellijst; pakket opslaan geeft 422 \"Deze klant is nog niet geaccepteerd…\".",
+      "userStories": [
+        {
+          "id": "US-KLT-12",
+          "titel": "Klanten accepteren of afwijzen"
+        }
+      ],
+      "pagina": "Klanten → Afwijzen",
+      "onderdeel": "D. Klanten en gezinnen",
+      "module": "04-klanten",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Toast \"Dhr. Nowak staat nu op non-actief.\"; in samenstellijst: nee; pakket opslaan: 422 \"Deze klant is nog niet geaccepteerd en mag geen pakket krijgen.\".",
+      "screenshot": null,
+      "duurMs": 2218
+    },
+    {
+      "id": "TC-40",
+      "functie": "Klant zonder historie verwijderen",
+      "eisen": [
+        "KLT-1"
+      ],
+      "soort": "Positief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Directie",
+      "testdata": "Familie Van Rooij (geen pakketten, 2 gezinsleden)",
+      "stappen": [
+        "Klap Familie Van Rooij uit",
+        "Klik \"Klant verwijderen\" en bevestig"
+      ],
+      "verwacht": "Melding \"…is verwijderd, inclusief de gezinsleden en hun dieetwensen.\"; gezin en gezinsleden zijn weg uit de database.",
+      "userStories": [
+        {
+          "id": "US-KLT-03",
+          "titel": "Klanten beheren en bekijken"
+        }
+      ],
+      "pagina": "Klanten → Klant verwijderen",
+      "onderdeel": "D. Klanten en gezinnen",
+      "module": "04-klanten",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Toast \"Familie Van Rooij is verwijderd, inclusief de gezinsleden en hun dieetwensen.\"; klant in db: 0; gezinsleden in db: 0.",
+      "screenshot": null,
+      "duurMs": 1924
+    },
+    {
+      "id": "TC-41",
+      "functie": "Klant met pakkethistorie kan niet verwijderd worden",
+      "eisen": [
+        "KLT-3",
+        "RAP-1"
+      ],
+      "soort": "Negatief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Directie",
+      "testdata": "Familie Bakker (4 pakketten)",
+      "stappen": [
+        "Klap Familie Bakker uit",
+        "Klik \"Klant verwijderen\" en bevestig",
+        "Kies in de melding \"Op non-actief zetten\""
+      ],
+      "verwacht": "Dialoog \"Dit gezin kan niet weg\" met het aantal pakketten en het advies non-actief; daarna staat de klant op non-actief en zijn de pakketten bewaard.",
+      "userStories": [
+        {
+          "id": "US-KLT-03",
+          "titel": "Klanten beheren en bekijken"
+        },
+        {
+          "id": "US-KLT-13",
+          "titel": "Pakketgeschiedenis per klant bekijken"
+        }
+      ],
+      "pagina": "Klanten → Klant verwijderen",
+      "onderdeel": "D. Klanten en gezinnen",
+      "module": "04-klanten",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Dialoog: \"Dit gezin kan niet wegFamilie Bakker heeft 4 pakketten ontvangen. Die geschiedenis blijft bewaard voor de rapp…\"; daarna \"Familie Bakker staat nu op non-actief.\"; pakketten nog in db: 4.",
+      "screenshot": "TC-41.png",
+      "duurMs": 2270
+    },
+    {
+      "id": "TC-42",
+      "functie": "Privacy: vrijwilliger ziet geen contactgegevens",
+      "eisen": [
+        "TEC-4",
+        "TEC-6"
+      ],
+      "soort": "Beveiliging",
+      "testvorm": "Functioneel (UI) + API",
+      "rol": "Vrijwilliger",
+      "testdata": "a.degroot",
+      "stappen": [
+        "Log in als vrijwilliger en open Klanten",
+        "Bekijk de API-respons van /api/klanten",
+        "Probeer POST /api/klanten"
+      ],
+      "verwacht": "Adres \"Afgeschermd\", uitleg over privacy, geen knop \"+ Nieuwe klant\"; de API stuurt geen adres/telefoon/e-mail mee; nieuwe klant via API: 403.",
+      "userStories": [
+        {
+          "id": "US-SEC-02",
+          "titel": "Privacygevoelige klantgegevens beschermen"
+        }
+      ],
+      "pagina": "Klanten (als vrijwilliger)",
+      "onderdeel": "D. Klanten en gezinnen",
+      "module": "04-klanten",
+      "resultaat": "Geslaagd",
+      "werkelijk": "\"Afgeschermd\" 11×; knop nieuwe klant: nee; contactvelden in API: geen; POST /klanten: 403.",
+      "screenshot": "TC-42.png",
+      "duurMs": 1677
+    },
+    {
+      "id": "TC-43",
+      "functie": "Vrijwilliger wijzigt gezin, niet de contactgegevens",
+      "eisen": [
+        "TEC-4",
+        "GBR-4"
+      ],
+      "soort": "Beveiliging",
+      "testvorm": "Technisch (API)",
+      "rol": "Vrijwilliger",
+      "testdata": "PUT /api/klanten/3 met adres \"Gehackt 1\" en een extra gezinslid",
+      "stappen": [
+        "Stuur als vrijwilliger een wijziging voor Mevr. Jansen met een ander adres én een extra gezinslid"
+      ],
+      "verwacht": "Het gezinslid wordt toegevoegd; het adres blijft ongewijzigd (server negeert contactvelden zonder klant_beheren).",
+      "userStories": [
+        {
+          "id": "US-SEC-02",
+          "titel": "Privacygevoelige klantgegevens beschermen"
+        },
+        {
+          "id": "US-KLT-05",
+          "titel": "Gezinssamenstelling registreren"
+        }
+      ],
+      "pagina": "Klanten (achter de schermen: API)",
+      "onderdeel": "D. Klanten en gezinnen",
+      "module": "04-klanten",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Status 200; adres in db: \"Spoorlaan 88\"; gezinsleden: 2.",
+      "screenshot": null,
+      "duurMs": 312
+    },
+    {
+      "id": "TC-44",
+      "functie": "Pakketgeschiedenis van een gezin",
+      "eisen": [
+        "KLT-3"
+      ],
+      "soort": "Positief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Directie",
+      "testdata": "Mevr. Jansen (5 pakketten)",
+      "stappen": [
+        "Klap Mevr. Jansen uit",
+        "Klik \"Pakketgeschiedenis\""
+      ],
+      "verwacht": "Venster met alle 5 pakketten: datum, status en inhoud (aantal × product).",
+      "userStories": [
+        {
+          "id": "US-KLT-13",
+          "titel": "Pakketgeschiedenis per klant bekijken"
+        },
+        {
+          "id": "US-KLT-14",
+          "titel": "Pakketsamenstelling en datum bekijken"
+        }
+      ],
+      "pagina": "Klanten → Pakketgeschiedenis",
+      "onderdeel": "D. Klanten en gezinnen",
+      "module": "04-klanten",
+      "resultaat": "Geslaagd",
+      "werkelijk": "5 pakketten, bijv. \"19-11-2026Uitgegeven1× Campina Halfvolle Melk, 1× Heinz Sperziebonen blik, 3× Pindakaas Calvé (650g), 2× Tarwebrood Gesneden\".",
+      "screenshot": "TC-44.png",
+      "duurMs": 1698
+    },
+    {
+      "id": "TC-111",
+      "functie": "Allergieën en voedingsbeperkingen uit de casus aanvinken (meerdere tegelijk)",
+      "eisen": [
+        "KLT-6",
+        "KLT-7"
+      ],
+      "soort": "Positief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Directie",
+      "testdata": "Mevr. Jansen (1 gezinslid, nu lactose-intolerant) → Lactose-intolerant + Glutenvrij + Pinda-allergie",
+      "stappen": [
+        "Klap Mevr. Jansen uit en klik \"Gezin bewerken\"",
+        "Bekijk de keuzelijst met dieetwensen",
+        "Kies Lactose-intolerant, Glutenvrij en Pinda-allergie tegelijk",
+        "Klik Opslaan"
+      ],
+      "verwacht": "De lijst bevat alle wensen uit de casus: geen varkensvlees, glutenvrij, pinda-allergie, schaaldierallergie, notenallergie (hazelnoten), lactose-intolerant, vegetarisch en veganistisch; ernstige allergieën hebben een ⚠. Na opslaan heeft het gezinslid 3 wensen.",
+      "userStories": [
+        {
+          "id": "US-KLT-08",
+          "titel": "Specifieke allergieën en voedingsbeperkingen registreren"
+        },
+        {
+          "id": "US-KLT-07",
+          "titel": "Meerdere wensen per klant registreren"
+        }
+      ],
+      "pagina": "Klanten → Gezin bewerken",
+      "onderdeel": "D. Klanten en gezinnen",
+      "module": "04-klanten",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Keuzelijst: ⚠ Notenallergie, ⚠ Pinda-allergie, ⚠ Schaaldierallergie, Geen varkensvlees, Geen vis, Glutenvrij, Halal, Lactose-intolerant, Veganistisch, Vegetarisch; ontbreekt: niets. Na opslaan: \"Klantgegevens opgeslagen.\", 3 wensen bij het gezinslid.",
+      "screenshot": "TC-111.png",
+      "duurMs": 2347
+    },
+    {
+      "id": "TC-113",
+      "functie": "Klanten zien die zich vandaag hebben aangemeld",
+      "eisen": [
+        "KLT-4"
+      ],
+      "soort": "Positief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Vrijwilliger",
+      "testdata": "Aanmeldingen met de datum van vandaag (o.a. Familie Diallo en Dhr. Nowak uit de testdata)",
+      "stappen": [
+        "Log in als vrijwilliger en open Klanten",
+        "Lees de melding bovenaan",
+        "Klik \"Toon aanmeldingen van vandaag\""
+      ],
+      "verwacht": "Melding \"… hebben zich vandaag aangemeld\" met de namen; na de klik staan alleen de gezinnen met de aanmelddatum van vandaag in de lijst, elk met het label \"Vandaag aangemeld\". Oudere aanmeldingen staan er niet tussen.",
+      "userStories": [
+        {
+          "id": "US-KLT-11",
+          "titel": "Klanten bekijken die zich vandaag hebben aangemeld"
+        },
+        {
+          "id": "US-WRK-03",
+          "titel": "Dagelijkse aanmeldingen bekijken"
+        }
+      ],
+      "pagina": "Klanten",
+      "onderdeel": "D. Klanten en gezinnen",
+      "module": "04-klanten",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Melding: \"3 gezinnen hebben zich vandaag aangemeld: Dhr. Nowak, Familie Diallo, Familie Testers.\"; na filter 3 gezinnen (database: 3 aanmeldingen vandaag), allemaal met label \"Vandaag aangemeld\": ja.",
+      "screenshot": "TC-113.png",
+      "duurMs": 1647
+    },
+    {
+      "id": "TC-45",
+      "functie": "Leveranciersoverzicht: zoeken, filteren en sorteren",
+      "eisen": [
+        "LEV-2",
+        "TEC-3"
+      ],
+      "soort": "Positief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Magazijnmedewerker",
+      "testdata": "5 leveranciers; zoekterm \"bakkerij\"; filter Zuivel; sorteer op bedrijfsnaam",
+      "stappen": [
+        "Ga naar Leveranciers",
+        "Zoek op \"bakkerij\"",
+        "Wis en kies Categorie: Zuivel",
+        "Wis en kies Sorteer: bedrijfsnaam"
+      ],
+      "verwacht": "Zoeken vindt Bakkerij van de Ven; filter toont VDB Zuivel; sorteren zet de actieve leveranciers op alfabet (inactieve onderaan).",
+      "userStories": [
+        {
+          "id": "US-LEV-04",
+          "titel": "Overzicht van alle leveranciers bekijken"
+        },
+        {
+          "id": "US-LEV-05",
+          "titel": "Leveranciersgegevens bekijken"
+        }
+      ],
+      "pagina": "Leveranciers",
+      "onderdeel": "E. Leveranciers en leveringen",
+      "module": "05-leveranciers",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Alle: 5; zoeken → Bakkerij van de Ven; filter Zuivel → VDB Zuivel; gesorteerd: Albert Heijn Maaskant, Bakkerij van de Ven, Lidl Maaskantje, VDB Zuivel, Sligro Tilburg.",
+      "screenshot": "TC-45.png",
+      "duurMs": 1975
+    },
+    {
+      "id": "TC-46",
+      "functie": "Leverancier toevoegen met volgende levering",
+      "eisen": [
+        "LEV-1",
+        "LEV-3",
+        "LEV-4"
+      ],
+      "soort": "Positief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Directie",
+      "testdata": "Jumbo Maaskantje, contact Sanne de Wit, 0412-555111, sanne@jumbo-test.nl, Kerkstraat 5, 5492 AA; volgende levering over 3 dagen 10:30",
+      "stappen": [
+        "Klik \"+ Nieuwe leverancier\"",
+        "Vul alle gegevens en de volgende levering (datum + tijd) in",
+        "Opslaan"
+      ],
+      "verwacht": "Melding \"Leverancier toegevoegd.\"; in de lijst met \"Volgende levering … om 10:30\".",
+      "userStories": [
+        {
+          "id": "US-LEV-01",
+          "titel": "Leveranciers toevoegen"
+        },
+        {
+          "id": "US-LEV-06",
+          "titel": "Eerstvolgende levering bekijken"
+        }
+      ],
+      "pagina": "Leveranciers → + Nieuwe leverancier",
+      "onderdeel": "E. Leveranciers en leveringen",
+      "module": "05-leveranciers",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Toast \"Leverancier toegevoegd.\"; lijst toont \"Volgende levering 29-11-2026 om 10:30\".",
+      "screenshot": "TC-46.png",
+      "duurMs": 2186
+    },
+    {
+      "id": "TC-47",
+      "functie": "Leverancier: validatie en dubbele naam",
+      "eisen": [
+        "LEV-3",
+        "TEC-6"
+      ],
+      "soort": "Negatief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Directie",
+      "testdata": "1) leeg formulier  2) naam \"Albert Heijn Maaskant\", e-mail \"fout\", telefoon \"12\", postcode \"AB12\"",
+      "stappen": [
+        "Klik \"+ Nieuwe leverancier\" en direct Opslaan",
+        "Vul de foute gegevens in en sla op"
+      ],
+      "verwacht": "Leeg: meldingen bij bedrijfsnaam, adres, contactpersoon, e-mail en telefoon. Daarna: \"Er bestaat al een leverancier met deze naam.\", e-mail, telefoon en postcode afgekeurd.",
+      "userStories": [
+        {
+          "id": "US-LEV-01",
+          "titel": "Leveranciers toevoegen"
+        }
+      ],
+      "pagina": "Leveranciers → + Nieuwe leverancier",
+      "onderdeel": "E. Leveranciers en leveringen",
+      "module": "05-leveranciers",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Leeg: Vul de bedrijfsnaam in. / Vul de contactpersoon in. / Vul een geldig telefoonnummer in. / Vul een geldig e-mailadres in. / Vul het adres in.. Fout: Er bestaat al een leverancier met deze naam. / Vul een geldig telefoonnummer in. / Vul een geldig e-mailadres in. / Gebruik het formaat 1234 AB..",
+      "screenshot": "TC-47.png",
+      "duurMs": 2756
+    },
+    {
+      "id": "TC-48",
+      "functie": "Leverancier bewerken",
+      "eisen": [
+        "LEV-1"
+      ],
+      "soort": "Positief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Directie",
+      "testdata": "Bakkerij van de Ven: contactpersoon → \"Jan van de Ven\"",
+      "stappen": [
+        "Klap Bakkerij van de Ven uit en klik Bewerken",
+        "Wijzig de contactpersoon",
+        "Opslaan"
+      ],
+      "verwacht": "Melding \"Leverancier bijgewerkt.\"; de nieuwe contactpersoon staat in de lijst.",
+      "userStories": [
+        {
+          "id": "US-LEV-02",
+          "titel": "Leveranciersgegevens wijzigen"
+        }
+      ],
+      "pagina": "Leveranciers → Bewerken",
+      "onderdeel": "E. Leveranciers en leveringen",
+      "module": "05-leveranciers",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Toast \"Leverancier bijgewerkt.\"; rij toont Jan van de Ven: ja.",
+      "screenshot": null,
+      "duurMs": 2244
+    },
+    {
+      "id": "TC-49",
+      "functie": "Leverancier op non-actief en weer activeren",
+      "eisen": [
+        "LEV-1"
+      ],
+      "soort": "Positief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Directie",
+      "testdata": "VDB Zuivel",
+      "stappen": [
+        "Klap VDB Zuivel uit en klik \"Op non-actief zetten\"",
+        "Controleer de knoppen",
+        "Klik \"Weer activeren\""
+      ],
+      "verwacht": "Status \"Inactief\" en geen knop \"Levering inboeken\"; na activeren weer \"Actief\" met de knop.",
+      "userStories": [
+        {
+          "id": "US-LEV-02",
+          "titel": "Leveranciersgegevens wijzigen"
+        },
+        {
+          "id": "US-LEV-03",
+          "titel": "Leveranciers verwijderen"
+        }
+      ],
+      "pagina": "Leveranciers → Op non-actief zetten",
+      "onderdeel": "E. Leveranciers en leveringen",
+      "module": "05-leveranciers",
+      "resultaat": "Geslaagd",
+      "werkelijk": "\"Leverancier op non-actief gezet.\" → Inactief, inboekknop: nee; \"Leverancier geactiveerd.\" → Actief.",
+      "screenshot": null,
+      "duurMs": 1831
+    },
+    {
+      "id": "TC-50",
+      "functie": "Leverancier verwijderen (met en zonder historie)",
+      "eisen": [
+        "LEV-1",
+        "RAP-1"
+      ],
+      "soort": "Positief + negatief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Directie",
+      "testdata": "Sligro Tilburg (0 leveringen) en Albert Heijn Maaskant (2 leveringen)",
+      "stappen": [
+        "Verwijder Sligro Tilburg en bevestig",
+        "Verwijder Albert Heijn Maaskant en bevestig",
+        "Kies \"Laten staan\""
+      ],
+      "verwacht": "Sligro verdwijnt. Albert Heijn: melding dat de leveringsgeschiedenis niet mag verdwijnen + advies non-actief; leverancier blijft staan.",
+      "userStories": [
+        {
+          "id": "US-LEV-03",
+          "titel": "Leveranciers verwijderen"
+        }
+      ],
+      "pagina": "Leveranciers → Verwijderen",
+      "onderdeel": "E. Leveranciers en leveringen",
+      "module": "05-leveranciers",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Sligro: \"Leverancier verwijderd.\" (in db: 0). Albert Heijn: \"Deze leverancier kan niet wegDeze leverancier heeft 2 geregistreerde levering(en). Die geschiedenis mag niet verdwijnen.…\" (in db: 1).",
+      "screenshot": "TC-50.png",
+      "duurMs": 2748
+    },
+    {
+      "id": "TC-51",
+      "functie": "Levering inboeken verhoogt de voorraad",
+      "eisen": [
+        "LEV-1",
+        "VRD-2"
+      ],
+      "soort": "Positief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Magazijnmedewerker",
+      "testdata": "Lidl Maaskantje levert 10× Rijst 1kg (voorraad 1200) en 6× Eieren 10st (voorraad 3)",
+      "stappen": [
+        "Klap Lidl Maaskantje uit en klik \"Levering inboeken\"",
+        "Kies Rijst 1kg, aantal 10; voeg regel toe: Eieren 10st, aantal 6",
+        "Klik \"Levering boeken\""
+      ],
+      "verwacht": "Melding \"Levering geboekt en voorraad bijgewerkt.\"; Rijst 1210, Eieren 9; levering staat in de geschiedenis met \"Ingeboekt door Rob Veenstra\".",
+      "userStories": [
+        {
+          "id": "US-WRK-02",
+          "titel": "Binnengekomen leveringen verwerken"
+        }
+      ],
+      "pagina": "Leveranciers → Levering inboeken",
+      "onderdeel": "E. Leveranciers en leveringen",
+      "module": "05-leveranciers",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Toast \"Levering geboekt en voorraad bijgewerkt.\"; Rijst 1210, Eieren 9; geschiedenis: \"26-11-2026Eieren 10st × 6, Rijst 1kg × 1016 st.Rob Veenstra\".",
+      "screenshot": "TC-51.png",
+      "duurMs": 2550
+    },
+    {
+      "id": "TC-52",
+      "functie": "Levering zonder producten wordt geweigerd",
+      "eisen": [
+        "LEV-1"
+      ],
+      "soort": "Negatief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Magazijnmedewerker",
+      "testdata": "Levering zonder regels",
+      "stappen": [
+        "Open \"Levering inboeken\"",
+        "Verwijder de productregel",
+        "Klik \"Levering boeken\""
+      ],
+      "verwacht": "Melding \"Voeg minimaal één product toe.\"; er wordt geen levering opgeslagen.",
+      "userStories": [
+        {
+          "id": "US-WRK-02",
+          "titel": "Binnengekomen leveringen verwerken"
+        }
+      ],
+      "pagina": "Leveranciers → Levering inboeken",
+      "onderdeel": "E. Leveranciers en leveringen",
+      "module": "05-leveranciers",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Melding \"Voeg minimaal één product toe.\"; leveringen voor/na: 6/6.",
+      "screenshot": null,
+      "duurMs": 2297
+    },
+    {
+      "id": "TC-53",
+      "functie": "Eerstvolgende levering op het dashboard",
+      "eisen": [
+        "LEV-4"
+      ],
+      "soort": "Positief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Magazijnmedewerker",
+      "testdata": "Testdata: Albert Heijn Maaskant heeft de eerstvolgende geplande levering",
+      "stappen": [
+        "Open het dashboard als magazijnmedewerker"
+      ],
+      "verwacht": "Kaart \"Eerstvolgende levering\" met bedrijfsnaam, datum en tijd; lijst \"Verwachte leveringen\" op datum gesorteerd.",
+      "userStories": [
+        {
+          "id": "US-LEV-06",
+          "titel": "Eerstvolgende levering bekijken"
+        }
+      ],
+      "pagina": "Dashboard",
+      "onderdeel": "E. Leveranciers en leveringen",
+      "module": "05-leveranciers",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Kaart: \"Eerstvolgende leveringAlbert Heijn Maaskantverwacht op 27-11-2026 om 08:30\".",
+      "screenshot": "TC-53.png",
+      "duurMs": 918
+    },
+    {
+      "id": "TC-54",
+      "functie": "Rechten leveranciers en leveringen",
+      "eisen": [
+        "GBR-3",
+        "GBR-4"
+      ],
+      "soort": "Beveiliging",
+      "testvorm": "Technisch (API)",
+      "rol": "Vrijwilliger, Magazijn",
+      "testdata": "POST /api/leveringen en POST /api/leveranciers",
+      "stappen": [
+        "Vrijwilliger boekt een levering",
+        "Vrijwilliger voegt een leverancier toe",
+        "Magazijnmedewerker boekt een levering"
+      ],
+      "verwacht": "Vrijwilliger: 403 en 403. Magazijnmedewerker: 201.",
+      "userStories": [
+        {
+          "id": "US-GBR-06",
+          "titel": "Magazijnmedewerker heeft beperkte toegang"
+        },
+        {
+          "id": "US-GBR-07",
+          "titel": "Vrijwilliger heeft toegang tot pakketten"
+        },
+        {
+          "id": "US-WRK-02",
+          "titel": "Binnengekomen leveringen verwerken"
+        }
+      ],
+      "pagina": "Leveranciers (achter de schermen: API)",
+      "onderdeel": "E. Leveranciers en leveringen",
+      "module": "05-leveranciers",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Vrijwilliger levering 403, leverancier 403; magazijn levering 201.",
+      "screenshot": null,
+      "duurMs": 595
+    },
+    {
+      "id": "TC-55",
+      "functie": "Productenoverzicht en zoeken op streepjescode",
+      "eisen": [
+        "PRD-1",
+        "VRD-5"
+      ],
+      "soort": "Positief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Magazijnmedewerker",
+      "testdata": "20 producten; zoek op EAN 8712345678909 en op \"melk\"",
+      "stappen": [
+        "Ga naar Producten",
+        "Typ 8712345678909 in het zoekveld",
+        "Typ daarna \"melk\""
+      ],
+      "verwacht": "Kerncijfers (totaal stuks, aantal producten); EAN-zoeken vindt precies Pindakaas; \"melk\" vindt de 2 melkproducten.",
+      "userStories": [
+        {
+          "id": "US-VRD-06",
+          "titel": "Overzicht van alle producten bekijken"
+        },
+        {
+          "id": "US-VRD-08",
+          "titel": "Producten zoeken op streepjescode"
+        },
+        {
+          "id": "US-VRD-12",
+          "titel": "Productgegevens bekijken"
+        }
+      ],
+      "pagina": "Producten",
+      "onderdeel": "F. Producten, voorraad en categorieën",
+      "module": "06-producten",
+      "resultaat": "Geslaagd",
+      "werkelijk": "20 producten; EAN-zoeken → Pindakaas Calvé (650g)pinda, noten; \"melk\" → 2 resultaten.",
+      "screenshot": "TC-55.png",
+      "duurMs": 1773
+    },
+    {
+      "id": "TC-56",
+      "functie": "Sorteren op elke kolom",
+      "eisen": [
+        "VRD-4"
+      ],
+      "soort": "Positief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Magazijnmedewerker",
+      "testdata": "Kolommen productnaam, streepjescode, categorie, voorraad",
+      "stappen": [
+        "Klik op de kolomkop Productnaam (2×)",
+        "Klik op Streepjescode, Categorie en Voorraad"
+      ],
+      "verwacht": "Elke klik sorteert op die kolom (oplopend, tweede klik aflopend); de actieve kolom krijgt een pijl.",
+      "userStories": [
+        {
+          "id": "US-VRD-07",
+          "titel": "Productenoverzicht sorteren"
+        }
+      ],
+      "pagina": "Producten",
+      "onderdeel": "F. Producten, voorraad en categorieën",
+      "module": "06-producten",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Productnaam aflopend begint met \"Zaanse Hoeve Jong BelegenBijna\"; EAN oplopend: ja; categorie eerste \"Groente & fruit\"; voorraad oplopend 3, 5, 8, 12…; actieve kop \"Voorraad ↑\".",
+      "screenshot": null,
+      "duurMs": 1634
+    },
+    {
+      "id": "TC-57",
+      "functie": "Filteren op categorie",
+      "eisen": [
+        "PRD-4",
+        "TEC-3"
+      ],
+      "soort": "Positief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Directie",
+      "testdata": "Filterknop \"Zuivel\" (3 producten)",
+      "stappen": [
+        "Klik op de filterknop Zuivel",
+        "Klik op Alles"
+      ],
+      "verwacht": "Alleen de 3 zuivelproducten; teller \"3 van 20 producten\"; \"Alles\" toont weer 20.",
+      "userStories": [
+        {
+          "id": "US-VRD-06",
+          "titel": "Overzicht van alle producten bekijken"
+        }
+      ],
+      "pagina": "Producten (filterknoppen)",
+      "onderdeel": "F. Producten, voorraad en categorieën",
+      "module": "06-producten",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Zuivel: 3 rijen (\"3 van 20 producten\"); Alles: 20.",
+      "screenshot": null,
+      "duurMs": 1520
+    },
+    {
+      "id": "TC-58",
+      "functie": "Nieuw product toevoegen",
+      "eisen": [
+        "VRD-1",
+        "PRD-1",
+        "PRD-2"
+      ],
+      "soort": "Positief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Magazijnmedewerker",
+      "testdata": "Volkoren crackers, EAN 8711111111116, cat. Bakkerij en banket, voorraad 40, min 10, € 1,49, kenmerk gluten",
+      "stappen": [
+        "Klik \"+ Nieuw product\"",
+        "Vul alle velden in en kies het kenmerk gluten",
+        "Opslaan"
+      ],
+      "verwacht": "Melding \"Product opgeslagen.\"; product in de lijst met kenmerk gluten; 21 producten.",
+      "userStories": [
+        {
+          "id": "US-VRD-01",
+          "titel": "Nieuwe producten toevoegen"
+        }
+      ],
+      "pagina": "Producten → + Nieuw product",
+      "onderdeel": "F. Producten, voorraad en categorieën",
+      "module": "06-producten",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Toast \"Product opgeslagen.\"; rij: \"Volkoren crackersgluten8711111111116Brood40 st.10 st.geen THTKrat B-3\"; aantal producten 21.",
+      "screenshot": "TC-58.png",
+      "duurMs": 2267
+    },
+    {
+      "id": "TC-59",
+      "functie": "Product: geldige EAN en geen dubbelen",
+      "eisen": [
+        "PRD-2",
+        "PRD-3",
+        "VRD-6"
+      ],
+      "soort": "Negatief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Directie",
+      "testdata": "1) EAN \"12345\" 2) naam \"Rijst 1kg\" (bestaat) + EAN 8712345678913 (van Pasta penne)",
+      "stappen": [
+        "Nieuw product met EAN van 5 cijfers",
+        "Nieuw product met een bestaande naam en een bestaande EAN"
+      ],
+      "verwacht": "\"Een EAN bestaat uit 13 cijfers.\"; daarna \"Dit product bestaat al in het magazijn.\" en \"Deze streepjescode is al in gebruik.\"; niets opgeslagen.",
+      "userStories": [
+        {
+          "id": "US-VRD-09",
+          "titel": "Streepjescodes uniek maken"
+        },
+        {
+          "id": "US-VRD-10",
+          "titel": "Productnamen uniek maken"
+        }
+      ],
+      "pagina": "Producten → + Nieuw product",
+      "onderdeel": "F. Producten, voorraad en categorieën",
+      "module": "06-producten",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Korte EAN: Een EAN bestaat uit 13 cijfers.. Dubbel: Dit product bestaat al in het magazijn. / Deze streepjescode is al in gebruik.. Producten in db voor/na: 21/21.",
+      "screenshot": "TC-59.png",
+      "duurMs": 2656
+    },
+    {
+      "id": "TC-60",
+      "functie": "Product bewerken",
+      "eisen": [
+        "VRD-2"
+      ],
+      "soort": "Positief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Magazijnmedewerker",
+      "testdata": "Hak Doperwtjes blik: minimumvoorraad 25 → 60, locatie Vak C-6",
+      "stappen": [
+        "Klik op het potlood bij Hak Doperwtjes blik",
+        "Wijzig minimumvoorraad en locatie",
+        "Opslaan"
+      ],
+      "verwacht": "Melding \"Product opgeslagen.\"; minimum 60 en locatie Vak C-6 in de lijst; voorraad 45 staat nu rood (onder minimum).",
+      "userStories": [
+        {
+          "id": "US-VRD-02",
+          "titel": "Productgegevens wijzigen"
+        }
+      ],
+      "pagina": "Producten → Bewerken (potlood)",
+      "onderdeel": "F. Producten, voorraad en categorieën",
+      "module": "06-producten",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Toast \"Product opgeslagen.\"; rij \"Hak Doperwtjes blik8712345678911Conserven45 st.60 st.18-07-2028 Vak C-6\"; voorraad gemarkeerd: rood.",
+      "screenshot": null,
+      "duurMs": 2191
+    },
+    {
+      "id": "TC-61",
+      "functie": "Voorraad corrigeren",
+      "eisen": [
+        "VRD-2",
+        "GBR-4"
+      ],
+      "soort": "Positief + negatief",
+      "testvorm": "Functioneel (UI) + API",
+      "rol": "Vrijwilliger",
+      "testdata": "Shampoo 300ml: 450 → 440; daarna via API -5",
+      "stappen": [
+        "Klik op het pijltjes-icoon bij Shampoo 300ml",
+        "Vul 440 in en bevestig",
+        "Stuur via de API een voorraad van -5"
+      ],
+      "verwacht": "Melding \"Voorraad bijgewerkt naar 440 stuks.\"; negatieve voorraad: 422 \"De voorraad kan niet onder 0 komen.\"",
+      "userStories": [
+        {
+          "id": "US-VRD-03",
+          "titel": "Voorraadaantallen aanpassen"
+        },
+        {
+          "id": "US-GBR-08",
+          "titel": "Vrijwilliger mag voorraadaantallen wijzigen"
+        }
+      ],
+      "pagina": "Producten → Voorraad corrigeren",
+      "onderdeel": "F. Producten, voorraad en categorieën",
+      "module": "06-producten",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Toast \"Voorraad bijgewerkt naar 440 stuks.\"; -5 via API: 422 \"undefined\".",
+      "screenshot": "TC-61.png",
+      "duurMs": 2164
+    },
+    {
+      "id": "TC-62",
+      "functie": "Product afvoeren met reden",
+      "eisen": [
+        "VRD-2",
+        "RAP-1"
+      ],
+      "soort": "Positief + negatief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Magazijnmedewerker",
+      "testdata": "Campina Volle Melk (12 st., over de datum): 12× Verspild; daarna 1× extra",
+      "stappen": [
+        "Klik op de prullenbak bij Campina Volle Melk",
+        "Aantal 12, reden Verspild, toelichting \"THT verlopen\"",
+        "Afvoeren",
+        "Probeer opnieuw 1 stuk af te voeren"
+      ],
+      "verwacht": "Melding \"12 x Campina Volle Melk (1L) afgevoerd (Verspild).\"; voorraad 0; afvoerregel in de database. Tweede keer: \"Er liggen maar 0 stuks in het magazijn.\"",
+      "userStories": [
+        {
+          "id": "US-VRD-03",
+          "titel": "Voorraadaantallen aanpassen"
+        }
+      ],
+      "pagina": "Producten → Afvoeren",
+      "onderdeel": "F. Producten, voorraad en categorieën",
+      "module": "06-producten",
+      "resultaat": "Geslaagd",
+      "werkelijk": "\"12 x Campina Volle Melk (1L) afgevoerd (Verspild).\"; voorraad 0; afvoerregel \"12 Verspild\"; tweede poging: \"Er liggen maar 0 stuks in het magazijn.\".",
+      "screenshot": null,
+      "duurMs": 2177
+    },
+    {
+      "id": "TC-63",
+      "functie": "Product verwijderen (met en zonder historie)",
+      "eisen": [
+        "VRD-3"
+      ],
+      "soort": "Positief + negatief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Directie",
+      "testdata": "Luiers maat 4 (nergens gebruikt) en Halfbruin gesneden brood (in 14 pakketten)",
+      "stappen": [
+        "Verwijder Luiers maat 4 en bevestig",
+        "Verwijder Halfbruin gesneden brood en bevestig"
+      ],
+      "verwacht": "Luiers: \"Luiers maat 4 is verwijderd.\" Brood: melding \"Dit product kan niet weg\" (komt voor in uitgedeelde pakketten) met de tip de voorraad op 0 te zetten; product blijft bestaan.",
+      "userStories": [
+        {
+          "id": "US-VRD-04",
+          "titel": "Producten verwijderen"
+        },
+        {
+          "id": "US-VRD-05",
+          "titel": "Verwijderen van producten die in een pakket zitten blokkeren"
+        }
+      ],
+      "pagina": "Producten → Verwijderen",
+      "onderdeel": "F. Producten, voorraad en categorieën",
+      "module": "06-producten",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Luiers: \"Luiers maat 4 is verwijderd.\". Brood: \"Dit product kan niet wegHalfbruin gesneden brood komt voor in uitgedeelde voedselpakketten (14 registraties). Die geschiedenis moe…\"; brood in db: 1.",
+      "screenshot": "TC-63.png",
+      "duurMs": 2560
+    },
+    {
+      "id": "TC-64",
+      "functie": "Signalering houdbaarheid en minimumvoorraad",
+      "eisen": [
+        "VRD-2",
+        "TEC-3"
+      ],
+      "soort": "Positief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Magazijnmedewerker",
+      "testdata": "Campina Volle Melk (THT verstreken), Halfbruin brood (THT binnen 3 dagen), Eieren (3 < min 12)",
+      "stappen": [
+        "Bekijk het productenoverzicht"
+      ],
+      "verwacht": "Melk: badge \"Verlopen\"; brood: badge \"Bijna verlopen\" + dagen; eieren: voorraad rood. Bovenaan \"Over de datum\" en \"Onder de minimumvoorraad\".",
+      "userStories": [
+        {
+          "id": "US-VRD-06",
+          "titel": "Overzicht van alle producten bekijken"
+        },
+        {
+          "id": "US-SEC-04",
+          "titel": "Gegevens snel en overzichtelijk toegankelijk"
+        }
+      ],
+      "pagina": "Producten",
+      "onderdeel": "F. Producten, voorraad en categorieën",
+      "module": "06-producten",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Melk \"Verlopen\": ja; brood \"Bijna verlopen\": ja; eieren rood: ja; kerncijfers: \"In het magazijn4.437 stuksVerschillende producten20Onder de minimumvoorraad5Over de datum1\".",
+      "screenshot": null,
+      "duurMs": 1543
+    },
+    {
+      "id": "TC-65",
+      "functie": "Categorie toevoegen en omschrijving wijzigen",
+      "eisen": [
+        "PRD-4",
+        "PRD-5"
+      ],
+      "soort": "Positief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Magazijnmedewerker",
+      "testdata": "Nieuwe categorie \"Huisdiervoeding\" (kort \"Dieren\"); daarna omschrijving \"Voer voor huisdieren\"",
+      "stappen": [
+        "Klik \"Categorieën\"",
+        "Klik \"+ Nieuwe categorie\" en vul naam en korte naam in",
+        "Open opnieuw en wijzig bij Huisdiervoeding de omschrijving"
+      ],
+      "verwacht": "\"Categorie toegevoegd.\" en daarna \"Categorie bijgewerkt.\"; filterknop \"Dieren\" verschijnt; 10 categorieën.",
+      "userStories": [
+        {
+          "id": "US-VRD-11",
+          "titel": "Categorieën beheren"
+        }
+      ],
+      "pagina": "Producten → Categorieën",
+      "onderdeel": "F. Producten, voorraad en categorieën",
+      "module": "06-producten",
+      "resultaat": "Geslaagd",
+      "werkelijk": "\"Categorie toegevoegd.\", \"Categorie bijgewerkt.\"; categorieën 17 → 18; omschrijving in db: \"Voer voor huisdieren\".",
+      "screenshot": "TC-65.png",
+      "duurMs": 2558
+    },
+    {
+      "id": "TC-66",
+      "functie": "Categorie met producten verwijderen via verplaatsen",
+      "eisen": [
+        "PRD-5",
+        "VRD-3"
+      ],
+      "soort": "Alternatief pad",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Directie",
+      "testdata": "Categorie \"Kaas, vleeswaren\" (3 producten) → producten naar \"Zuivel, plantaardig en eieren\"",
+      "stappen": [
+        "Open Categorieën en klik Verwijderen bij Kaas, vleeswaren; bevestig",
+        "Kies in het vervolgvenster de doelcategorie",
+        "Klik \"Verplaatsen en verwijderen\""
+      ],
+      "verwacht": "Venster \"Deze categorie is niet leeg\"; daarna \"3 producten verplaatst. Categorie … is verwijderd.\"; producten hangen nu onder Zuivel.",
+      "userStories": [
+        {
+          "id": "US-VRD-11",
+          "titel": "Categorieën beheren"
+        }
+      ],
+      "pagina": "Producten → Categorieën",
+      "onderdeel": "F. Producten, voorraad en categorieën",
+      "module": "06-producten",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Venster: \"Deze categorie is niet leegIn \"Kaas, vleeswaren\" staan nog 3 producten. Zet die …\"; toast \"3 producten verplaatst. Categorie \"Kaas, vleeswaren\" is verwijderd.\"; categorie in db: 0; producten in Zuivel: 6.",
+      "screenshot": "TC-66.png",
+      "duurMs": 2207
+    },
+    {
+      "id": "TC-67",
+      "functie": "Vrijwilliger: voorraad wel, productbeheer niet",
+      "eisen": [
+        "GBR-4"
+      ],
+      "soort": "Beveiliging",
+      "testvorm": "Functioneel (UI) + API",
+      "rol": "Vrijwilliger",
+      "testdata": "a.degroot",
+      "stappen": [
+        "Open Producten als vrijwilliger",
+        "Kijk welke knoppen er zijn",
+        "Probeer POST /api/producten en DELETE /api/producten/14"
+      ],
+      "verwacht": "Geen \"+ Nieuw product\", \"Categorieën\", bewerken of verwijderen; wel voorraad corrigeren. API: 403 en 403.",
+      "userStories": [
+        {
+          "id": "US-GBR-09",
+          "titel": "Vrijwilliger mag geen productbeheer uitvoeren"
+        },
+        {
+          "id": "US-GBR-08",
+          "titel": "Vrijwilliger mag voorraadaantallen wijzigen"
+        }
+      ],
+      "pagina": "Producten (als vrijwilliger)",
+      "onderdeel": "F. Producten, voorraad en categorieën",
+      "module": "06-producten",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Nieuw-knop: nee; bewerkknoppen: 0; corrigeerknoppen: 20; API: 403, 403.",
+      "screenshot": null,
+      "duurMs": 1741
+    },
+    {
+      "id": "TC-68",
+      "functie": "Rechten categoriebeheer",
+      "eisen": [
+        "PRD-5",
+        "GBR-3"
+      ],
+      "soort": "Beveiliging",
+      "testvorm": "Technisch (API)",
+      "rol": "Magazijn, Administratie",
+      "testdata": "POST /api/categorieen {naam: \"Testcat\"}",
+      "stappen": [
+        "Magazijnmedewerker maakt een categorie aan",
+        "Administratie probeert hetzelfde"
+      ],
+      "verwacht": "Magazijn 201; administratie 403.",
+      "userStories": [
+        {
+          "id": "US-VRD-11",
+          "titel": "Categorieën beheren"
+        },
+        {
+          "id": "US-GBR-06",
+          "titel": "Magazijnmedewerker heeft beperkte toegang"
+        }
+      ],
+      "pagina": "Producten (achter de schermen: API)",
+      "onderdeel": "F. Producten, voorraad en categorieën",
+      "module": "06-producten",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Magazijn 201; administratie 403.",
+      "screenshot": null,
+      "duurMs": 591
+    },
+    {
+      "id": "TC-69",
+      "functie": "Weekoverzicht: wie heeft nog een pakket nodig + advies",
+      "eisen": [
+        "PAK-4",
+        "KLT-4",
+        "WRK-2"
+      ],
+      "soort": "Positief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Vrijwilliger",
+      "testdata": "8 geaccepteerde gezinnen; 3 hebben deze week al een pakket; Familie Veldhuis = 6 personen",
+      "stappen": [
+        "Ga naar Voedselpakketten",
+        "Bekijk de groepen \"Pakket nodig\" en \"Al een pakket deze week\""
+      ],
+      "verwacht": "\"Pakket nodig (5)\" en \"Al een pakket deze week (3)\"; per gezin aantal personen en adviesaantal (Veldhuis: 6 personen, advies 28); producten die binnen 3 dagen verlopen krijgen het label \"THT over … dagen\".",
+      "userStories": [
+        {
+          "id": "US-WRK-04",
+          "titel": "Op donderdag pakketten samenstellen"
+        },
+        {
+          "id": "US-PAK-02",
+          "titel": "Rekening houden met gezinssamenstelling"
+        }
+      ],
+      "pagina": "Voedselpakketten",
+      "onderdeel": "G. Voedselpakketten samenstellen",
+      "module": "07-pakketten",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Pakket nodig (5) / Al een pakket deze week (3); Veldhuis: \"Familie Veldhuis6 personen · advies 28 productenPakket nodig\"; THT-labels: 4 (bijv. \"THT over 3 dagen\").",
+      "screenshot": "TC-69.png",
+      "duurMs": 1478
+    },
+    {
+      "id": "TC-70",
+      "functie": "Gezinsprofiel met allergieën en uitzondering",
+      "eisen": [
+        "PAK-1",
+        "KLT-1",
+        "KLT-7"
+      ],
+      "soort": "Positief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Vrijwilliger",
+      "testdata": "Familie Bakker: Glutenvrij (2/5), Notenallergie met uitzondering",
+      "stappen": [
+        "Klik op Familie Bakker"
+      ],
+      "verwacht": "Profiel met de wensen als labels (aantal personen per wens), de uitzondering met reden, en alle 5 gezinsleden met relatie en leeftijd.",
+      "userStories": [
+        {
+          "id": "US-PAK-02",
+          "titel": "Rekening houden met gezinssamenstelling"
+        },
+        {
+          "id": "US-PAK-03",
+          "titel": "Rekening houden met wensen en allergieën"
+        }
+      ],
+      "pagina": "Voedselpakketten",
+      "onderdeel": "G. Voedselpakketten samenstellen",
+      "module": "07-pakketten",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Labels: Notenallergie 1/5 | Glutenvrij 2/5; \"Uitzondering op Notenallergie: Gezin wil het toch: Bart eet het niet, …\"; 5 gezinsleden.",
+      "screenshot": "TC-70.png",
+      "duurMs": 1893
+    },
+    {
+      "id": "TC-71",
+      "functie": "Voorraad gefilterd op wat bij het gezin past",
+      "eisen": [
+        "PAK-1",
+        "KLT-6"
+      ],
+      "soort": "Positief + alternatief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Vrijwilliger",
+      "testdata": "S. El Jafari (notenallergie, streng); Pindakaas bevat pinda,noten",
+      "stappen": [
+        "Kies S. El Jafari",
+        "Zoek Pindakaas met het filter aan",
+        "Zet \"Gefilterd op compatibiliteit\" uit"
+      ],
+      "verwacht": "Met filter: Pindakaas staat er niet tussen. Zonder filter: Pindakaas staat er, rood gemarkeerd, label \"Allergie: Notenallergie (2×)\", knop \"Mag niet\" (uitgeschakeld).",
+      "userStories": [
+        {
+          "id": "US-PAK-03",
+          "titel": "Rekening houden met wensen en allergieën"
+        },
+        {
+          "id": "US-KLT-08",
+          "titel": "Specifieke allergieën en voedingsbeperkingen registreren"
+        }
+      ],
+      "pagina": "Voedselpakketten",
+      "onderdeel": "G. Voedselpakketten samenstellen",
+      "module": "07-pakketten",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Met filter zichtbaar: nee; zonder filter: knop \"Mag niet\" (uitgeschakeld: true), label \"Allergie: Notenallergie (2×)\".",
+      "screenshot": "TC-71.png",
+      "duurMs": 1920
+    },
+    {
+      "id": "TC-72",
+      "functie": "Producten toevoegen, aantal wijzigen en verwijderen",
+      "eisen": [
+        "PAK-1",
+        "PAK-5"
+      ],
+      "soort": "Positief + grensgeval",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Vrijwilliger",
+      "testdata": "Mevr. Jansen; Eieren 10st (voorraad 3) en Rijst 1kg",
+      "stappen": [
+        "Kies Mevr. Jansen",
+        "Voeg Eieren 3× toe",
+        "Klik bij Eieren op \"+\" (4e)",
+        "Klik \"−\"",
+        "Voeg Rijst toe en verwijder Rijst met ×"
+      ],
+      "verwacht": "Teller \"3 van 8 items\"; de 4e wordt geweigerd met \"Er is niet genoeg voorraad van Eieren 10st.\"; na \"−\" 2 eieren; Rijst verdwijnt na ×.",
+      "userStories": [
+        {
+          "id": "US-PAK-01",
+          "titel": "Voedselpakket samenstellen"
+        },
+        {
+          "id": "US-PAK-07",
+          "titel": "Producten in een pakket registreren"
+        }
+      ],
+      "pagina": "Voedselpakketten",
+      "onderdeel": "G. Voedselpakketten samenstellen",
+      "module": "07-pakketten",
+      "resultaat": "Geslaagd",
+      "werkelijk": "\"3 van 8 items toegevoegd\"; 4e ei: \"Er is niet genoeg voorraad van Eieren 10st.\"; na −: 2; Rijst na ×: weg.",
+      "screenshot": "TC-72.png",
+      "duurMs": 2082
+    },
+    {
+      "id": "TC-73",
+      "functie": "Harde blokkade bij ernstige allergie (ook via omweg)",
+      "eisen": [
+        "PAK-1",
+        "KLT-6",
+        "TEC-6"
+      ],
+      "soort": "Beveiliging",
+      "testvorm": "Technisch (API)",
+      "rol": "Vrijwilliger",
+      "testdata": "POST /api/pakketten: S. El Jafari + Pindakaas, forceer = true",
+      "stappen": [
+        "Stuur een pakket met Pindakaas voor S. El Jafari en zet forceer aan (omzeilt de waarschuwing)"
+      ],
+      "verwacht": "409 reden \"geblokkeerd\" met uitleg \"botst met Notenallergie van 2 van de 2 …\"; er wordt geen pakket opgeslagen.",
+      "userStories": [
+        {
+          "id": "US-PAK-03",
+          "titel": "Rekening houden met wensen en allergieën"
+        },
+        {
+          "id": "US-KLT-08",
+          "titel": "Specifieke allergieën en voedingsbeperkingen registreren"
+        }
+      ],
+      "pagina": "Voedselpakketten (achter de schermen: API)",
+      "onderdeel": "G. Voedselpakketten samenstellen",
+      "module": "07-pakketten",
+      "resultaat": "Geslaagd",
+      "werkelijk": "409 geblokkeerd: \"Pindakaas Calvé (650g) botst met Notenallergie van 2 van de 2 (Samira El Jafari, Rayan El Jafari)\"; pakketten voor/na 32/32.",
+      "screenshot": null,
+      "duurMs": 315
+    },
+    {
+      "id": "TC-74",
+      "functie": "Product over de houdbaarheidsdatum geblokkeerd",
+      "eisen": [
+        "PAK-1",
+        "VRD-2"
+      ],
+      "soort": "Negatief",
+      "testvorm": "Functioneel (UI) + API",
+      "rol": "Vrijwilliger",
+      "testdata": "Campina Volle Melk (1L), THT verstreken; Familie Veldhuis (geen lactose-wens)",
+      "stappen": [
+        "Kies Familie Veldhuis en zoek \"Volle Melk\" met het filter uit",
+        "Stuur via de API een pakket met dit product en forceer = true"
+      ],
+      "verwacht": "Het verlopen product staat niet in de voorraadlijst; de API geeft 409 geblokkeerd \"is over de houdbaarheidsdatum\".",
+      "userStories": [
+        {
+          "id": "US-PAK-01",
+          "titel": "Voedselpakket samenstellen"
+        }
+      ],
+      "pagina": "Voedselpakketten",
+      "onderdeel": "G. Voedselpakketten samenstellen",
+      "module": "07-pakketten",
+      "resultaat": "Geslaagd",
+      "werkelijk": "In lijst: nee; API: 409 \"Campina Volle Melk (1L) is over de houdbaarheidsdatum (2026-11-16)\".",
+      "screenshot": null,
+      "duurMs": 2269
+    },
+    {
+      "id": "TC-75",
+      "functie": "Waarschuwing bij dieetwens + bewust toch opslaan",
+      "eisen": [
+        "PAK-1",
+        "KLT-6"
+      ],
+      "soort": "Alternatief pad",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Vrijwilliger",
+      "testdata": "Familie Öztürk (Hatice: glutenvrij) + Halfbruin gesneden brood (gluten) en Rijst",
+      "stappen": [
+        "Kies Familie Öztürk, zet het filter uit",
+        "Voeg brood en rijst toe",
+        "Klik \"Pakket klaarzetten\"",
+        "Kies in de waarschuwing \"Toch opslaan\""
+      ],
+      "verwacht": "Rode melding \"Let op: … past niet bij de wensen\"; dialoog \"Past niet bij de wensen van dit gezin\" met uitleg (1 van de 3, Hatice); na bevestigen \"Pakket is klaargezet voor Familie Öztürk.\"",
+      "userStories": [
+        {
+          "id": "US-PAK-03",
+          "titel": "Rekening houden met wensen en allergieën"
+        }
+      ],
+      "pagina": "Voedselpakketten",
+      "onderdeel": "G. Voedselpakketten samenstellen",
+      "module": "07-pakketten",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Dialoog: \"Past niet bij de wensen van dit gezinDeze producten botsen met een dieetwens. Dat mag wel — het gezin kan ze onderling verdelen — maar bevestig het even:Halfbru…\"; toast \"Pakket is klaargezet voor Familie Öztürk.\"; status in db: Klaar.",
+      "screenshot": "TC-75.png",
+      "duurMs": 2390
+    },
+    {
+      "id": "TC-76",
+      "functie": "Uitzondering heft de harde blokkade op",
+      "eisen": [
+        "KLT-6",
+        "PAK-7"
+      ],
+      "soort": "Alternatief pad",
+      "testvorm": "Functioneel (UI) + API",
+      "rol": "Vrijwilliger",
+      "testdata": "Familie Bakker (notenallergie mét uitzondering) + Pindakaas",
+      "stappen": [
+        "Kies Familie Bakker, filter uit, bekijk Pindakaas",
+        "Sla via de API op zonder en met forceer",
+        "Open de pakbon"
+      ],
+      "verwacht": "Pindakaas is toe te voegen (label \"mag toch\"); zonder forceer 409 \"conflict\" (waarschuwing, geen blokkade); met forceer 201; de pakbon toont de uitzondering met reden.",
+      "userStories": [
+        {
+          "id": "US-PAK-03",
+          "titel": "Rekening houden met wensen en allergieën"
+        },
+        {
+          "id": "US-KLT-08",
+          "titel": "Specifieke allergieën en voedingsbeperkingen registreren"
+        }
+      ],
+      "pagina": "Voedselpakketten → Pakbon",
+      "onderdeel": "G. Voedselpakketten samenstellen",
+      "module": "07-pakketten",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Knop actief: true; label \"Notenallergie (1×) · mag toch\"; zonder forceer 409 conflict; met forceer 201; pakbon: \"Uitzondering op Notenallergie: Gezin wil het toch: Bart eet het niet, de kinderen wel. Apart bewaren.\".",
+      "screenshot": null,
+      "duurMs": 2288
+    },
+    {
+      "id": "TC-77",
+      "functie": "Concept opslaan en later verder werken",
+      "eisen": [
+        "PAK-1",
+        "PAK-5"
+      ],
+      "soort": "Positief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Vrijwilliger",
+      "testdata": "Familie Veldhuis: 2× Rijst 1kg, 1× Sinaasappelsap",
+      "stappen": [
+        "Kies Veldhuis, voeg producten toe en klik \"Concept opslaan\"",
+        "Ververs de pagina en kies Veldhuis opnieuw"
+      ],
+      "verwacht": "\"Concept opgeslagen.\"; na verversen melding \"Bestaand pakket van deze week geopend (concept).\" en dezelfde inhoud; status in de lijst \"Concept\".",
+      "userStories": [
+        {
+          "id": "US-PAK-01",
+          "titel": "Voedselpakket samenstellen"
+        },
+        {
+          "id": "US-WRK-04",
+          "titel": "Op donderdag pakketten samenstellen"
+        }
+      ],
+      "pagina": "Voedselpakketten",
+      "onderdeel": "G. Voedselpakketten samenstellen",
+      "module": "07-pakketten",
+      "resultaat": "Geslaagd",
+      "werkelijk": "\"Concept opgeslagen.\"; na verversen: \"Bestaand pakket van deze week geopend (concept).\"; Rijst 2×; status in lijst \"Concept\".",
+      "screenshot": "TC-77.png",
+      "duurMs": 2780
+    },
+    {
+      "id": "TC-78",
+      "functie": "Pakket klaarzetten: voorraad af, nummer en datum",
+      "eisen": [
+        "PAK-2",
+        "PAK-3",
+        "PAK-5",
+        "VRD-2"
+      ],
+      "soort": "Positief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Vrijwilliger",
+      "testdata": "Mevr. Jansen: 2× Rijst 1kg (voorraad 1200), 1× Koffiepads (520)",
+      "stappen": [
+        "Kies Mevr. Jansen, voeg de producten toe",
+        "Klik \"Pakket klaarzetten\""
+      ],
+      "verwacht": "\"Pakket is klaargezet voor Mevr. Jansen.\"; voorraad Rijst −2 en Koffiepads −1; nieuw pakketnummer = hoogste + 1; samenstellingsdatum = vandaag; samensteller Ank de Groot.",
+      "userStories": [
+        {
+          "id": "US-PAK-04",
+          "titel": "Automatisch uniek pakketnummer genereren"
+        },
+        {
+          "id": "US-PAK-05",
+          "titel": "Datum van samenstelling registreren"
+        },
+        {
+          "id": "US-PAK-06",
+          "titel": "Pakket aan klant koppelen"
+        },
+        {
+          "id": "US-PAK-08",
+          "titel": "Voorraad automatisch aanpassen"
+        }
+      ],
+      "pagina": "Voedselpakketten",
+      "onderdeel": "G. Voedselpakketten samenstellen",
+      "module": "07-pakketten",
+      "resultaat": "Geslaagd",
+      "werkelijk": "\"Pakket is klaargezet voor Mevr. Jansen.\"; pakket #2866 (vorige hoogste 2865), status Klaar, datum vandaag: ja, door Ank de Groot; Rijst 1195 → 1193, Koffiepads 520 → 519.",
+      "screenshot": null,
+      "duurMs": 2160
+    },
+    {
+      "id": "TC-79",
+      "functie": "Maximaal één pakket per gezin per week",
+      "eisen": [
+        "KLT-4",
+        "PAK-4"
+      ],
+      "soort": "Negatief",
+      "testvorm": "Technisch (API)",
+      "rol": "Vrijwilliger",
+      "testdata": "Gezin El Hassani heeft deze week al pakket #2862",
+      "stappen": [
+        "POST /api/pakketten voor El Hassani"
+      ],
+      "verwacht": "409 reden \"dubbel_deze_week\": \"Gezin El Hassani heeft deze week al een pakket.\"",
+      "userStories": [
+        {
+          "id": "US-PAK-06",
+          "titel": "Pakket aan klant koppelen"
+        },
+        {
+          "id": "US-WRK-04",
+          "titel": "Op donderdag pakketten samenstellen"
+        }
+      ],
+      "pagina": "Voedselpakketten (achter de schermen: API)",
+      "onderdeel": "G. Voedselpakketten samenstellen",
+      "module": "07-pakketten",
+      "resultaat": "Geslaagd",
+      "werkelijk": "409 dubbel_deze_week: \"Gezin El Hassani heeft deze week al een pakket.\"",
+      "screenshot": null,
+      "duurMs": 299
+    },
+    {
+      "id": "TC-80",
+      "functie": "Te weinig voorraad: niets wordt opgeslagen",
+      "eisen": [
+        "PAK-1",
+        "VRD-2",
+        "TEC-3"
+      ],
+      "soort": "Grensgeval",
+      "testvorm": "Technisch (API)",
+      "rol": "Vrijwilliger",
+      "testdata": "S. El Jafari: 50× Eieren 10st (voorraad 3)",
+      "stappen": [
+        "POST /api/pakketten met meer eieren dan er zijn"
+      ],
+      "verwacht": "409 \"te_weinig_voorraad\" met \"50 nodig, 3 op voorraad\"; voorraad blijft 3 en er komt geen leeg pakket in de database (transactie teruggedraaid).",
+      "userStories": [
+        {
+          "id": "US-PAK-08",
+          "titel": "Voorraad automatisch aanpassen"
+        }
+      ],
+      "pagina": "Voedselpakketten (achter de schermen: API)",
+      "onderdeel": "G. Voedselpakketten samenstellen",
+      "module": "07-pakketten",
+      "resultaat": "Geslaagd",
+      "werkelijk": "409 te_weinig_voorraad: Eieren 10st 50 nodig, 3 op voorraad; pakketten voor/na 36/36; voorraad eieren 3.",
+      "screenshot": null,
+      "duurMs": 340
+    },
+    {
+      "id": "TC-81",
+      "functie": "Pakket verwijderen: producten terug in de voorraad",
+      "eisen": [
+        "PAK-5",
+        "VRD-2"
+      ],
+      "soort": "Positief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Vrijwilliger",
+      "testdata": "Concept van Familie Veldhuis uit TC-77 (2× Rijst, 1× Sinaasappelsap)",
+      "stappen": [
+        "Kies Familie Veldhuis (concept wordt geopend)",
+        "Klik \"Pakket verwijderen\" en bevestig"
+      ],
+      "verwacht": "\"Pakket verwijderd, de producten staan weer in de voorraad.\"; Rijst +2 en Sinaasappelsap +1 terug; Veldhuis weer bij \"Pakket nodig\".",
+      "userStories": [
+        {
+          "id": "US-PAK-08",
+          "titel": "Voorraad automatisch aanpassen"
+        }
+      ],
+      "pagina": "Voedselpakketten",
+      "onderdeel": "G. Voedselpakketten samenstellen",
+      "module": "07-pakketten",
+      "resultaat": "Geslaagd",
+      "werkelijk": "\"Pakket verwijderd, de producten staan weer in de voorraad.\"; Rijst 1193 → 1195; status Veldhuis \"Pakket nodig\".",
+      "screenshot": null,
+      "duurMs": 2239
+    },
+    {
+      "id": "TC-82",
+      "functie": "Leeg pakket kan niet klaargezet worden",
+      "eisen": [
+        "PAK-5"
+      ],
+      "soort": "Negatief",
+      "testvorm": "Technisch (API) + UI",
+      "rol": "Vrijwilliger",
+      "testdata": "Familie Veldhuis, geen producten",
+      "stappen": [
+        "Kies een gezin zonder producten toe te voegen (knoppen controleren)",
+        "POST /api/pakketten met status Klaar en lege regels"
+      ],
+      "verwacht": "Knoppen \"Concept opslaan\" en \"Pakket klaarzetten\" zijn uitgeschakeld; API 422 \"Een pakket dat klaar is moet minimaal één product bevatten.\"",
+      "userStories": [
+        {
+          "id": "US-PAK-07",
+          "titel": "Producten in een pakket registreren"
+        }
+      ],
+      "pagina": "Voedselpakketten",
+      "onderdeel": "G. Voedselpakketten samenstellen",
+      "module": "07-pakketten",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Knop uitgeschakeld: true; API 422 \"Een pakket dat klaar is moet minimaal één product bevatten.\".",
+      "screenshot": null,
+      "duurMs": 2128
+    },
+    {
+      "id": "TC-83",
+      "functie": "Pakbon / sticker afdrukken",
+      "eisen": [
+        "PAK-6",
+        "PAK-7",
+        "PAK-3"
+      ],
+      "soort": "Positief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Vrijwilliger",
+      "testdata": "Pakket #2862 (Gezin El Hassani, 4 personen, Halal)",
+      "stappen": [
+        "Open de pakbon van pakket 2862 (knop \"Pakbon afdrukken\")",
+        "Bekijk de afdrukweergave"
+      ],
+      "verwacht": "Pakketnummer, datum, klantnaam en klantnummer, gezinsgrootte, dieetwensen, inhoud met aantallen/categorie/locatie, en een handtekeningregel. Knoppen verdwijnen bij afdrukken.",
+      "userStories": [
+        {
+          "id": "US-PAK-10",
+          "titel": "Sticker met pakketgegevens afdrukken"
+        },
+        {
+          "id": "US-PAK-11",
+          "titel": "Lijst met uitgereikte producten afdrukken"
+        }
+      ],
+      "pagina": "Pakbon (afdrukpagina)",
+      "onderdeel": "G. Voedselpakketten samenstellen",
+      "module": "07-pakketten",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Pakbon bevat nummer, klant, K-002, 4 personen, Halal, 6 productregels en handtekening; knoppen zichtbaar bij afdrukken: nee.",
+      "screenshot": "TC-83.png",
+      "duurMs": 921
+    },
+    {
+      "id": "TC-112",
+      "functie": "Vegetarisch gezin: alleen passende producten",
+      "eisen": [
+        "KLT-6",
+        "PAK-1"
+      ],
+      "soort": "Positief + alternatief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Vrijwilliger",
+      "testdata": "Dhr. Kowalski (2 personen, vegetarisch); Kipfilet en Rookworst bevatten vlees",
+      "stappen": [
+        "Kies Dhr. Kowalski",
+        "Bekijk de voorraad met het filter \"Gefilterd op compatibiliteit\" aan",
+        "Zet het filter uit"
+      ],
+      "verwacht": "Met filter staan Kipfilet en Rookworst niet in de lijst; zonder filter staan ze er wel, met het label \"Vegetarisch (2×)\" als waarschuwing.",
+      "userStories": [
+        {
+          "id": "US-KLT-09",
+          "titel": "Veganistische en vegetarische wensen registreren"
+        },
+        {
+          "id": "US-PAK-03",
+          "titel": "Rekening houden met wensen en allergieën"
+        }
+      ],
+      "pagina": "Voedselpakketten",
+      "onderdeel": "G. Voedselpakketten samenstellen",
+      "module": "07-pakketten",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Vleesproducten zichtbaar met filter: 0; zonder filter: Kipfilet met label \"Vegetarisch (2×)\".",
+      "screenshot": "TC-112.png",
+      "duurMs": 1921
+    },
+    {
+      "id": "TC-84",
+      "functie": "Wachtrij van deze week",
+      "eisen": [
+        "WRK-2",
+        "PAK-8"
+      ],
+      "soort": "Positief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Vrijwilliger",
+      "testdata": "Week: #2862 Klaar (El Hassani), #2860 en #2861 uitgegeven",
+      "stappen": [
+        "Ga naar Uitgifte",
+        "Bekijk de drie blokken rechts"
+      ],
+      "verwacht": "\"Klaar voor uitgifte\" 1 (El Hassani, Wacht), \"Nog in concept\" 0, \"Deze week al uitgegeven\" 2 met datum.",
+      "userStories": [
+        {
+          "id": "US-PAK-12",
+          "titel": "Pakketten per uitgiftedag bekijken"
+        },
+        {
+          "id": "US-WRK-05",
+          "titel": "Op vrijdag pakketten uitdelen"
+        }
+      ],
+      "pagina": "Uitgifte",
+      "onderdeel": "H. Uitgifte (vrijdag)",
+      "module": "08-uitgifte",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Klaar voor uitgifte 1 · Nog in concept 0 · Deze week al uitgegeven 2",
+      "screenshot": "TC-84.png",
+      "duurMs": 1271
+    },
+    {
+      "id": "TC-85",
+      "functie": "Cliënt zoeken op nummer of naam",
+      "eisen": [
+        "WRK-1",
+        "TEC-3"
+      ],
+      "soort": "Positief + negatief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Vrijwilliger",
+      "testdata": "\"K-002\", \"2\", \"hassani\", \"xyz\"",
+      "stappen": [
+        "Typ K-002 en druk Enter",
+        "Herhaal met 2 en hassani",
+        "Zoek op xyz"
+      ],
+      "verwacht": "De eerste drie tonen de kaart van Gezin El Hassani; \"xyz\" geeft \"Geen cliënt gevonden voor \"xyz\".\"",
+      "userStories": [
+        {
+          "id": "US-WRK-01",
+          "titel": "Klant identificeren met rijbewijs of paspoort"
+        }
+      ],
+      "pagina": "Uitgifte",
+      "onderdeel": "H. Uitgifte (vrijdag)",
+      "module": "08-uitgifte",
+      "resultaat": "Geslaagd",
+      "werkelijk": "K-002/2/hassani → Gezin El Hassani, Gezin El Hassani, Gezin El Hassani; xyz → \"Geen cliënt gevonden voor \"xyz\".\".",
+      "screenshot": null,
+      "duurMs": 2927
+    },
+    {
+      "id": "TC-86",
+      "functie": "Gezin zonder pakket deze week",
+      "eisen": [
+        "WRK-2"
+      ],
+      "soort": "Alternatief pad",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Vrijwilliger",
+      "testdata": "Familie Bakker (nog geen pakket deze week)",
+      "stappen": [
+        "Zoek op \"Bakker\""
+      ],
+      "verwacht": "Kaart met \"Er staat deze week geen pakket klaar voor dit gezin.\" en een knop naar Voedselpakketten.",
+      "userStories": [
+        {
+          "id": "US-WRK-05",
+          "titel": "Op vrijdag pakketten uitdelen"
+        }
+      ],
+      "pagina": "Uitgifte",
+      "onderdeel": "H. Uitgifte (vrijdag)",
+      "module": "08-uitgifte",
+      "resultaat": "Geslaagd",
+      "werkelijk": "\"Er staat deze week geen pakket klaar voor dit gezin. Laat het pakket eerst samenstellen op de pagina Voedselpakketten.\"; knop: ja.",
+      "screenshot": "TC-86.png",
+      "duurMs": 1763
+    },
+    {
+      "id": "TC-87",
+      "functie": "Uitgeven zonder legitimatie wordt geblokkeerd",
+      "eisen": [
+        "WRK-1"
+      ],
+      "soort": "Negatief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Vrijwilliger",
+      "testdata": "Pakket #2862, identiteit nog niet gecontroleerd",
+      "stappen": [
+        "Klik in de wachtrij op El Hassani",
+        "Klik \"Pakket uitgegeven bevestigen\" en bevestig"
+      ],
+      "verwacht": "Melding \"Eerst legitimeren: Leg eerst vast met welk legitimatiebewijs…\"; status blijft Klaar.",
+      "userStories": [
+        {
+          "id": "US-WRK-01",
+          "titel": "Klant identificeren met rijbewijs of paspoort"
+        }
+      ],
+      "pagina": "Uitgifte",
+      "onderdeel": "H. Uitgifte (vrijdag)",
+      "module": "08-uitgifte",
+      "resultaat": "Geslaagd",
+      "werkelijk": "\"Eerst legitimerenLeg eerst vast met welk legitimatiebewijs de cliënt zich heeft geïdentificeerd.Begrepen\"; status Klaar.",
+      "screenshot": "TC-87.png",
+      "duurMs": 2390
+    },
+    {
+      "id": "TC-88",
+      "functie": "Legitimatie vastleggen",
+      "eisen": [
+        "WRK-1"
+      ],
+      "soort": "Positief + negatief",
+      "testvorm": "Functioneel (UI) + API",
+      "rol": "Vrijwilliger",
+      "testdata": "Pakket #2862: Paspoort; via API \"Bibliotheekpas\"",
+      "stappen": [
+        "Open El Hassani, klik \"Legitimatie vastleggen\", kies Paspoort",
+        "Stuur via de API een niet-toegestaan legitimatiebewijs"
+      ],
+      "verwacht": "\"Geïdentificeerd met: Paspoort\"; kaart en wachtrij tonen gelegitimeerd. Bibliotheekpas: 422 \"Kies paspoort, rijbewijs of ID-kaart.\"",
+      "userStories": [
+        {
+          "id": "US-WRK-01",
+          "titel": "Klant identificeren met rijbewijs of paspoort"
+        }
+      ],
+      "pagina": "Uitgifte → Legitimatie vastleggen",
+      "onderdeel": "H. Uitgifte (vrijdag)",
+      "module": "08-uitgifte",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Toast \"Geïdentificeerd met: Paspoort\"; wachtrij \"Gelegitimeerd\"; Bibliotheekpas: 422 \"Kies paspoort, rijbewijs of ID-kaart.\".",
+      "screenshot": null,
+      "duurMs": 2284
+    },
+    {
+      "id": "TC-89",
+      "functie": "Pakket uitgeven",
+      "eisen": [
+        "PAK-8",
+        "PAK-3"
+      ],
+      "soort": "Positief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Vrijwilliger",
+      "testdata": "Pakket #2862 (gelegitimeerd in TC-88)",
+      "stappen": [
+        "Open El Hassani",
+        "Klik \"Pakket uitgegeven bevestigen\" en bevestig"
+      ],
+      "verwacht": "\"Pakket uitgegeven aan Gezin El Hassani.\"; status Uitgegeven, uitgiftedatum vandaag, opgehaald = ja, uitgegeven door Ank de Groot; \"Deze week al uitgegeven\" wordt 3.",
+      "userStories": [
+        {
+          "id": "US-PAK-09",
+          "titel": "Uitgifte van een pakket registreren"
+        },
+        {
+          "id": "US-WRK-05",
+          "titel": "Op vrijdag pakketten uitdelen"
+        }
+      ],
+      "pagina": "Uitgifte → Pakket uitgegeven bevestigen",
+      "onderdeel": "H. Uitgifte (vrijdag)",
+      "module": "08-uitgifte",
+      "resultaat": "Geslaagd",
+      "werkelijk": "\"Pakket uitgegeven aan Gezin El Hassani.\"; status Uitgegeven, datum vandaag ja, opgehaald 1, door Ank de Groot; \"Deze week al uitgegeven3\".",
+      "screenshot": "TC-89.png",
+      "duurMs": 2323
+    },
+    {
+      "id": "TC-90",
+      "functie": "Uitgegeven pakket is historie (niet meer te wijzigen)",
+      "eisen": [
+        "PAK-5",
+        "KLT-3"
+      ],
+      "soort": "Negatief",
+      "testvorm": "Technisch (API)",
+      "rol": "Directie",
+      "testdata": "Pakket #2862 (uitgegeven in TC-89)",
+      "stappen": [
+        "PUT /api/pakketten/2862",
+        "DELETE /api/pakketten/2862",
+        "POST /api/uitgifte/2862/uitgeven",
+        "POST /api/uitgifte/2862/niet-opgehaald"
+      ],
+      "verwacht": "Alle vier 409 (al uitgegeven / blijft bewaard voor de rapportages).",
+      "userStories": [
+        {
+          "id": "US-PAK-09",
+          "titel": "Uitgifte van een pakket registreren"
+        },
+        {
+          "id": "US-KLT-14",
+          "titel": "Pakketsamenstelling en datum bekijken"
+        }
+      ],
+      "pagina": "Uitgifte (achter de schermen: API)",
+      "onderdeel": "H. Uitgifte (vrijdag)",
+      "module": "08-uitgifte",
+      "resultaat": "Geslaagd",
+      "werkelijk": "409 \"Dit pakket is al uitgegeven en kan niet meer worden gewijzigd.\" | 409 \"Dit pakket is al uitgegeven. Uitgegeven pakketten blijven bewaard voor de rapportages.\" | 409 \"Dit pakket is al uitgegeven.\" | 409 \"Dit pakket is al uitgegeven en blijft in de historie staan.\"",
+      "screenshot": null,
+      "duurMs": 364
+    },
+    {
+      "id": "TC-91",
+      "functie": "Niet opgehaald: terugboeken naar de voorraad",
+      "eisen": [
+        "PAK-8",
+        "VRD-2"
+      ],
+      "soort": "Alternatief pad",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Vrijwilliger",
+      "testdata": "Klaargezet pakket voor Mevr. Jansen met 3× Rijst 1kg (via API aangemaakt)",
+      "stappen": [
+        "Open het pakket van Mevr. Jansen in de wachtrij",
+        "Klik \"Niet opgehaald\" en bevestig"
+      ],
+      "verwacht": "\"Pakket teruggeboekt, de producten staan weer in de voorraad.\"; Rijst weer op de oude stand; het pakket bestaat niet meer.",
+      "userStories": [
+        {
+          "id": "US-WRK-05",
+          "titel": "Op vrijdag pakketten uitdelen"
+        },
+        {
+          "id": "US-PAK-08",
+          "titel": "Voorraad automatisch aanpassen"
+        }
+      ],
+      "pagina": "Uitgifte → Niet opgehaald",
+      "onderdeel": "H. Uitgifte (vrijdag)",
+      "module": "08-uitgifte",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Rijst 1200 → 1197 (klaargezet) → 1200 (teruggeboekt); \"Pakket teruggeboekt, de producten staan weer in de voorraad.\"; pakket #2863 bestaat nog: 0.",
+      "screenshot": null,
+      "duurMs": 2276
+    },
+    {
+      "id": "TC-92",
+      "functie": "Rechten uitgifte",
+      "eisen": [
+        "GBR-3",
+        "GBR-4"
+      ],
+      "soort": "Beveiliging",
+      "testvorm": "Technisch (API)",
+      "rol": "Magazijn, Vrijwilliger",
+      "testdata": "GET /api/uitgifte/wachtrij",
+      "stappen": [
+        "Magazijnmedewerker vraagt de wachtrij op",
+        "Vrijwilliger vraagt de wachtrij op"
+      ],
+      "verwacht": "Magazijn 403 (uitgifte hoort niet bij die rol); vrijwilliger 200.",
+      "userStories": [
+        {
+          "id": "US-GBR-06",
+          "titel": "Magazijnmedewerker heeft beperkte toegang"
+        },
+        {
+          "id": "US-GBR-07",
+          "titel": "Vrijwilliger heeft toegang tot pakketten"
+        }
+      ],
+      "pagina": "Uitgifte (achter de schermen: API)",
+      "onderdeel": "H. Uitgifte (vrijdag)",
+      "module": "08-uitgifte",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Magazijn 403; vrijwilliger 200.",
+      "screenshot": null,
+      "duurMs": 591
+    },
+    {
+      "id": "TC-93",
+      "functie": "Rapportageoverzicht met kerncijfers en grafieken",
+      "eisen": [
+        "RAP-1",
+        "TEC-3"
+      ],
+      "soort": "Positief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Administratie",
+      "testdata": "Standaard testdata (uitgegeven pakketten dit jaar, afvoer)",
+      "stappen": [
+        "Log in als administratie en open Rapportages"
+      ],
+      "verwacht": "Drie kerncijfers (uitgegeven pakketten dit jaar, gemiddelde pakketwaarde, verspilling t.o.v. doel 2%), staafdiagram, voorraadverloop, bestemming, gezinsgrootte en top-producten; aantallen kloppen met de database.",
+      "userStories": [
+        {
+          "id": "US-SEC-04",
+          "titel": "Gegevens snel en overzichtelijk toegankelijk"
+        }
+      ],
+      "pagina": "Rapportages",
+      "onderdeel": "I. Rapportages en managementinformatie",
+      "module": "09-rapportages",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Kaart \"Totaal uitgegeven pakketten (dit jaar)31Geen vergelijkbare cijfers van…\" (database: 31); staafdiagram ja, lijngrafiek ja, top-producten 10 rijen.",
+      "screenshot": "TC-93.png",
+      "duurMs": 1560
+    },
+    {
+      "id": "TC-94",
+      "functie": "Exporteren naar CSV (Excel)",
+      "eisen": [
+        "RAP-1",
+        "TEC-3"
+      ],
+      "soort": "Positief",
+      "testvorm": "Functioneel (UI) + API",
+      "rol": "Directie",
+      "testdata": "Rapporten weken, verloop, bestemming, verdeling, topproducten",
+      "stappen": [
+        "Klik bij \"Wekelijkse uitgifte\" op CSV",
+        "Vraag alle vijf de exports op"
+      ],
+      "verwacht": "Download \"voedselbank-weken-<datum>.csv\"; elke export is text/csv met BOM, kopregel en puntkomma als scheidingsteken.",
+      "userStories": [
+        {
+          "id": "US-RAP-06",
+          "titel": "Rapportages afdrukken"
+        }
+      ],
+      "pagina": "Rapportages → CSV",
+      "onderdeel": "I. Rapportages en managementinformatie",
+      "module": "09-rapportages",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Download \"voedselbank-weken-2026-11-26.csv\"; weken: 7 regels, verloop: 32 regels, bestemming: 4 regels, verdeling: 4 regels, topproducten: 11 regels.",
+      "screenshot": null,
+      "duurMs": 1844
+    },
+    {
+      "id": "TC-95",
+      "functie": "Maandoverzicht per productcategorie",
+      "eisen": [
+        "RAP-1"
+      ],
+      "soort": "Positief + alternatief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Directie",
+      "testdata": "Huidige maand; daarna januari van 4 jaar geleden (geen gegevens)",
+      "stappen": [
+        "Klik \"Maandoverzichten\"",
+        "Bekijk het overzicht per productcategorie",
+        "Kies januari en het oudste jaar"
+      ],
+      "verwacht": "Tabel gegroepeerd per categorie met product, leverancier, geleverd en uitgegeven; totaal klopt met de database. Lege maand: \"Geen gegevens in januari …\".",
+      "userStories": [
+        {
+          "id": "US-RAP-01",
+          "titel": "Maandoverzicht per productcategorie"
+        },
+        {
+          "id": "US-RAP-02",
+          "titel": "Leveranciers per productcategorie bekijken"
+        },
+        {
+          "id": "US-RAP-03",
+          "titel": "Rapportages filteren op maand en jaar"
+        }
+      ],
+      "pagina": "Rapportages → Maandoverzichten",
+      "onderdeel": "I. Rapportages en managementinformatie",
+      "module": "09-rapportages",
+      "resultaat": "Geslaagd",
+      "werkelijk": "5 categorieën (Aardappelen, groente, fruit, Bakkerij en banket, Kaas, vleeswaren, Soepen, sauzen, kruiden en olie, Zuivel, plantaardig en eieren); \"650 stuks binnengekomen\" (database: 650); lege maand: \"Geen gegevens in januari 2022\".",
+      "screenshot": "TC-95.png",
+      "duurMs": 1556
+    },
+    {
+      "id": "TC-96",
+      "functie": "Maandoverzicht per postcode",
+      "eisen": [
+        "RAP-2"
+      ],
+      "soort": "Positief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Directie",
+      "testdata": "Huidige maand",
+      "stappen": [
+        "Open Maandoverzichten",
+        "Klik \"Per postcode\""
+      ],
+      "verwacht": "Per postcode: aantal gezinnen, pakketten, aantallen per categorie en totaal; het eindtotaal en het aantal gezinnen per postcode kloppen met de database.",
+      "userStories": [
+        {
+          "id": "US-RAP-04",
+          "titel": "Maandoverzicht per postcode"
+        },
+        {
+          "id": "US-RAP-05",
+          "titel": "Productcategorieën per postcode bekijken"
+        },
+        {
+          "id": "US-RAP-03",
+          "titel": "Rapportages filteren op maand en jaar"
+        }
+      ],
+      "pagina": "Rapportages → Maandoverzichten → Per postcode",
+      "onderdeel": "I. Rapportages en managementinformatie",
+      "module": "09-rapportages",
+      "resultaat": "Geslaagd",
+      "werkelijk": "4 postcodes; totaal 197 (database 197); 5491XT: 1 gezinnen (database 1).",
+      "screenshot": "TC-96.png",
+      "duurMs": 1502
+    },
+    {
+      "id": "TC-97",
+      "functie": "Maandoverzicht afdrukken",
+      "eisen": [
+        "RAP-3"
+      ],
+      "soort": "Positief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Directie",
+      "testdata": "Afdrukweergave (print media) van het maandoverzicht",
+      "stappen": [
+        "Open Maandoverzichten",
+        "Klik \"Afdrukken\" (afdrukweergave)"
+      ],
+      "verwacht": "Afdruk toont een kop met naam voedselbank, soort overzicht, maand en afdrukdatum; menu, filters en knoppen worden niet afgedrukt; A4 liggend.",
+      "userStories": [
+        {
+          "id": "US-RAP-06",
+          "titel": "Rapportages afdrukken"
+        }
+      ],
+      "pagina": "Rapportages → Maandoverzichten → Afdrukken",
+      "onderdeel": "I. Rapportages en managementinformatie",
+      "module": "09-rapportages",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Printkop \"Voedselbank Maaskantje — maandoverzicht per productcategorienovember 2026 · afgedrukt op 26-11-2026\"; menu zichtbaar: nee; filters zichtbaar: nee; PDF gemaakt (114 kB).",
+      "screenshot": "TC-97.png",
+      "duurMs": 1340
+    },
+    {
+      "id": "TC-98",
+      "functie": "Rechten rapportages",
+      "eisen": [
+        "GBR-3",
+        "GBR-4",
+        "TEC-4"
+      ],
+      "soort": "Beveiliging",
+      "testvorm": "Technisch (API)",
+      "rol": "Vrijwilliger, Magazijn",
+      "testdata": "GET /api/rapportages, /api/rapportages/export/weken, /api/rapportages/maand",
+      "stappen": [
+        "Vraag de rapportages op als vrijwilliger en als magazijnmedewerker"
+      ],
+      "verwacht": "Alle verzoeken 403.",
+      "userStories": [
+        {
+          "id": "US-SEC-01",
+          "titel": "Alleen toegestane functies tonen"
+        }
+      ],
+      "pagina": "Rapportages (achter de schermen: API)",
+      "onderdeel": "I. Rapportages en managementinformatie",
+      "module": "09-rapportages",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Statussen: 403, 403, 403, 403, 403, 403.",
+      "screenshot": null,
+      "duurMs": 616
+    },
+    {
+      "id": "TC-99",
+      "functie": "SQL-injectie wordt tegengehouden",
+      "eisen": [
+        "TEC-6"
+      ],
+      "soort": "Beveiliging",
+      "testvorm": "Beveiliging (OWASP A03)",
+      "rol": "— / Vrijwilliger",
+      "testdata": "login \"' OR '1'='1\" ; zoekterm \"' OR 'x'='x' -- \" ; id \"1 OR 1=1\"",
+      "stappen": [
+        "Log in met een SQL-injectie als gebruikersnaam en wachtwoord",
+        "Zoek bij de uitgifte op een injectie-string",
+        "Vraag /api/pakketten/1%20OR%201=1 op"
+      ],
+      "verwacht": "Inloggen 401; zoeken 404 \"Geen cliënt gevonden\"; id-injectie geeft geen extra gegevens; database ongewijzigd (prepared statements).",
+      "userStories": [
+        {
+          "id": "US-SEC-05",
+          "titel": "Voldoen aan AVG- en beveiligingsrichtlijnen"
+        }
+      ],
+      "pagina": "Inloggen, Uitgifte (achter de schermen: API)",
+      "onderdeel": "J. Technische tests (beveiliging, integriteit, omgeving)",
+      "module": "10-technisch",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Login 401; zoeken 404 \"Geen cliënt gevonden voor \"' OR 'x'='x' --\".\"; id-injectie 404; klanten voor/na 11/11.",
+      "screenshot": null,
+      "duurMs": 638
+    },
+    {
+      "id": "TC-100",
+      "functie": "Cross-site scripting (XSS) wordt tegengehouden",
+      "eisen": [
+        "TEC-6"
+      ],
+      "soort": "Beveiliging",
+      "testvorm": "Beveiliging (OWASP A03)",
+      "rol": "Directie",
+      "testdata": "Klant met gezinsnaam <img src=x onerror=\"window.__xss=1\">",
+      "stappen": [
+        "Maak via de API een klant aan met HTML/JavaScript in de naam",
+        "Open de klantenpagina"
+      ],
+      "verwacht": "De naam staat letterlijk als tekst in beeld; er wordt geen script uitgevoerd (window.__xss bestaat niet).",
+      "userStories": [
+        {
+          "id": "US-SEC-05",
+          "titel": "Voldoen aan AVG- en beveiligingsrichtlijnen"
+        }
+      ],
+      "pagina": "Klanten",
+      "onderdeel": "J. Technische tests (beveiliging, integriteit, omgeving)",
+      "module": "10-technisch",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Script uitgevoerd: nee; naam als tekst zichtbaar: ja.",
+      "screenshot": "TC-100.png",
+      "duurMs": 2192
+    },
+    {
+      "id": "TC-101",
+      "functie": "Wachtwoorden versleuteld opgeslagen",
+      "eisen": [
+        "TEC-6"
+      ],
+      "soort": "Beveiliging",
+      "testvorm": "Beveiliging (OWASP A02)",
+      "rol": "—",
+      "testdata": "Tabel Gebruiker",
+      "stappen": [
+        "Bekijk de kolom Wachtwoord_hash in de database"
+      ],
+      "verwacht": "Alle wachtwoorden zijn bcrypt-hashes ($2y$, 60 tekens); nergens staat \"voedselbank\" leesbaar; de API stuurt nooit een hash mee.",
+      "userStories": [
+        {
+          "id": "US-SEC-05",
+          "titel": "Voldoen aan AVG- en beveiligingsrichtlijnen"
+        }
+      ],
+      "pagina": "Database (tabel Gebruiker)",
+      "onderdeel": "J. Technische tests (beveiliging, integriteit, omgeving)",
+      "module": "10-technisch",
+      "resultaat": "Geslaagd",
+      "werkelijk": "5 van 5 accounts bcrypt; leesbaar: 0; hash in API-antwoord: nee.",
+      "screenshot": null,
+      "duurMs": 354
+    },
+    {
+      "id": "TC-102",
+      "functie": "Veilige sessiecookie en nieuwe sessie-ID bij inloggen",
+      "eisen": [
+        "TEC-6"
+      ],
+      "soort": "Beveiliging",
+      "testvorm": "Beveiliging (OWASP A07)",
+      "rol": "Directie",
+      "testdata": "Bestaande (anonieme) sessie, daarna inloggen",
+      "stappen": [
+        "Vraag /api/auth/me op en bewaar de sessiecookie",
+        "Log in met diezelfde cookie",
+        "Vergelijk de sessie-ID's en de cookie-instellingen"
+      ],
+      "verwacht": "Cookie is HttpOnly en SameSite=Strict; na inloggen krijgt de browser een nieuwe sessie-ID (bescherming tegen session fixation); precies één Set-Cookie per login.",
+      "userStories": [
+        {
+          "id": "US-SEC-05",
+          "titel": "Voldoen aan AVG- en beveiligingsrichtlijnen"
+        }
+      ],
+      "pagina": "Inloggen (achter de schermen: API)",
+      "onderdeel": "J. Technische tests (beveiliging, integriteit, omgeving)",
+      "module": "10-technisch",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Cookie \"VBSESSID=eyJpdiI6IldkTzYxUUhKRUxLQXlSS2VDNTB6ZUE9PSIsInZhbHVlIjoiMHFPWHZQQ0s5MTJBY25mTFVGT0RGR3hWSklzY3RHazJycnMrMEZhUE1tRVh0RnBVeUJlMGV0RlgrYkFxMjZBYmxGVThKL2g1VnNWcDhwbWZkaEUxamZsMnZlVjUyWkhnNkovV212RzVwOS8wbC9HMi9uYUt4SVFOT0RPRkh0MzgiLCJtYWMiOiJlYmU3MWFlMzA5ZjE5MjBjNWI3OTg1YTQzNDVkZTQxYzQ0MjM0ZTQxYjIzMDM0MzRlOTExZjc4ZDliODlkMTg5IiwidGFnIjoiIn0%3D; expires=Thu, 26 Nov 2026 14:51:26 GMT; Max-Age=3600; path=/; httponly; samesite=strict\"; ID gewijzigd: ja; Set-Cookie-headers bij verse login: 1.",
+      "screenshot": null,
+      "duurMs": 585
+    },
+    {
+      "id": "TC-103",
+      "functie": "Nette foutafhandeling zonder technische details",
+      "eisen": [
+        "TEC-6",
+        "TEC-1"
+      ],
+      "soort": "Negatief",
+      "testvorm": "Technisch (API)",
+      "rol": "Directie",
+      "testdata": "Onbekende route, verkeerde HTTP-methode, kapotte JSON",
+      "stappen": [
+        "GET /api/bestaatniet",
+        "GET /api/auth/login (moet POST zijn)",
+        "POST /api/klanten met ongeldige JSON"
+      ],
+      "verwacht": "404 en 405 met een Nederlandse JSON-melding; kapotte JSON geeft 422 (validatie), geen 500; nergens een stacktrace of bestandspad.",
+      "userStories": [
+        {
+          "id": "US-SEC-03",
+          "titel": "Duidelijke en intuïtieve interface"
+        },
+        {
+          "id": "US-SEC-05",
+          "titel": "Voldoen aan AVG- en beveiligingsrichtlijnen"
+        }
+      ],
+      "pagina": "Achter de schermen (API)",
+      "onderdeel": "J. Technische tests (beveiliging, integriteit, omgeving)",
+      "module": "10-technisch",
+      "resultaat": "Geslaagd",
+      "werkelijk": "404 \"Onbekende API-route: api/bestaatniet\"; 405 \"Deze actie kan niet met GET.\"; kapotte JSON 422; technische details gelekt: nee.",
+      "screenshot": null,
+      "duurMs": 311
+    },
+    {
+      "id": "TC-104",
+      "functie": "Database bewaakt de historie (foreign keys)",
+      "eisen": [
+        "VRD-3",
+        "KLT-3"
+      ],
+      "soort": "Grensgeval",
+      "testvorm": "Technisch (database)",
+      "rol": "— (rechtstreeks in MySQL)",
+      "testdata": "DELETE van product 3 (in pakketten) en klant 1 (met pakketten)",
+      "stappen": [
+        "Voer in MySQL \"DELETE FROM Product WHERE idProduct = 3\" uit",
+        "Voer \"DELETE FROM Klant WHERE idKlant = 1\" uit"
+      ],
+      "verwacht": "Beide worden door de database geweigerd (foreign key constraint), ook als iemand de applicatie omzeilt.",
+      "userStories": [
+        {
+          "id": "US-VRD-05",
+          "titel": "Verwijderen van producten die in een pakket zitten blokkeren"
+        },
+        {
+          "id": "US-KLT-13",
+          "titel": "Pakketgeschiedenis per klant bekijken"
+        }
+      ],
+      "pagina": "Database (rechtstreeks in MySQL)",
+      "onderdeel": "J. Technische tests (beveiliging, integriteit, omgeving)",
+      "module": "10-technisch",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Product 3: geweigerd (foreign key); klant 1: geweigerd (foreign key).",
+      "screenshot": null,
+      "duurMs": 35
+    },
+    {
+      "id": "TC-105",
+      "functie": "Bruikbaar op een smal scherm (tablet/telefoon)",
+      "eisen": [
+        "TEC-1"
+      ],
+      "soort": "Positief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Vrijwilliger",
+      "testdata": "Schermbreedte 390 × 844 (telefoon)",
+      "stappen": [
+        "Open dashboard, pakketten en uitgifte op 390 px breed"
+      ],
+      "verwacht": "Zijbalk klapt in tot iconen; kolommen staan onder elkaar; de pagina zelf scrolt niet horizontaal.",
+      "userStories": [
+        {
+          "id": "US-SEC-03",
+          "titel": "Duidelijke en intuïtieve interface"
+        }
+      ],
+      "pagina": "Dashboard, Voedselpakketten, Uitgifte (telefoonscherm)",
+      "onderdeel": "J. Technische tests (beveiliging, integriteit, omgeving)",
+      "module": "10-technisch",
+      "resultaat": "Geslaagd",
+      "werkelijk": "/: past; /pakketten: past; /uitgifte: past; menutekst verborgen: ja.",
+      "screenshot": "TC-105.png",
+      "duurMs": 3233
+    },
+    {
+      "id": "TC-106",
+      "functie": "Toetsenbord en formulierlabels",
+      "eisen": [
+        "TEC-1"
+      ],
+      "soort": "Positief",
+      "testvorm": "Functioneel (UI)",
+      "rol": "Directie",
+      "testdata": "Producten: nieuw-product-paneel en bevestigingsvenster",
+      "stappen": [
+        "Open \"+ Nieuw product\" en druk Escape",
+        "Open een verwijdervraag en druk Escape",
+        "Controleer of elk invoerveld een label heeft"
+      ],
+      "verwacht": "Escape sluit paneel en venster zonder iets op te slaan; het eerste veld krijgt focus; alle velden in het paneel hebben een gekoppeld label.",
+      "userStories": [
+        {
+          "id": "US-SEC-03",
+          "titel": "Duidelijke en intuïtieve interface"
+        }
+      ],
+      "pagina": "Producten",
+      "onderdeel": "J. Technische tests (beveiliging, integriteit, omgeving)",
+      "module": "10-technisch",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Focus op \"p-naam\"; velden zonder label: 0; paneel dicht na Escape: true; venster dicht na Escape: true.",
+      "screenshot": null,
+      "duurMs": 2502
+    },
+    {
+      "id": "TC-107",
+      "functie": "Snelheid van pagina's en API",
+      "eisen": [
+        "TEC-3"
+      ],
+      "soort": "Positief",
+      "testvorm": "Prestatie",
+      "rol": "Directie",
+      "testdata": "10 API-overzichten, 3 pagina's",
+      "stappen": [
+        "Meet de responstijd van de belangrijkste API-verzoeken",
+        "Meet de laadtijd van dashboard, producten en klanten"
+      ],
+      "verwacht": "Elk API-verzoek binnen 500 ms; elke pagina binnen 2 seconden volledig geladen.",
+      "userStories": [
+        {
+          "id": "US-SEC-04",
+          "titel": "Gegevens snel en overzichtelijk toegankelijk"
+        }
+      ],
+      "pagina": "Alle overzichtspagina's",
+      "onderdeel": "J. Technische tests (beveiliging, integriteit, omgeving)",
+      "module": "10-technisch",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Traagste API 28 ms (/dashboard); pagina's: / 750 ms, /producten 662 ms, /klanten 663 ms.",
+      "screenshot": null,
+      "duurMs": 3140
+    },
+    {
+      "id": "TC-108",
+      "functie": "Regressie: de Laravel-versie geeft dezelfde gegevens als versie 2",
+      "eisen": [
+        "TEC-3"
+      ],
+      "soort": "Regressie",
+      "testvorm": "Regressie (API)",
+      "rol": "Directie",
+      "testdata": "18 lees-endpoints, versie 2 en de Laravel-versie op dezelfde database",
+      "stappen": [
+        "Zet versie 2 en de Laravel-versie aan op dezelfde database",
+        "Vraag in beide alle overzichten op",
+        "Vergelijk de antwoorden veld voor veld"
+      ],
+      "verwacht": "Alle 18 overzichten geven exact hetzelfde antwoord: de overstap naar Laravel heeft de functionaliteit niet veranderd.",
+      "userStories": [
+        {
+          "id": "US-SEC-04",
+          "titel": "Gegevens snel en overzichtelijk toegankelijk"
+        }
+      ],
+      "pagina": "Alle overzichten (oude ↔ nieuwe versie)",
+      "onderdeel": "J. Technische tests (beveiliging, integriteit, omgeving)",
+      "module": "10-technisch",
+      "resultaat": "Geslaagd",
+      "werkelijk": "18 van 18 overzichten geven identieke gegevens.",
+      "screenshot": null,
+      "duurMs": 890
+    },
+    {
+      "id": "TC-109",
+      "functie": "Tijdzone: \"vandaag\" en \"deze week\" in Nederlandse tijd",
+      "eisen": [
+        "WRK-2"
+      ],
+      "soort": "Grensgeval",
+      "testvorm": "Technisch (API)",
+      "rol": "Vrijwilliger",
+      "testdata": "Weekstart volgens de server vs. maandag volgens Europe/Amsterdam",
+      "stappen": [
+        "Vraag /api/pakketten/samenstellen op",
+        "Vergelijk \"weekstart\" met de maandag van deze week in Nederlandse tijd"
+      ],
+      "verwacht": "Dezelfde datum; de database rekent met dezelfde tijdzone (CURDATE gelijk aan de Nederlandse datum).",
+      "userStories": [
+        {
+          "id": "US-WRK-04",
+          "titel": "Op donderdag pakketten samenstellen"
+        },
+        {
+          "id": "US-WRK-05",
+          "titel": "Op vrijdag pakketten uitdelen"
+        }
+      ],
+      "pagina": "Voedselpakketten / Uitgifte (weekcyclus)",
+      "onderdeel": "J. Technische tests (beveiliging, integriteit, omgeving)",
+      "module": "10-technisch",
+      "resultaat": "Geslaagd",
+      "werkelijk": "Server weekstart 2026-11-23; maandag in Nederland 2026-11-23; vandaag NL 2026-11-26.",
+      "screenshot": null,
+      "duurMs": 307
+    },
+    {
+      "id": "TC-110",
+      "functie": "Installatie met Laravel (Herd) en testdata",
+      "eisen": [
+        "TEC-5",
+        "TEC-7",
+        "TEC-8"
+      ],
+      "soort": "Positief",
+      "testvorm": "Installatie / omgeving",
+      "rol": "—",
+      "testdata": "composer install, npm run build, php artisan migrate --seed",
+      "stappen": [
+        "Zet de site klaar met Herd (of php artisan serve)",
+        "Controleer of de testdata is geladen",
+        "Open de app, een directe pagina-URL en de API",
+        "Draai tests/api/api-test.js tegen de site"
+      ],
+      "verwacht": "De gebouwde frontend staat in public/build; de database bevat de testdata (11 gezinnen, 20 producten, 5 accounts); app 200, /klanten 200 (Vue-router), API 200; regressietest 28/28 geslaagd.",
+      "userStories": [
+        {
+          "id": "US-SEC-05",
+          "titel": "Voldoen aan AVG- en beveiligingsrichtlijnen"
+        }
+      ],
+      "pagina": "Installatie (Docker)",
+      "onderdeel": "J. Technische tests (beveiliging, integriteit, omgeving)",
+      "module": "10-technisch",
+      "resultaat": "Geslaagd",
+      "werkelijk": "public/build aanwezig: ja; testdata: 12 klanten, 20 producten, 5 accounts; app 200, /klanten 200, API 200; regressietest: 28 geslaagd, 0 mislukt.",
+      "screenshot": null,
+      "duurMs": 1563
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+/* Grafieken, drawer, modal en meldingen rechtsonder (toast).
+   Gebruikt door components/ui/* en components/charts/*.
+*/
+
+.card.vul { display: flex; flex-direction: column; }
+.card.vul > .body { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; }
+.card.vul .staven { flex: 1; height: auto; min-height: 190px; }
+
+.staven { display: flex; align-items: flex-end; gap: 16px; height: 190px; padding: 6px 4px 0; }
+.staven .kolom { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px; height: 100%; justify-content: flex-end; }
+.staven .staaf {
+  width: 100%; max-width: 62px; background: var(--green);
+  border-radius: 7px 7px 3px 3px; position: relative; min-height: 4px;
+}
+.staven .kolom:last-child .staaf { background: var(--green-dk); }
+.staven .getal { font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 500; }
+.staven .naam { font-size: 12px; color: var(--ink-3); font-weight: 600; }
+
+.lijngrafiek { width: 100%; height: 190px; display: block; }
+
+/* ---------------------------------------------- drawer / modal */
+.overlay {
+  position: fixed; inset: 0; background: rgba(31,36,25,.36);
+  display: none; z-index: 40;
+}
+.overlay.open { display: block; }
+
+.drawer {
+  position: fixed; top: 0; right: 0; bottom: 0; width: min(560px, 100%);
+  background: var(--card); border-left: 1px solid var(--line-2);
+  z-index: 50; display: flex; flex-direction: column;
+  transform: translateX(100%); transition: transform .22s ease;
+  box-shadow: -18px 0 42px rgba(31,36,25,.12);
+}
+.drawer.open { transform: none; }
+.drawer .kop {
+  padding: 20px 24px; border-bottom: 1px solid var(--line);
+  display: flex; align-items: center; gap: 14px;
+}
+.drawer .kop h2 { font-size: 19px; }
+.drawer .kop .onder { font-size: 13px; color: var(--ink-3); margin-top: 2px; }
+.drawer .body { padding: 20px 24px; overflow-y: auto; flex: 1; }
+.drawer .voet {
+  padding: 16px 24px; border-top: 1px solid var(--line);
+  display: flex; gap: 10px; justify-content: flex-end; background: var(--page);
+}
+
+.modal {
+  position: fixed; z-index: 60; top: 50%; left: 50%;
+  transform: translate(-50%, -48%) scale(.98);
+  width: min(520px, calc(100% - 32px));
+  background: var(--card); border: 1px solid var(--line-2);
+  border-radius: 14px; box-shadow: 0 24px 60px rgba(31,36,25,.24);
+  opacity: 0; pointer-events: none; transition: opacity .16s ease, transform .16s ease;
+}
+.modal.open { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%) scale(1); }
+.modal .kop { padding: 20px 24px 0; }
+.modal .kop h2 { font-size: 19px; }
+.modal .body { padding: 12px 24px 4px; color: var(--ink-2); font-size: 14.5px; }
+.modal .voet { padding: 18px 24px 20px; display: flex; gap: 10px; justify-content: flex-end; }
+
+/* ---------------------------------------------- toast */
+#toasts {
+  position: fixed; right: 22px; bottom: 22px; z-index: 90;
+  display: flex; flex-direction: column; gap: 10px; align-items: flex-end;
+}
+.toast {
+  background: var(--ink); color: #F4F3EE;
+  border-radius: var(--radius-sm); padding: 12px 17px;
+  font-size: 14px; font-weight: 500; max-width: 400px;
+  box-shadow: 0 10px 28px rgba(31,36,25,.22);
+  animation: toastin .2s ease;
+}
+.toast.fout   { background: var(--red); }
+.toast.goed   { background: var(--green-dk); }
+@keyframes toastin { from { opacity: 0; transform: translateY(8px); } }
+

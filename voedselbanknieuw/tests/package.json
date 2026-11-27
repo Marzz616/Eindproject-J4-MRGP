@@ -1,0 +1,6 @@
+{
+    "name": "voedselbank-tests",
+    "private": true,
+    "type": "commonjs",
+    "description": "De testscripts zijn in CommonJS geschreven (require/module.exports); de rest van het project gebruikt ESM-imports. Dit bestand vertelt Node dat voor de map tests."
+}

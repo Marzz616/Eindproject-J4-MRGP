@@ -1,0 +1,68 @@
+/* Basis: kleuren, lettertypen en algemene elementen.
+   De kleuren komen uit het Figma-ontwerp en staan als variabelen in :root.
+*/
+
+
+:root {
+  --page: #FAFAF7;
+  --side: #F1F0EA;
+  --card: #FFFFFF;
+  --row-alt: #F4F3EE;
+
+  --ink: #1F2419;
+  --ink-2: #5C6153;
+  --ink-3: #8E9282;
+
+  --line: #E5E4DC;
+  --line-2: #D6D4C9;
+
+  --green: #2E6B4A;
+  --green-dk: #26583C;
+  --green-soft: #E4EFE4;
+
+  --purple: #7A3E8E;
+  --purple-soft: #F5EDF8;
+  --purple-line: #DCC3E6;
+
+  --amber: #9A6714;
+  --amber-soft: #FAF0DC;
+  --amber-line: #E2C892;
+
+  --red: #8E3B3B;
+  --red-soft: #FBE9E9;
+  --red-line: #E2BCBC;
+
+  --grey-soft: #EDEBE3;
+
+  --sidebar: 266px;
+  --radius: 11px;
+  --radius-sm: 9px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--page);
+  color: var(--ink);
+  font-family: 'Source Sans 3', 'Segoe UI', system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Zilla Slab', Georgia, serif;
+  font-weight: 600;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+a { color: var(--green); }
+
+.mono {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+}
+

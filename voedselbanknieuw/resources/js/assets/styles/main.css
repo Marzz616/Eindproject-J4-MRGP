@@ -1,0 +1,13 @@
+/* =============================================================
+   Voedselbank Maaskantje — stijlen
+   Opgesplitst per onderwerp; dit bestand laadt ze in de goede volgorde.
+   Stijlen die maar op één pagina voorkomen staan in die pagina zelf
+   (<style scoped> in het .vue-bestand).
+   ============================================================= */
+@import './base.css';
+@import './layout.css';
+@import './components.css';
+@import './forms.css';
+@import './tables.css';
+@import './overlays.css';
+@import './misc.css';

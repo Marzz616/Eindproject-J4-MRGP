@@ -1,0 +1,77 @@
+/* Tabellen en uitklapbare rijen (klanten, leveranciers, gebruikers).
+   
+*/
+
+table.lijst { width: 100%; border-collapse: collapse; }
+table.lijst thead th {
+  height: 54px; text-align: left; padding: 0 16px;
+  font-size: 11.5px; letter-spacing: .07em; text-transform: uppercase;
+  color: var(--ink-3); font-weight: 700;
+  border-bottom: 1px solid var(--line);
+  background: #fff; position: sticky; top: 0; z-index: 1;
+}
+table.lijst tbody td {
+  height: 64px; padding: 0 16px; border-bottom: 1px solid var(--line);
+  font-size: 14.5px; vertical-align: middle;
+}
+table.lijst tbody tr.klikbaar { cursor: pointer; }
+table.lijst tbody tr.klikbaar:hover > td { background: var(--row-alt); }
+table.lijst tbody tr.open > td { background: var(--row-alt); }
+table.lijst .r { text-align: right; }
+table.lijst td.mono, table.lijst td .mono { white-space: nowrap; }
+table.lijst .sterk { font-weight: 600; }
+table.lijst .zacht { color: var(--ink-3); font-size: 13px; }
+table.lijst td.uit { padding: 0; }
+table.lijst td.uit > div { padding: 4px 22px 22px; background: var(--row-alt); }
+
+.chevron { transition: transform .16s ease; color: var(--ink-3); }
+tr.open .chevron { transform: rotate(90deg); }
+
+/* ---------------------------------------------- uitklapbare rijen
+   Dezelfde opbouw op Klanten, Leveranciers en Gebruikers: een rij die
+   je openklapt met details eronder. --kolommen zet je per pagina.     */
+.tbl { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+.thead, .trow {
+  display: grid; grid-template-columns: var(--kolommen);
+  gap: 16px; align-items: center; padding: 0 24px;
+}
+.thead { height: 54px; background: var(--row-alt); border-bottom: 1px solid var(--line); }
+.thead span { font-size: 13px; color: var(--ink-2); font-weight: 700; letter-spacing: .03em; }
+.trow { min-height: 64px; border-bottom: 1px solid var(--line); cursor: pointer; background: var(--card); }
+.grp:last-child .trow { border-bottom: 0; }
+.trow:hover { background: var(--row-alt); }
+.grp.open .trow { background: var(--row-alt); }
+.trow .nm { font-weight: 700; font-size: 15.5px; }
+.trow .code { font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; color: var(--ink-3); margin-left: 7px; font-weight: 400; }
+.chev { width: 14px; height: 14px; stroke: var(--ink-2); stroke-width: 2.4; fill: none; transition: transform .18s ease; }
+.grp.open .chev { transform: rotate(180deg); }
+
+.detail { display: none; padding: 4px 22px 24px; background: var(--card); border-bottom: 1px solid var(--line); }
+.grp.open .detail { display: block; }
+.detail h3 { font-size: 17px; font-weight: 600; margin: 14px 0 13px; }
+.inner { border: 1px solid var(--line); border-radius: var(--radius-sm); overflow: hidden; }
+.ihead, .irow { display: grid; grid-template-columns: var(--subkolommen); gap: 16px; align-items: center; padding: 0 18px; }
+.ihead { height: 46px; background: var(--row-alt); border-bottom: 1px solid var(--line); }
+.ihead span { font-size: 13px; color: var(--ink-2); font-weight: 600; }
+.irow { min-height: 52px; border-bottom: 1px solid var(--line); }
+.irow:last-child { border-bottom: 0; }
+.irow .p { font-weight: 600; }
+.irow .diet { color: var(--purple); font-weight: 600; font-size: 14px; }
+.irow .niets { color: var(--ink-3); }
+.detailacts { display: flex; gap: 9px; margin-top: 15px; flex-wrap: wrap; }
+
+.pil2 {
+  display: inline-flex; align-items: center; font-size: 12.5px; padding: 5px 11px;
+  border-radius: 7px; font-weight: 600; border: 1px solid transparent;
+  white-space: nowrap; line-height: 1.25;
+}
+.pil2.diet { background: var(--purple-soft); color: var(--purple); border-color: var(--purple-line); }
+.pil2.ok   { background: var(--green-soft);  color: var(--green);  border-color: #BEDCBE; }
+.pil2.off  { background: var(--grey-soft);   color: var(--ink-3);  border-color: var(--line-2); }
+.pil2.wacht{ background: var(--amber-soft);  color: var(--amber);  border-color: var(--amber-line); }
+.pil2.nee  { background: var(--red-soft);    color: var(--red);    border-color: var(--red-line); }
+.pillen { display: flex; gap: 6px; flex-wrap: wrap; }
+
+.leeg { padding: 44px 20px; text-align: center; color: var(--ink-3); }
+.leeg h3 { font-size: 16px; color: var(--ink-2); margin-bottom: 5px; }
+
